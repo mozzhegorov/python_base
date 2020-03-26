@@ -52,7 +52,25 @@ print('Лампа -', lamps_quantity, 'шт, стоимость', lamps_cost, '�
 # WARNING для знающих циклы: БЕЗ циклов. Да, с переменными; да, неэффективно; да, копипаста.
 # Это задание на ручное вычисление - что бы потом понять как работают циклы и насколько с ними проще жить.
 
-# TODO здесь ваш код
+item_code = goods['Стол']
+item_quantity = store[item_code][0]['quantity'] + store[item_code][1]['quantity']
+item_cost = store[item_code][0]['quantity'] * store[item_code][0]['price'] \
+            + store[item_code][1]['quantity'] * store[item_code][1]['price']
+print('Стол -', item_quantity, 'шт, стоимость', item_cost, 'руб')
+
+item_code = goods['Диван']
+item_quantity = store[item_code][0]['quantity'] + store[item_code][1]['quantity']
+item_cost = store[item_code][0]['quantity'] * store[item_code][0]['price'] \
+            + store[item_code][1]['quantity'] * store[item_code][1]['price']
+print('Диван -', item_quantity, 'шт, стоимость', item_cost, 'руб')
+
+item_code = goods['Стул']
+item_quantity = store[item_code][0]['quantity'] + store[item_code][1]['quantity'] + store[item_code][2]['quantity']
+item_cost = store[item_code][0]['quantity'] * store[item_code][0]['price'] \
+            + store[item_code][1]['quantity'] * store[item_code][1]['price'] \
+            + store[item_code][2]['quantity'] * store[item_code][2]['price']
+print('Стул -', item_quantity, 'шт, стоимость', item_cost, 'руб')
+
 
 ##########################################################################################
 # ВНИМАНИЕ! После того как __ВСЯ__ домашняя работа сделана и запушена на сервер,         #
