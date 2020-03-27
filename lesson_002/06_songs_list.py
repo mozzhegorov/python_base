@@ -56,11 +56,12 @@ lnth = violator_songs_dict["Sweetest Perfection"] + violator_songs_dict["Policy 
 #       round(pi, 2)        # 3.14
 #       round(pi, 0)        # 3.0
 #       round(pi)           # 3
-print('Время звучания "Sweetest Perfection", "Policy of Truth" и "Blue Dress" = ', lnth.__round__(2), ' мин.')
+#       Студент: СДЕЛАНО!
+print('Время звучания "Sweetest Perfection", "Policy of Truth" и "Blue Dress" = ', round(lnth), ' мин.')
 
 lnth = violator_songs_dict["World in My Eyes"] + violator_songs_dict["Clean"] \
        + violator_songs_dict["Halo"] + violator_songs_dict["Personal Jesus"] + \
        + violator_songs_dict["Waiting for the Night"] + violator_songs_dict["Enjoy the Silence"]
 
-print('А другие песни звучат ', lnth.__round__(1), ' мин.')
+print('А другие песни звучат ', round(lnth), ' мин.')
 
