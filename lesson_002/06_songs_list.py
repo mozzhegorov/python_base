@@ -25,6 +25,7 @@ violator_songs_list = [
 
 lnth = violator_songs_list[5][1] + violator_songs_list[3][1] + violator_songs_list[-1][1]
 
+# TODO: использовать round() вместо __round__()
 print(f'Три песни звучат {lnth.__round__(2)} мин.')
 
 # Есть словарь песен группы Depeche Mode
@@ -46,6 +47,15 @@ violator_songs_dict = {
 
 lnth = violator_songs_dict["Sweetest Perfection"] + violator_songs_dict["Policy of Truth"] + violator_songs_dict["Blue Dress"]
 
+# TODO: ошибка в формате вывода.
+#  'Время звучания "Sweetest Perfection", "Policy of Truth" и "Blue Dress" =  ХХХ мин.' - должно быть
+#  'Время звучания "Sweetest Perfection", "Policy of Truth" и "Blue Dress" =  ХХХ.xx мин.' - выводит код
+#  .
+#  Примеры округлений:
+#       pi = 3.1415
+#       round(pi, 2)        # 3.14
+#       round(pi, 0)        # 3.0
+#       round(pi)           # 3
 print('Время звучания "Sweetest Perfection", "Policy of Truth" и "Blue Dress" = ', lnth.__round__(2), ' мин.')
 
 lnth = violator_songs_dict["World in My Eyes"] + violator_songs_dict["Clean"] \
@@ -53,3 +63,4 @@ lnth = violator_songs_dict["World in My Eyes"] + violator_songs_dict["Clean"] \
        + violator_songs_dict["Waiting for the Night"] + violator_songs_dict["Enjoy the Silence"]
 
 print('А другие песни звучат ', lnth.__round__(1), ' мин.')
+
