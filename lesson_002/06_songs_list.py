@@ -47,7 +47,7 @@ violator_songs_dict = {
 
 lnth = violator_songs_dict["Sweetest Perfection"] + violator_songs_dict["Policy of Truth"] + violator_songs_dict["Blue Dress"]
 
-# TODO: ошибка в формате вывода.
+#  ошибка в формате вывода.
 #  'Время звучания "Sweetest Perfection", "Policy of Truth" и "Blue Dress" =  ХХХ мин.' - должно быть
 #  'Время звучания "Sweetest Perfection", "Policy of Truth" и "Blue Dress" =  ХХХ.xx мин.' - выводит код
 #  .
