@@ -28,3 +28,5 @@ print(f'Рост дедушки - {my_family_height[2][1]} см')
 all_height = my_family_height[0][1] + my_family_height[1][1] + my_family_height[2][1] + my_family_height[3][1]
 print(f'Общий рост моей семьи - '
       f'{all_height} см')
+
+# зачет!

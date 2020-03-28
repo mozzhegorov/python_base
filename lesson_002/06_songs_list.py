@@ -65,3 +65,4 @@ lnth = violator_songs_dict["World in My Eyes"] + violator_songs_dict["Clean"] \
 
 print('А другие песни звучат ', round(lnth), ' мин.')
 
+# зачет!
