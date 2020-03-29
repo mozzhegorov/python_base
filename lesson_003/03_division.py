@@ -11,4 +11,12 @@
 
 a, b = 179, 37
 
-# TODO здесь ваш код
+result = 0
+
+div_var = a
+
+while div_var > b:
+    result += 1
+    div_var = div_var - b
+
+print(f'Результат целочиесленного деления {a} на {b} равен {result}')
