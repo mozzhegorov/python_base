@@ -11,4 +11,18 @@
 
 educational_grant, expenses = 10000, 12000
 
-# TODO здесь ваш код
+month = 1
+
+total_expenses = expenses
+total_educational_grant = educational_grant
+
+while month < 10:
+    month += 1
+    total_expenses = total_expenses + expenses * 1.03
+    total_educational_grant += educational_grant
+    # print(total_expenses, total_educational_grant)
+
+result = total_expenses - total_educational_grant
+
+print(f'Студенту надо попросить {result} рублей')
+
