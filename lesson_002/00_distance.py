@@ -118,3 +118,5 @@ distances = {
 }
 
 print(distances)
+
+# зачет!

@@ -24,3 +24,5 @@ print(f'Лев сидит в клетке № {zoo.index("lion") + 1}')
 print(f'Жаворонок сидит в клетке № {zoo.index("lark") + 1}')
 
 print(zoo)
+
+# зачет!
