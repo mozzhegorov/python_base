@@ -54,22 +54,14 @@ store = {
 #         подсчет стоимости товара
 #     вывод на консоль количества и стоимости товара на складе
 
-# TODO: что хранит item, а что art? Сходу сможете ответить? Я раз 100 видел эту задачу, но сходу не отвечу.
+#  что хранит item, а что art? Сходу сможете ответить? Я раз 100 видел эту задачу, но сходу не отвечу.
 #  Как быть? Надо дать такие имена, чтобы было понятно, что что-то из них хранит "код продукта", а что "имя продукта".
-for item, art in goods.items():
-    quantity = 0    # TODO: вот крутые, понятные имена)
+for name_of_goods, code_of_goods in goods.items():
+    quantity = 0
     price = 0
 
-    # TODO: следующие 3 строки можно заменить одной
-    for article in store.items():
-        if article[0] == art:
-            for i in range(len(article[1])):
+    for i in range(len(store[code_of_goods])):
+        quantity += store[code_of_goods][i]['quantity']
+        price += store[code_of_goods][i]['quantity'] * store[code_of_goods][i]['price']
 
-    # TODO: store - это словарь. По ключу из "код продукта" мы можем достать список подвидов продукта (пусть он будет
-    #  называть sub_products). По этому списку можно запустить цикл, и вуаля, каждый элемент списка это, чья цена
-    #  и количество нам нужно.
-
-    # TODO: тут продолжается оптимальный, с точки зрения логики, код
-                quantity += article[1][i]['quantity']
-                price += article[1][i]['quantity'] * article[1][i]['price']
-    print(f'{item} - {quantity} шт, стоимость {price} руб')
+    print(f'{name_of_goods} - {quantity} шт, стоимость {price} руб')
