@@ -18,6 +18,8 @@ total_educational_grant = educational_grant
 
 while month < 10:
     month += 1
+    # TODO: проблема здесь. У нас инфляция 3% относительно трат. Т.е. каждый месяц траты +3%. А не просто +3%
+    #  относительно 1го месяца.
     total_expenses = total_expenses + expenses * 1.03
     total_educational_grant += educational_grant
     # print(total_expenses, total_educational_grant)
@@ -25,4 +27,6 @@ while month < 10:
 result = total_expenses - total_educational_grant
 
 print(f'Студенту надо попросить {result} рублей')
+
+# TODO: неплохо так мы преуменьшили долг студента (он должен почти в 1.5 раза больше)
 

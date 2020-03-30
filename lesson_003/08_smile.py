@@ -20,7 +20,10 @@ def smile(x, y, color):
     sd.circle(sd.get_point(y - 15, x), 7, color, 1)
 
 for _ in range(10):
+    # TODO: используйте sd.random_color() - внтури она делает тоже самое.
     smile_color = (random.randrange(255), random.randrange(255), random.randrange(255))
+
+    # TODO: можно было бы использовать и sd.random_point(), и использовать из нее x, y
     center_x = random.randrange(50, sd.resolution[1] - 50)
     center_y = random.randrange(50, sd.resolution[0] - 50)
     smile(center_x, center_y, smile_color)

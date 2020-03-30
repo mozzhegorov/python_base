@@ -15,28 +15,41 @@ for num_of_circle in range(3):
 
 
 # Написать функцию рисования пузырька, принммающую 2 (или более) параметра: точка рисовании и шаг
-# def bubble(center_point, radius_step, color):
-#     radius_fun = 30
-#     for num_of_circle_fun in range(3):
-#         radius_fun = radius_fun + radius_step
-#         sd.circle(center_point, radius_fun, color, 1)
-#
-# bubble(sd.get_point(500, 500), 7, sd.COLOR_CYAN)
+# TODO: начиная с 3го модуля мы стремимся соблюдать PEP8.
+#     Перемеинуйте функцию bubble в слово/словосочетание, глагол, чтобы он отражал суть - "нарисовать пузырек".
+#     Функции и методы должны носить название-глаголы. А объекты - название-существительные. И bubble как раз больше
+#     похож на существительное.
+def bubble(center_point, radius_step, color):
+    # TODO: просто интересно, а почему "_fun"?
+    radius_fun = 30
+    # TODO: если переменная не используется (как "num_of_circle_fun"), то ее можно заменить на "_", это подчеркивает
+    #  что данная переменная не важна.
+    for num_of_circle_fun in range(3):          # TODO: сможете сделать так, чтобы цикл выдавал значения радиуса?
+        radius_fun = radius_fun + radius_step   #  т.е. этой строки не будет.
+        sd.circle(center_point, radius_fun, color, 1)
+
+bubble(sd.get_point(500, 500), 7, sd.COLOR_CYAN)
 
 # Нарисовать 10 пузырьков в ряд
-# for bubles_x in range(100, 1001, 100):
-#     bubble(sd.get_point(bubles_x, 100), 4)
+for bubles_x in range(100, 1001, 100):
+    bubble(sd.get_point(bubles_x, 100), 4)      # TODO: ошибка. Комментирование кода - маленькое зло.
 
 # Нарисовать три ряда по 10 пузырьков
-# for bubles_y in range(100, 301, 100):
-#     for bubles_x in range(100, 1001, 100):
-#         bubble(sd.get_point(bubles_x, bubles_y), 4)
+for bubles_y in range(100, 301, 100):
+    for bubles_x in range(100, 1001, 100):
+        bubble(sd.get_point(bubles_x, bubles_y), 4)     # TODO: и тут
 
 
 # Нарисовать 100 пузырьков в произвольных местах экрана случайными цветами
-# for _ in range(100):
-#     bubble(sd.random_point(), 4, (random.randrange(255), random.randrange(255), random.randrange(255)))
+for _ in range(100):
+    # TODO: для генерации рандоного цвета используйте sd.random_color()
+    # TODO: подставлять "голую" цифры 4 - не очень стиль. Лучше добавить: bubble(..., radius_step=4, ...)
+    bubble(sd.random_point(), 4, (random.randrange(255), random.randrange(255), random.randrange(255)))
 
 sd.pause()
 
 # TODO: закомментировал все выводы пузырьков на экран, кроме первого вывода.
+
+# TODO: Ответ. Почему так сделано понимаю. Пока отлаживаете и запускате локально - пусть будет.
+#  На сервер пожалуйста заливайте версию, где рабочий код не закомментирован, ее проще проверять, и меньше шансов
+#  что приму рабочий код за старый (привычка закрепится не дай Бог).
