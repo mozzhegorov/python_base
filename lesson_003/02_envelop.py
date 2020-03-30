@@ -19,7 +19,7 @@ paper_x, paper_y = 3, 4
 paper_x, paper_y = 11, 9
 paper_x, paper_y = 9, 11
 # (просто раскоментировать нужную строку и проверить свой код)
-# TODO: если размер конверта 10 на 5, а размер листка 4 на 9. Код скажет, что такой листок нельзя уместить в конверт,
+#  если размер конверта 10 на 5, а размер листка 4 на 9. Код скажет, что такой листок нельзя уместить в конверт,
 #  т.к. текущая версия не учитывает, что листок можно поверно на 90 градусов.
 #  Подсказка: итоговый вариант должен выглядеть так:
 #       if ... and ...:
@@ -29,6 +29,8 @@ paper_x, paper_y = 9, 11
 #       else:
 #           ...
 if (paper_x < envelop_x) and (paper_y < envelop_y):
+    print('ДА')
+elif (paper_y < envelop_x) and (paper_x < envelop_y):
     print('ДА')
 else:
     print('НЕТ')
@@ -60,22 +62,18 @@ brick_x, brick_y, brick_z = 3, 6, 11
 brick_x, brick_y, brick_z = 3, 11, 6
 # (просто раскоментировать нужную строку и проверить свой код)
 
-# TODO: усложненную версию можно сделать с меньшим количество if|else, не перебирая все варианты влоб. Вы можете
+#  усложненную версию можно сделать с меньшим количество if|else, не перебирая все варианты влоб. Вы можете
 #  поместить параметры кирпичика в список. Найти максимальное значение в нем с помощью max(). Удалить этот элемент из
 #  списка.
 #  .
 #  В итоге остается 2 наименьших параметра в списке и 2 параметра отверстия. Задача сведется к дефолтной версии.
-if (brick_x < hole_x) and (brick_y < hole_y):
+
+ribs_of_brick = [brick_x, brick_y, brick_z]
+ribs_of_brick.remove(max(ribs_of_brick))
+
+if (ribs_of_brick[0] < hole_x) and (ribs_of_brick[1] < hole_y):
     print('ДА')
-elif (brick_y < hole_x) and (brick_x < hole_y):
-    print('ДА')
-elif (brick_x < hole_x) and (brick_z < hole_y):
-    print('ДА')
-elif (brick_z < hole_x) and (brick_x < hole_y):
-    print('ДА')
-elif (brick_z < hole_x) and (brick_y < hole_y):
-    print('ДА')
-elif (brick_y < hole_x) and (brick_z < hole_y):
+elif (ribs_of_brick[1] < hole_x) and (ribs_of_brick[0] < hole_y):
     print('ДА')
 else:
     print('НЕТ')
