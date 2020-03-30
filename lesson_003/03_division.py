@@ -9,17 +9,16 @@
 # Формат вывода:
 #   Целочисленное деление ХХХ на YYY дает ZZZ
 
-a, b = 370, 37
+a, b = 371, 37
 
 result = 0
 
 div_var = a
 
-while div_var > b:
+while div_var >= b:
     result += 1
     div_var = div_var - b
 
-# TODO: оу, f-строка)) хорошо
 print(f'Результат целочиесленного деления {a} на {b} равен {result}')
 
-# TODO: что будет, если a=370, b=37?
+# что будет, если a=370, b=37?
