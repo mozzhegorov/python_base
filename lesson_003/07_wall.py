@@ -6,24 +6,34 @@ import simple_draw as sd
 # Нарисовать стену из кирпичей. Размер кирпича - 100х50
 # Использовать вложенные циклы for
 
-sd.resolution = (1200, 600)
+SCREEN_WIDTH = 1200
+SCREEN_HEIGHT = 600
+BRICK_WIDTH = 100
+BRICK_HEIGHT = 50
+x_offset = 50
 
-for num_line in range(0, sd.resolution[1], 50):
-    sd.line(sd.get_point(0, num_line), sd.get_point(sd.resolution[0], num_line), sd.COLOR_RED, 1)
-    for num_line_ver in range(num_line % 100, sd.resolution[0], 100):
-        sd.line(sd.get_point(num_line_ver, num_line), sd.get_point(num_line_ver, num_line + 50), sd.COLOR_RED, 1)
+sd.resolution = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
+for brick_bottom_y in range(0, SCREEN_HEIGHT + 1, BRICK_HEIGHT):
+    for brick_bottom_x in range(0, SCREEN_WIDTH + 1, BRICK_WIDTH):
+        if brick_bottom_y % (BRICK_HEIGHT * 2) == 0:
+            offset = x_offset
+        else:
+            offset = 0
+        sd.rectangle(sd.get_point(brick_bottom_x + offset, brick_bottom_y),
+                     sd.get_point(brick_bottom_x + offset + BRICK_WIDTH, brick_bottom_y + BRICK_HEIGHT),
+                     color=sd.COLOR_RED, width=1)
 sd.pause()
 
-# TODO: элегантный способ, но не универсальный. Стоит изменить размер кирпича, допустим на 100 и 30 и стена поедет.
+#  элегантный способ, но не универсальный. Стоит изменить размер кирпича, допустим на 100 и 30 и стена поедет.
 
-# TODO: тут на плотно предстоит поработать)
-#  1. Ввести константы ширина/высота экрана;
-#  2. Ввести константы ширина/высота кирпичика;.
-#  3. Задать размер полотна, используя контсанты sd.resolution = (ширина, высота);
-#  4. Изменить циклы по y и x так, чтобы они использовали эти константы.
-#  5. Добавить if между двумя циклами, чтобы определять x_offset (т.к. num_line % 100 не универсален, хотя крут)
-#  6. Так же можно, желательно, заменить 2 вызова sd.line на 1 вызов sd.rectangle.
+#  тут на плотно предстоит поработать)
+#  Ввести константы ширина/высота экрана;
+#  Ввести константы ширина/высота кирпичика;.
+#  Задать размер полотна, используя контсанты sd.resolution = (ширина, высота);
+#  Изменить циклы по y и x так, чтобы они использовали эти константы.
+#  Добавить if между двумя циклами, чтобы определять x_offset (т.к. num_line % 100 не универсален, хотя крут)
+#  Так же можно, желательно, заменить 2 вызова sd.line на 1 вызов sd.rectangle.
 #  .
 #  Какая выгода? Мы сможет контролировать размер стены и кирпича из одного места кода, и менять стиль стены 1 движением,
 #  не залезая внутрь основного кода. Код будет более гибок. И в одном из следующих заданий его можно будет использовать
