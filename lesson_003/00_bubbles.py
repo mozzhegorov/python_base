@@ -33,13 +33,13 @@ def draw_bubble(center_point, radius_step, color=sd.COLOR_RED):
 draw_bubble(sd.get_point(500, 500), 7, sd.COLOR_CYAN)
 
 # Нарисовать 10 пузырьков в ряд
-for bubles_x in range(100, 1001, 100):
-    draw_bubble(sd.get_point(bubles_x, 100), 4)
+for bubble_coord_x in range(100, 1001, 100):
+    draw_bubble(sd.get_point(bubble_coord_x, 100), 4)
 
 # Нарисовать три ряда по 10 пузырьков
-for bubles_y in range(100, 301, 100):
-    for bubles_x in range(100, 1001, 100):
-        draw_bubble(sd.get_point(bubles_x, bubles_y), 4)
+for bubble_coord_y in range(100, 301, 100):
+    for bubble_coord_x in range(100, 1001, 100):
+        draw_bubble(sd.get_point(bubble_coord_x, bubble_coord_y), 4)
 
 # Нарисовать 100 пузырьков в произвольных местах экрана случайными цветами
 for _ in range(100):
