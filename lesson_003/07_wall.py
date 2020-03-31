@@ -16,12 +16,14 @@ sd.resolution = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
 for brick_bottom_y in range(0, SCREEN_HEIGHT + 1, BRICK_HEIGHT):
     for brick_bottom_x in range(0, SCREEN_WIDTH + 1, BRICK_WIDTH):
-        if brick_bottom_y % (BRICK_HEIGHT * 2) == 0:
+        if brick_bottom_y % (BRICK_HEIGHT * 2):
             offset = x_offset
         else:
             offset = 0
-        sd.rectangle(sd.get_point(brick_bottom_x + offset, brick_bottom_y),
-                     sd.get_point(brick_bottom_x + offset + BRICK_WIDTH, brick_bottom_y + BRICK_HEIGHT),
+
+        brick_bottom_x = brick_bottom_x + offset
+        sd.rectangle(sd.get_point(brick_bottom_x, brick_bottom_y),
+                     sd.get_point(brick_bottom_x + BRICK_WIDTH, brick_bottom_y + BRICK_HEIGHT),
                      color=sd.COLOR_RED, width=1)
 sd.pause()
 
