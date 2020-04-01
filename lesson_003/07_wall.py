@@ -10,27 +10,21 @@ SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
 BRICK_WIDTH = 100
 BRICK_HEIGHT = 50
-x_offset = 50       # TODO: пусть рассчитывается в коде, почему здесь именно 50? Потому что BRICK_WIDTH / 2
+x_offset = BRICK_WIDTH // 2
+
 
 sd.resolution = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
 for brick_bottom_y in range(0, SCREEN_HEIGHT + 1, BRICK_HEIGHT):
-    for brick_bottom_x in range(0, SCREEN_WIDTH + 1, BRICK_WIDTH):
-        # TODO: давайте вынесем условие из 2го цикла, и поместим между 2ым и 1ым. Как заставить offset меняться!?
-        #  У нас есть range(). У него первый аргумент - это оффсет. Намек понятен?)
-        if brick_bottom_y % (BRICK_HEIGHT * 2):
-            offset = x_offset
-        else:
-            offset = 0
-
-        # TODO: в коде ниже offset пропадет.
-        brick_bottom_x = brick_bottom_x + offset
+    if brick_bottom_y % (BRICK_HEIGHT * 2):
+        offset = x_offset
+    else:
+        offset = 0
+    for brick_bottom_x in range(offset, SCREEN_WIDTH + 1, BRICK_WIDTH):
         sd.rectangle(sd.get_point(brick_bottom_x, brick_bottom_y),
                      sd.get_point(brick_bottom_x + BRICK_WIDTH, brick_bottom_y + BRICK_HEIGHT),
                      color=sd.COLOR_RED, width=1)
 sd.pause()
-
-# TODO: мощно)
 
 #  элегантный способ, но не универсальный. Стоит изменить размер кирпича, допустим на 100 и 30 и стена поедет.
 
