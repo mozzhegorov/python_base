@@ -56,17 +56,17 @@ store = {
 
 #  что хранит item, а что art? Сходу сможете ответить? Я раз 100 видел эту задачу, но сходу не отвечу.
 #  Как быть? Надо дать такие имена, чтобы было понятно, что что-то из них хранит "код продукта", а что "имя продукта".
-# TODO: имена стали крутыми и понятными)
+#  имена стали крутыми и понятными)
 #  А использование .items() подчеркивает, что вы знаете не просто минимум по работе со словарем. (минимум это перечисление
 #  в цикле через .keys()).
 for name_of_goods, code_of_goods in goods.items():
     quantity = 0
     price = 0
 
-    # TODO: лучше сохранить store[code_of_goods] в sub_products_list (или еще как назовите).
+    #  лучше сохранить store[code_of_goods] в sub_products_list (или еще как назовите).
     #  Лучше, чтобы код был чуть больше, но не менее читабельный. Это примечания из разряда "к сведению", не критичное.
 
-    # TODO: Для цикла ниже лучше использовать перечисление по самомум списку
+    #  Для цикла ниже лучше использовать перечисление по самомум списку
     #           my_list = [obj_1, obj_2, obj_3]
     #           for obj in my_list:
     #               # work with object
@@ -79,8 +79,10 @@ for name_of_goods, code_of_goods in goods.items():
     #  Примечание: my_list - просто пример, называть переменную "my_*" не стоит.
     #              Это примечание из разряда "критично". На собеседовании использование range(len()) не простят,
     #              поэтому мы это запомним, и если будет возможность не использовать range(len()) - не будем.
-    for i in range(len(store[code_of_goods])):
-        quantity += store[code_of_goods][i]['quantity']
-        price += store[code_of_goods][i]['quantity'] * store[code_of_goods][i]['price']
+
+    option_products_list = store[code_of_goods]
+    for option in option_products_list:
+        quantity += option['quantity']
+        price += option['quantity'] * option['price']
 
     print(f'{name_of_goods} - {quantity} шт, стоимость {price} руб')
