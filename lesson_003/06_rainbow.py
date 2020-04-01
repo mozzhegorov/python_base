@@ -18,7 +18,19 @@ rainbow_colors = (sd.COLOR_RED, sd.COLOR_ORANGE, sd.COLOR_YELLOW, sd.COLOR_GREEN
 
 start_x = 50
 end_x = 350
-
+# TODO: во! То, что нужно. У нас есть кортеж и мы итерируемся по нему (т.е. перебираем один элемент за другим).
+#  Если бы нам понадобились индексы, у нас был бы соблазн применить range(len()), но не стоило бы. В том случае
+#  мы бы применили enumerate(). Пример (для расширения кругозора, и он гарантировано еще пригодится):
+#       seasons = ['Spring', 'Summer', 'Fall', 'Winter']
+#       for season_id, season_name in enumerate(seasons):
+# 	        print(season_id, ' - ', season_name)
+#   .
+#   В результате будет выведено:
+#       0 - 'Spring'
+#       1 - 'Summer'
+#       2 - 'Fall'
+#       3 - 'Winter'
+#   .
 for color in rainbow_colors:
     start_x += 5
     end_x += 5
@@ -37,3 +49,5 @@ for color in rainbow_colors:
 
 
 sd.pause()
+
+# зачет!

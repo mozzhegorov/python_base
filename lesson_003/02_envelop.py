@@ -77,3 +77,5 @@ elif (ribs_of_brick[1] < hole_x) and (ribs_of_brick[0] < hole_y):
     print('ДА')
 else:
     print('НЕТ')
+
+# зачет!
