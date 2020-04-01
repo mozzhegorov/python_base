@@ -86,7 +86,7 @@ for number, color_info in dict_of_colors.items():
 
 while True:
     global_color = input('Выберите желаемый цвет > ')
-    if 0 < int(global_color) < 6:
+    if 0 < int(global_color) < 7:
         break
     else:
         print('Вы ввели некорретный номер!')
