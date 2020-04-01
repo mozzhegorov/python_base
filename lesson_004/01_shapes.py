@@ -2,6 +2,7 @@
 
 import simple_draw as sd
 
+
 # Часть 1.
 # Написать функции рисования равносторонних геометрических фигур:
 # - треугольника
@@ -27,8 +28,62 @@ import simple_draw as sd
 # sd.line()
 # Результат решения см lesson_004/results/exercise_01_shapes.jpg
 
-# TODO здесь ваш код
 
+def draw_triangle(start_point=sd.get_point(100, 100), angle=0, length=50):
+    vector_start_point = start_point
+    for figure_angle in range(0, 360, 120):
+        v1 = sd.get_vector(start_point=vector_start_point,
+                           angle=angle + figure_angle,
+                           length=length,
+                           width=1)
+        v1.draw()
+        vector_start_point = v1.end_point
+    sd.line(start_point, vector_start_point, width=1)
+
+
+def draw_square(start_point=sd.get_point(400, 100), angle=100, length=100):
+    vector_start_point = start_point
+    for figure_angle in range(0, 270, 90):
+        v1 = sd.get_vector(start_point=vector_start_point,
+                           angle=angle + figure_angle,
+                           length=length,
+                           width=1)
+        v1.draw()
+        vector_start_point = v1.end_point
+    sd.line(start_point, vector_start_point, width=1)
+
+
+def draw_pentagon(start_point=sd.get_point(100, 400), angle=60, length=50):
+    vector_start_point = start_point
+    for figure_angle in range(0, 288, 72):
+        v1 = sd.get_vector(start_point=vector_start_point,
+                           angle=angle + figure_angle,
+                           length=length,
+                           width=1)
+        v1.draw()
+        vector_start_point = v1.end_point
+    sd.line(start_point, vector_start_point, width=1)
+
+
+def draw_hexagon(start_point=sd.get_point(400, 400), angle=12, length=70):
+    vector_start_point = start_point
+    for figure_angle in range(0, 300, 60):
+        v1 = sd.get_vector(start_point=vector_start_point,
+                           angle=angle + figure_angle,
+                           length=length,
+                           width=1)
+        v1.draw()
+        vector_start_point = v1.end_point
+    sd.line(start_point, vector_start_point, width=1)
+
+
+draw_triangle()
+draw_square()
+draw_pentagon()
+draw_hexagon()
+
+# TODO: Делая ребра векторами, обнаруживался лаг, когда фигура была не доведена до конца.
+#  заключительное ребро ресуется с помощью line
 # Часть 1-бис.
 # Попробуйте прикинуть обьем работы, если нужно будет внести изменения в этот код.
 # Скажем, связывать точки не линиями, а дугами. Или двойными линиями. Или рисовать круги в угловых точках. Или...
