@@ -20,18 +20,18 @@ for num_of_circle in range(3):
 #     Функции и методы должны носить название-глаголы. А объекты - название-существительные. И bubble как раз больше
 #     похож на существительное.
 def draw_bubble(center_point, radius_step, color=sd.COLOR_RED):
-    # TODO: просто интересно, а почему "_fun"?
+    #  просто интересно, а почему "_fun"?
     #  Ответ: локальная переменная, fun - сокращенное от function. Про "_" Вадим только в следующем модуле рассказал
-    # TODO: Ответ. Ясно. Давайте уберем этот суффикс, пусть останется только "radius".
+    #  Ответ. Ясно. Давайте уберем этот суффикс, пусть останется только "radius".
     #  Почему?
     #  Потому что такой суффикс обычно имеют именно ф-ции. А еще ф-ции можно хранится так, как и переменные, в списках
     #  или словарях. В 4ом модуле у нас будет словарь из ф-ции, и мы будем вызывать их по очереди в цикле.
-    radius_fun = 30
+    _radius = 30
     #  если переменная не используется (как "num_of_circle_fun"), то ее можно заменить на "_", это подчеркивает
     #  что данная переменная не важна.
-    for radius_fun in range(radius_fun, radius_fun + 3 * radius_step, radius_step):  # сможете сделать так, чтобы цикл
+    for _radius in range(_radius, _radius + 3 * radius_step, radius_step):  # сможете сделать так, чтобы цикл
         # выдавал значения радиуса?
-        sd.circle(center_point, radius_fun, color, 1)
+        sd.circle(center_point, _radius, color, 1)
 
 
 draw_bubble(sd.get_point(500, 500), 7, sd.COLOR_CYAN)
@@ -43,9 +43,9 @@ for bubble_coord_x in range(100, 1001, 100):
 # Нарисовать три ряда по 10 пузырьков
 for bubble_coord_y in range(100, 301, 100):
     for bubble_coord_x in range(100, 1001, 100):
-        draw_bubble(sd.get_point(bubble_coord_x, bubble_coord_y), 4)        # TODO: пожалуйста
-                                                                            #  дайте им какой-нибудь цвет, чтобы я убедился,
-                                                                            #  что дефолтное значение color - это не просто лазейка))
+        draw_bubble(sd.get_point(bubble_coord_x, bubble_coord_y), 4, color=sd.COLOR_DARK_ORANGE)
+        #  пожалуйста дайте им какой-нибудь цвет, чтобы я убедился,
+        #  что дефолтное значение color - это не просто лазейка))
 
 # Нарисовать 100 пузырьков в произвольных местах экрана случайными цветами
 for _ in range(100):
