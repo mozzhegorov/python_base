@@ -16,6 +16,19 @@ x_offset = BRICK_WIDTH // 2
 sd.resolution = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
 for brick_bottom_y in range(0, SCREEN_HEIGHT + 1, BRICK_HEIGHT):
+    # TODO: Тернарный оператор условия.
+    #  Если if|else нужен только для того, чтобы прибавить/отнять какое-то число от исходного, то можно
+    #  использовать тернальный оператор if|else. Пример:
+    #               if some_condition:
+    #                   a = 100
+    #               else:                       			 # было
+    #                   a = 200.
+    #  .
+    #               a = 100 if some_condition else 200       # стало
+    #  .              ↑  ↑                          ↑
+    #  Аналогично и +=, *=, -=, /=:
+    #               a *= 4 if some_condition_2 else 2        # если ДА - умножим в 4 раза, если НЕТ - в 2 раза
+    #  .               ↑ ↑                          ↑
     if brick_bottom_y % (BRICK_HEIGHT * 2):
         offset = x_offset
     else:

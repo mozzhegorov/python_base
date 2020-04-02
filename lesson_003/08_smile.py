@@ -26,3 +26,5 @@ for _ in range(10):
     draw_smile(center_x, center_y, sd.random_color())
 
 sd.pause()
+
+# зачет!

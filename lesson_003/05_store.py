@@ -86,3 +86,5 @@ for name_of_goods, code_of_goods in goods.items():
         price += option['quantity'] * option['price']
 
     print(f'{name_of_goods} - {quantity} шт, стоимость {price} руб')
+
+# зачет!
