@@ -57,7 +57,7 @@ def draw_hexagon(start_point=sd.get_point(400, 400), angle=12, length=70, color=
         vector_start_point = v1
     sd.line(start_point, vector_start_point, width=1, color=color)
 
-
+# TODO: Здесь можно применить аналогичный трюк)
 dict_of_fugire = {
     '0':
         ['треугольник', draw_triangle],
@@ -75,8 +75,15 @@ for number, figure_info in dict_of_fugire.items():
 
 while True:
     global_color = input('Выберите желаемый цвет > ')
+
+    # TODO: добавить проверку "а число ли это". Помимо isdigit еще есть isdecimal. Если не ошибаюсь, отличие в том, что
+    #  isdecimal поддерживает еще и римские цифры. Точно помню, что isdecimal более мощный инструмент.
+
+    # TODO: жестко задавать числом размер списка/словаря в условии никогда не нужно.
     if 0 < int(global_color) < 4:
         start_point = sd.get_point(sd.resolution[0] // 2, sd.resolution[1] // 2)
+        # TODO: перед вызовом функции, ее лучше конечно сохранить в переменную с понятным именем. Иначе этот кусок
+        #  кода становится очень крутые, но малопонятным сходу.
         dict_of_fugire[global_color][1](start_point=start_point)
         break
     else:

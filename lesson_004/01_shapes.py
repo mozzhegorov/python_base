@@ -32,13 +32,14 @@ import simple_draw as sd
 def draw_triangle(start_point=sd.get_point(100, 100), angle=0, length=50):
     vector_start_point = start_point
     for figure_angle in range(0, 360, 120):
+        # TODO: только вместо "v1" дайте какое-нибудь нейтральное имя. Или уточните, когда появится v_2 или v_0)
         v1 = sd.get_vector(start_point=vector_start_point,
                            angle=angle + figure_angle,
                            length=length,
                            width=1)
         v1.draw()
         vector_start_point = v1.end_point
-    sd.line(start_point, vector_start_point, width=1)
+    sd.line(start_point, vector_start_point, width=1, color=sd.COLOR_WHITE)
 
 
 def draw_square(start_point=sd.get_point(400, 100), angle=100, length=100):
@@ -50,7 +51,7 @@ def draw_square(start_point=sd.get_point(400, 100), angle=100, length=100):
                            width=1)
         v1.draw()
         vector_start_point = v1.end_point
-    sd.line(start_point, vector_start_point, width=1)
+    sd.line(start_point, vector_start_point, width=1, color=sd.COLOR_WHITE)
 
 
 def draw_pentagon(start_point=sd.get_point(100, 400), angle=60, length=50):
@@ -62,7 +63,7 @@ def draw_pentagon(start_point=sd.get_point(100, 400), angle=60, length=50):
                            width=1)
         v1.draw()
         vector_start_point = v1.end_point
-    sd.line(start_point, vector_start_point, width=1)
+    sd.line(start_point, vector_start_point, width=1, color=sd.COLOR_WHITE)
 
 
 def draw_hexagon(start_point=sd.get_point(400, 400), angle=12, length=70):
@@ -74,16 +75,21 @@ def draw_hexagon(start_point=sd.get_point(400, 400), angle=12, length=70):
                            width=1)
         v1.draw()
         vector_start_point = v1.end_point
-    sd.line(start_point, vector_start_point, width=1)
+    sd.line(start_point, vector_start_point, width=1, color=sd.COLOR_WHITE)
 
 
-draw_triangle()
+draw_triangle(length=400)
 draw_square()
 draw_pentagon()
 draw_hexagon()
 
 # TODO: Делая ребра векторами, обнаруживался лаг, когда фигура была не доведена до конца.
 #  заключительное ребро ресуется с помощью line
+
+# TODO: Ответ. Мысль верная) Но есть баг. В каждой фигуре добавил "последнюю грань рисовать белым". У треугольника
+#  грань осталось желтой. Как думаете почему?
+#  .
+#  Пофиксите баг, можете приступать ко 2ой части.
 # Часть 1-бис.
 # Попробуйте прикинуть обьем работы, если нужно будет внести изменения в этот код.
 # Скажем, связывать точки не линиями, а дугами. Или двойными линиями. Или рисовать круги в угловых точках. Или...

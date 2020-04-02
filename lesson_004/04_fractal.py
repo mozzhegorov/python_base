@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import random
+# TODO: Библиотека выше не используется.
 
 import simple_draw as sd
 
@@ -33,8 +34,16 @@ sd.resolution = (600, 400)
 def draw_branches(start_point, angle=90, length=100):
     if length < 10:
         return
+    # TODO: Очень важно соблюдать стили имен переменных/констант/классов/модулей/исключений.
+    #  .
+    #  I. Переменные.
+    #  Имя должно отражаться суть того, что хранит переменная. Имена написаны исключительно строчными (маленькими) буквами.
+    #  Имя переменной может состоять максимум из 3-4 слов, в таком случае слова разделяются символом "_".
+    #   Правильно:      user_input, months_31_days, sorted_dict, point_2;
+    #   Не правильно:   userinput, userInput, UserInput, USERINPUT, Userinput, point2       (не верный стиль);
+    #                   my_var, my_lst, point_13, point_15, thing, peremennay               (не понятно что хранит).
     v2 = sd.vector(start_point, angle + 30, length)
-    v3 = sd.vector(start_point, angle - 30, length)
+    v3 = sd.vector(start_point, angle - 30, length)         # TODO: вот это видимо right_branch
     length *= .75
     angle += 30
     draw_branches(v2, angle=angle, length=length)
@@ -57,14 +66,20 @@ draw_branches(start_point=root_point, angle=90, length=100)
 def draw_random_branches(start_point, angle=90, length=100):
     if length < 10:
         return
-    random_angle = sd.random_number(60, 140) / 100 * 30
+    # TODO: Это видимо левая ветка.
+    random_angle = sd.random_number(60, 140) / 100 * 30     # TODO: а это видимо дельта для угла левой ветки. Может весь угол сразу считать?
     random_length = sd.random_number(80, 120) / 100
-    v2 = sd.vector(start_point, angle + random_angle, length * random_length)
+    v2 = sd.vector(start_point, angle + random_angle, length * random_length)       # TODO: чтобы тут не суммировать дельту и угол
+
     random_angle = sd.random_number(60, 140) / 100 * 30
     random_length = sd.random_number(80, 120) / 100
     v3 = sd.vector(start_point, angle - random_angle, length * random_length)
+
+    # TODO: рандомную длину перетерли! Для левой ветки передастся длина правой ветки.
     length *= sd.random_number(80, 120) / 100 * .75
+    # TODO: так может просто передадим "angle + random_angle", "angle - random_angle"? (лучше бы рандомный угол сразу считать, без дельты)
     angle += sd.random_number(60, 140) / 100 * 30
+
     draw_branches(v2, angle=angle, length=length)
     angle -= sd.random_number(60, 140) / 100 * 60
     draw_branches(v3, angle=angle, length=length)
@@ -76,3 +91,6 @@ root_point = sd.get_point(300, 30)
 draw_random_branches(start_point=root_point, angle=90, length=100)
 
 sd.pause()
+
+# TODO: корень деревьям еще нарисуйте пожалуйста. Алгоритм лучше будет смотреться, если вызов ф-ции рисует 1 палочку,
+#  и вызывает 2 версии себя ну и т.д.
