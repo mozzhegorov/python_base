@@ -73,13 +73,14 @@ print('Возможные фигуры')
 for number, figure_info in dict_of_figure.items():
     print(number, ': ', figure_info['shape_name'])
 
+
+
+
 while True:
     global_color = input('Какую фигуру рисуем > ')
 
-    # TODO: добавить проверку "а число ли это". Помимо isdigit еще есть isdecimal. Если не ошибаюсь, отличие в том, что
-    #  isdecimal поддерживает еще и римские цифры. Точно помню, что isdecimal более мощный инструмент.
-
-    if 0 < int(global_color) < len(dict_of_figure):
+    print(global_color.isdecimal())
+    if global_color.isdecimal() and 0 < int(global_color) < len(dict_of_figure):
         start_point = sd.get_point(sd.resolution[0] // 2, sd.resolution[1] // 2)
         #  перед вызовом функции, ее лучше конечно сохранить в переменную с понятным именем. Иначе этот кусок
         #  кода становится очень крутые, но малопонятным сходу.
