@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+# from curses.ascii import isdigit
+
 import simple_draw as sd
+
 
 # Добавить цвет в функции рисования геом. фигур. из упр lesson_004/01_shapes.py
 # (код функций скопировать сюда и изменить)
@@ -62,6 +65,7 @@ def draw_hexagon(start_point=sd.get_point(400, 400), angle=12, length=70, color=
         vector_start_point = v1
     sd.line(start_point, vector_start_point, width=1, color=color)
 
+
 # TODO: идея хорошая. Давайте улучшим: сейчас у нас словарь, который в качестве значений имеет списки. И чтобы достать
 #  значение 1го цвета на нужно выполнить:
 #           dict_of_colors['0'][1]    # трудно догадаться, что мы тут вытащили. Это сам цвет.
@@ -77,26 +81,26 @@ def draw_hexagon(start_point=sd.get_point(400, 400), angle=12, length=70, color=
 #      all_color[1]['color']            # сам 2ой цвет
 dict_of_colors = {
     '0':
-        ['red', sd.COLOR_RED],
+        {'color_name': 'red', 'color': sd.COLOR_RED},
     '1':
-        ['orange', sd.COLOR_ORANGE],
+        {'color_name': 'orange', 'color': sd.COLOR_ORANGE},
     '2':
-        ['yellow', sd.COLOR_YELLOW],
+        {'color_name': 'yellow', 'color': sd.COLOR_YELLOW},
     '3':
-        ['green', sd.COLOR_GREEN],
+        {'color_name': 'green', 'color': sd.COLOR_GREEN},
     '4':
-        ['cyan', sd.COLOR_CYAN],
+        {'color_name': 'cyan', 'color': sd.COLOR_CYAN},
     '5':
-        ['blue', sd.COLOR_BLUE],
+        {'color_name': 'blue', 'color': sd.COLOR_BLUE},
     '6':
-        ['purple', sd.COLOR_PURPLE],
+        {'color_name': 'purple', 'color': sd.COLOR_PURPLE},
 }
 
 print('Возможные цвета')
-for number, color_info in dict_of_colors.items():       # TODO: в задаче про радугу я упоминал enumerate().
-    print(f'{number}: {color_info[0]}')
+for number, color_info in dict_of_colors.items():  # в задаче про радугу я упоминал enumerate().
+    print(number, ': ', color_info['color_name'])
 
-# TODO: выше вы сможете использовать "enumerate()", если сделаете замену "словарь списков" на "список словарей". Пример:
+#  выше вы сможете использовать "enumerate()", если сделаете замену "словарь списков" на "список словарей". Пример:
 #       seasons = ['Spring', 'Summer', 'Fall', 'Winter']
 #       for season_id, season_name in enumerate(seasons):
 # 	        print(season_id, ' - ', season_name)
@@ -107,23 +111,22 @@ for number, color_info in dict_of_colors.items():       # TODO: в задаче 
 #       2 - 'Fall'
 #       3 - 'Winter'
 #   .
-#   Надо стараться не спользовать "for i in range(len(...))".
+#   TODO: Надо стараться не спользовать "for i in range(len(...))".
+#     Хорошо, я передалал, но я же не использовал range() =((
 
 
 while True:
     global_color = input('Выберите желаемый цвет > ')
-
-    # TODO: добавьте проверку, что нам точно передали число. Используйте isdigit()
-
-    if 0 < int(global_color) < 7:   # TODO: что будет если мы добавим цвет в список? придется менять. Используйте len()
+    # print(isdigit(global_color))
+    if 0 < int(global_color) < len(dict_of_colors):
         break
     else:
         print('Вы ввели некорретный номер!')
 
-draw_triangle(color=dict_of_colors[global_color][1])
-draw_square(color=dict_of_colors[global_color][1])
-draw_pentagon(color=dict_of_colors[global_color][1])
-draw_hexagon(color=dict_of_colors[global_color][1])
+draw_triangle(color=dict_of_colors[global_color]['color'])
+draw_square(color=dict_of_colors[global_color]['color'])
+draw_pentagon(color=dict_of_colors[global_color]['color'])
+draw_hexagon(color=dict_of_colors[global_color]['color'])
 
 sd.pause()
 
