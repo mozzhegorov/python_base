@@ -57,40 +57,39 @@ def draw_hexagon(start_point=sd.get_point(400, 400), angle=12, length=70, color=
         vector_start_point = v1
     sd.line(start_point, vector_start_point, width=1, color=color)
 
-# TODO: Здесь можно применить аналогичный трюк)
-dict_of_fugire = {
+
+dict_of_figure = {
     '0':
-        ['треугольник', draw_triangle],
+        {'shape_name': 'треугольник', 'draw': draw_triangle},
     '1':
-        ['квадрат', draw_square],
+        {'shape_name': 'квадрат', 'draw': draw_square},
     '2':
-        ['пятиугольник', draw_pentagon],
+        {'shape_name': 'пятиугольник', 'draw': draw_pentagon},
     '3':
-        ['шестиугольник', draw_hexagon],
+        {'shape_name': 'шестиугольник', 'draw': draw_hexagon},
 }
 
 print('Возможные фигуры')
-for number, figure_info in dict_of_fugire.items():
-    print(f'{number}: {figure_info[0]}')
+for number, figure_info in dict_of_figure.items():
+    print(number, ': ', figure_info['shape_name'])
 
 while True:
-    global_color = input('Выберите желаемый цвет > ')
+    global_color = input('Какую фигуру рисуем > ')
 
     # TODO: добавить проверку "а число ли это". Помимо isdigit еще есть isdecimal. Если не ошибаюсь, отличие в том, что
     #  isdecimal поддерживает еще и римские цифры. Точно помню, что isdecimal более мощный инструмент.
 
-    # TODO: жестко задавать числом размер списка/словаря в условии никогда не нужно.
-    if 0 < int(global_color) < 4:
+    if 0 < int(global_color) < len(dict_of_figure):
         start_point = sd.get_point(sd.resolution[0] // 2, sd.resolution[1] // 2)
-        # TODO: перед вызовом функции, ее лучше конечно сохранить в переменную с понятным именем. Иначе этот кусок
+        #  перед вызовом функции, ее лучше конечно сохранить в переменную с понятным именем. Иначе этот кусок
         #  кода становится очень крутые, но малопонятным сходу.
-        dict_of_fugire[global_color][1](start_point=start_point)
+        draw_function = dict_of_figure[global_color]['draw']
+        draw_function(start_point=start_point)
         break
     else:
         print('Вы ввели некорретный номер!')
 
 sd.pause()
-
 
 # TODO: Сделал пока так, но не понятно, фигура должна быть строго в центре экрана?
 #  из-за того. что указываем точку старта отрисовки, происход некоторый перекос.
