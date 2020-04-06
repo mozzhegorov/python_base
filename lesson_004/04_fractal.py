@@ -33,7 +33,7 @@ def draw_branches(start_point, angle=90, length=100):
     root_end = sd.vector(start_point, angle, length)
     if length < 10:
         return
-    # TODO: Очень важно соблюдать стили имен переменных/констант/классов/модулей/исключений.
+    #  Очень важно соблюдать стили имен переменных/констант/классов/модулей/исключений.
     #  .
     #  I. Переменные.
     #  Имя должно отражаться суть того, что хранит переменная. Имена написаны исключительно строчными (маленькими) буквами.
@@ -41,8 +41,7 @@ def draw_branches(start_point, angle=90, length=100):
     #   Правильно:      user_input, months_31_days, sorted_dict, point_2;
     #   Не правильно:   userinput, userInput, UserInput, USERINPUT, Userinput, point2       (не верный стиль);
     #                   my_var, my_lst, point_13, point_15, thing, peremennay               (не понятно что хранит).
-    # sd.vector(root_end, angle + 30, length)
-    # sd.vector(root_end, angle - 30, length)         # TODO: вот это видимо right_branch
+
     length *= .75
 
     angle += 30
@@ -91,5 +90,5 @@ draw_random_branches(start_point=root_point, angle=90, length=100)
 
 sd.pause()
 
-# TODO: корень деревьям еще нарисуйте пожалуйста. Алгоритм лучше будет смотреться, если вызов ф-ции рисует 1 палочку,
+#   корень деревьям еще нарисуйте пожалуйста. Алгоритм лучше будет смотреться, если вызов ф-ции рисует 1 палочку,
 #   и вызывает 2 версии себя ну и т.д.
