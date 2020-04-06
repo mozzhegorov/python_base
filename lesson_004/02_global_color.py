@@ -117,8 +117,7 @@ for number, color_info in dict_of_colors.items():  # в задаче про ра
 
 while True:
     global_color = input('Выберите желаемый цвет > ')
-    # print(isdigit(global_color))
-    if 0 < int(global_color) < len(dict_of_colors):
+    if global_color.isdecimal() and 0 < int(global_color) < len(dict_of_colors):
         break
     else:
         print('Вы ввели некорретный номер!')
