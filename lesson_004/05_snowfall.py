@@ -9,11 +9,12 @@ sd.resolution = (1200, 600)
 # - нарисовать падение этих N снежинок
 # - создать список рандомных длинн лучей снежинок (от 10 до 100) и пусть все снежинки будут разные
 
-N = 20
+N = 50
 
 snowflake_params = []
-
+# TODO: "i" можно заменить на "_", чтобы подчеркнуть, что переменная не используется. "_"
 for i in range(N):
+    # TODO: ееее, вот это круто: прям внтури генерируется словарь. Отлично, хороший программист сделал бы так же
     snowflake_params.append({'branch_len': sd.random_number(10, 100),  # Раздаем длины лучей,
                              'x': sd.random_number(0, sd.resolution[0]),  # а также положения по оси У
                              'y': sd.random_number(0, sd.resolution[1])})  # и положения по оси X
@@ -42,6 +43,7 @@ while not sd.user_want_exit():
     #               print(elem['numb'])
     #  .
     for param_of_snowflake in snowflake_params:
+        # TODO: комментарий немного надо поправить.
         # прячем снежинку
         snowflake_center = sd.get_point(param_of_snowflake['x'], param_of_snowflake['y'])
 
@@ -56,6 +58,10 @@ while not sd.user_want_exit():
             param_of_snowflake['x'] = sd.random_number(0, sd.resolution[0])
             param_of_snowflake['branch_len'] = sd.random_number(10, 100)
 
+        # TODO: цикл покраски снежинок в белый лучше вынести в отдельный цикл. Т.е. сначала все прячем+перемещаем.
+        #  Потому у нас пустой экран. Потом красим белым.
+        #  Зачем?
+        #  Обратите внимание, что при пересечении снежинок у нас сейчас возникает перетирание веточек.
         # красим белым
         snowflake_center = sd.get_point(param_of_snowflake['x'], param_of_snowflake['y'])
         sd.snowflake(snowflake_center, param_of_snowflake['branch_len'], color=sd.COLOR_WHITE)

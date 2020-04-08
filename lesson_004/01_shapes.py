@@ -83,6 +83,8 @@ def draw_hexagon(start_point=sd.get_point(400, 400), angle=12, length=70):
 # draw_pentagon()
 # draw_hexagon()
 
+# TODO: Баг с ребром убран. Имя дано "нейтральное" (в целом, было достаточно убрать у "v1" единичку - "v").
+
 
 #  .
 #  Пофиксите баг, можете приступать ко 2ой части.
@@ -109,7 +111,12 @@ def draw_hexagon(start_point=sd.get_point(400, 400), angle=12, length=70):
 # Поэтому среди программистов есть принцип D.R.Y. https://clck.ru/GEsA9
 # Будьте ленивыми, не используйте копи-пасту!
 
+# TODO: сюда должен войти еще и цикл и рассчет угла.
+#  по факту, draw_triangle будет делать только 2 вещи: определять число сторон и вызывать draw_figure.
 def draw_figure(figure_angle, start_point=sd.get_point(400, 400), angle=12, length=70):
+    # TODO: здесь должен быть рассчет угла по числу сторон
+
+    # TODO: здесь должен быть цикл
     vector_start_point = start_point
     rib = sd.get_vector(start_point=vector_start_point,
                         angle=angle + figure_angle,

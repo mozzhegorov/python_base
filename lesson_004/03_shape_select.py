@@ -57,7 +57,8 @@ def draw_hexagon(start_point=sd.get_point(400, 400), angle=12, length=70, color=
         vector_start_point = v1
     sd.line(start_point, vector_start_point, width=1, color=color)
 
-
+# TODO: в этой задаче пусть останется словарь словарей.
+#  Попробуем разные подходы)
 dict_of_figure = {
     '0':
         {'shape_name': 'треугольник', 'draw': draw_triangle},
@@ -79,7 +80,7 @@ for number, figure_info in dict_of_figure.items():
 while True:
     global_color = input('Какую фигуру рисуем > ')
 
-    print(global_color.isdecimal())
+    print(global_color.isdecimal())     # TODO: что-то полезное?)
     if global_color.isdecimal() and 0 < int(global_color) < len(dict_of_figure):
         start_point = sd.get_point(sd.resolution[0] // 2, sd.resolution[1] // 2)
         #  перед вызовом функции, ее лучше конечно сохранить в переменную с понятным именем. Иначе этот кусок
@@ -94,3 +95,7 @@ sd.pause()
 
 # TODO: Сделал пока так, но не понятно, фигура должна быть строго в центре экрана?
 #  из-за того. что указываем точку старта отрисовки, происход некоторый перекос.
+
+# TODO: Ответ. Можно оставить так, если не очень любите геометрию) Если интерес есть, можете посчитать центр фигуры
+#  (программно разумеется). Мне кажется самый простой способ: определить в какую окружность может быть списана фигура
+#  использовать радиус это фигуры в качестве отступов по осям X, Y

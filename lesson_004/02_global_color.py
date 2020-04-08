@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# TODO: смело удаляем?
 # from curses.ascii import isdigit
 
 import simple_draw as sd
@@ -96,6 +97,12 @@ dict_of_colors = {
         {'color_name': 'purple', 'color': sd.COLOR_PURPLE},
 }
 
+# TODO: знаете почему использовать список словарей удобнее, чем самому расставляь ключи в словаре словарей?
+#  Удалите пожалуйста зеленый цвет из списка, при этом номера цветов изменяться, но порядок не должен (т.е. взять и
+#  перенести цвет с конца в середину нельзя).
+#  .
+#  Сделайте это удаление.
+
 print('Возможные цвета')
 for number, color_info in dict_of_colors.items():  # в задаче про радугу я упоминал enumerate().
     print(number, ': ', color_info['color_name'])
@@ -113,10 +120,13 @@ for number, color_info in dict_of_colors.items():  # в задаче про ра
 #   .
 #   TODO: Надо стараться не спользовать "for i in range(len(...))".
 #     Хорошо, я передалал, но я же не использовал range() =((
+    # TODO: Ответ. Это предупреждение в общем плане (вы так не делали)
 
 
 while True:
     global_color = input('Выберите желаемый цвет > ')
+    # TODO: здесь мы все равно проверяем "а число ли это" и "лежит ли число в диапазоне".
+    #  Так зачем же нам словарь из словарей? Чем он удобнее списка словарей?
     if global_color.isdecimal() and 0 < int(global_color) < len(dict_of_colors):
         break
     else:
