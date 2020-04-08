@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-# TODO: смело удаляем?
-# from curses.ascii import isdigit
-
 import simple_draw as sd
 
 
@@ -19,55 +16,41 @@ import simple_draw as sd
 # Результат решения см lesson_004/results/exercise_02_global_color.jpg
 
 
+def draw_figure(num_ribs, start_point=sd.get_point(400, 400), angle=12, length=70, color=sd.COLOR_YELLOW):
+    step_angle = 360 / num_ribs
+    end_angle = 360 - step_angle
+
+    rib_end = start_point
+    for figure_angle in range(0, int(end_angle), int(step_angle)):
+        rib_end = sd.vector(start=rib_end,
+                            angle=angle + figure_angle,
+                            length=length,
+                            width=1,
+                            color=color)
+    return rib_end
+
+
 def draw_triangle(start_point=sd.get_point(100, 100), angle=0, length=50, color=sd.COLOR_YELLOW):
-    vector_start_point = start_point
-    for figure_angle in range(0, 360, 120):
-        v1 = sd.vector(start=vector_start_point,
-                       angle=angle + figure_angle,
-                       length=length,
-                       width=1,
-                       color=color)
-        vector_start_point = v1
-    sd.line(start_point, vector_start_point, width=1, color=color)
+    end_line_point = draw_figure(3, start_point, angle=angle, length=length, color=color)
+    sd.line(start_point, end_line_point, width=1, color=color)
 
 
-def draw_square(start_point=sd.get_point(400, 100), angle=100, length=100, color=sd.COLOR_YELLOW):
-    vector_start_point = start_point
-    for figure_angle in range(0, 270, 90):
-        v1 = sd.vector(start=vector_start_point,
-                       angle=angle + figure_angle,
-                       length=length,
-                       width=1,
-                       color=color)
-        vector_start_point = v1
-    sd.line(start_point, vector_start_point, width=1, color=color)
+def draw_square(start_point=sd.get_point(100, 400), angle=0, length=50, color=sd.COLOR_YELLOW):
+    end_line_point = draw_figure(4, start_point, angle=angle, length=length, color=color)
+    sd.line(start_point, end_line_point, width=1, color=color)
 
 
-def draw_pentagon(start_point=sd.get_point(100, 400), angle=60, length=50, color=sd.COLOR_YELLOW):
-    vector_start_point = start_point
-    for figure_angle in range(0, 288, 72):
-        v1 = sd.vector(start=vector_start_point,
-                       angle=angle + figure_angle,
-                       length=length,
-                       width=1,
-                       color=color)
-        vector_start_point = v1
-    sd.line(start_point, vector_start_point, width=1, color=color)
+def draw_pentagon(start_point=sd.get_point(400, 100), angle=0, length=50, color=sd.COLOR_YELLOW):
+    end_line_point = draw_figure(5, start_point, angle=angle, length=length, color=color)
+    sd.line(start_point, end_line_point, width=1, color=color)
 
 
-def draw_hexagon(start_point=sd.get_point(400, 400), angle=12, length=70, color=sd.COLOR_YELLOW):
-    vector_start_point = start_point
-    for figure_angle in range(0, 300, 60):
-        v1 = sd.vector(start=vector_start_point,
-                       angle=angle + figure_angle,
-                       length=length,
-                       width=1,
-                       color=color)
-        vector_start_point = v1
-    sd.line(start_point, vector_start_point, width=1, color=color)
+def draw_hexagon(start_point=sd.get_point(400, 400), angle=0, length=50, color=sd.COLOR_YELLOW):
+    end_line_point = draw_figure(6, start_point, angle=angle, length=length, color=color)
+    sd.line(start_point, end_line_point, width=1, color=color)
 
 
-# TODO: идея хорошая. Давайте улучшим: сейчас у нас словарь, который в качестве значений имеет списки. И чтобы достать
+#  идея хорошая. Давайте улучшим: сейчас у нас словарь, который в качестве значений имеет списки. И чтобы достать
 #  значение 1го цвета на нужно выполнить:
 #           dict_of_colors['0'][1]    # трудно догадаться, что мы тут вытащили. Это сам цвет.
 #           dict_of_colors['0'][0]    # а это имя цвета
@@ -80,31 +63,25 @@ def draw_hexagon(start_point=sd.get_point(400, 400), angle=12, length=70, color=
 #      all_color[0]['color_name']       # выдаст имя 1го цвета
 #      all_color[1]['color_name']       # имя 2го цвета
 #      all_color[1]['color']            # сам 2ой цвет
-dict_of_colors = {
-    '0':
+list_of_colors = [
         {'color_name': 'red', 'color': sd.COLOR_RED},
-    '1':
         {'color_name': 'orange', 'color': sd.COLOR_ORANGE},
-    '2':
         {'color_name': 'yellow', 'color': sd.COLOR_YELLOW},
-    '3':
         {'color_name': 'green', 'color': sd.COLOR_GREEN},
-    '4':
         {'color_name': 'cyan', 'color': sd.COLOR_CYAN},
-    '5':
         {'color_name': 'blue', 'color': sd.COLOR_BLUE},
-    '6':
         {'color_name': 'purple', 'color': sd.COLOR_PURPLE},
-}
+]
 
 # TODO: знаете почему использовать список словарей удобнее, чем самому расставляь ключи в словаре словарей?
 #  Удалите пожалуйста зеленый цвет из списка, при этом номера цветов изменяться, но порядок не должен (т.е. взять и
 #  перенести цвет с конца в середину нельзя).
 #  .
 #  Сделайте это удаление.
+#   Ответ: Я понял, тупанул ( не знаю зачем решил делать словарь словарей
 
 print('Возможные цвета')
-for number, color_info in dict_of_colors.items():  # в задаче про радугу я упоминал enumerate().
+for number, color_info in enumerate(list_of_colors):  # в задаче про радугу я упоминал enumerate().
     print(number, ': ', color_info['color_name'])
 
 #  выше вы сможете использовать "enumerate()", если сделаете замену "словарь списков" на "список словарей". Пример:
@@ -118,24 +95,26 @@ for number, color_info in dict_of_colors.items():  # в задаче про ра
 #       2 - 'Fall'
 #       3 - 'Winter'
 #   .
-#   TODO: Надо стараться не спользовать "for i in range(len(...))".
+#    Надо стараться не спользовать "for i in range(len(...))".
 #     Хорошо, я передалал, но я же не использовал range() =((
-    # TODO: Ответ. Это предупреждение в общем плане (вы так не делали)
+    # Ответ. Это предупреждение в общем плане (вы так не делали)
 
 
 while True:
     global_color = input('Выберите желаемый цвет > ')
-    # TODO: здесь мы все равно проверяем "а число ли это" и "лежит ли число в диапазоне".
+    #  здесь мы все равно проверяем "а число ли это" и "лежит ли число в диапазоне".
     #  Так зачем же нам словарь из словарей? Чем он удобнее списка словарей?
-    if global_color.isdecimal() and 0 < int(global_color) < len(dict_of_colors):
+
+    if global_color.isdecimal() and 0 < int(global_color) < len(list_of_colors):
+        global_color = int(global_color)
         break
     else:
         print('Вы ввели некорретный номер!')
 
-draw_triangle(color=dict_of_colors[global_color]['color'])
-draw_square(color=dict_of_colors[global_color]['color'])
-draw_pentagon(color=dict_of_colors[global_color]['color'])
-draw_hexagon(color=dict_of_colors[global_color]['color'])
+draw_triangle(color=list_of_colors[global_color]['color'])
+draw_square(color=list_of_colors[global_color]['color'])
+draw_pentagon(color=list_of_colors[global_color]['color'])
+draw_hexagon(color=list_of_colors[global_color]['color'])
 
 sd.pause()
 
