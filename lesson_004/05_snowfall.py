@@ -12,12 +12,13 @@ sd.resolution = (1200, 600)
 N = 50
 
 snowflake_params = []
-# TODO: "i" можно заменить на "_", чтобы подчеркнуть, что переменная не используется. "_"
-for i in range(N):
-    # TODO: ееее, вот это круто: прям внтури генерируется словарь. Отлично, хороший программист сделал бы так же
+# "i" можно заменить на "_", чтобы подчеркнуть, что переменная не используется. "_"
+for _ in range(N):
     snowflake_params.append({'branch_len': sd.random_number(10, 100),  # Раздаем длины лучей,
                              'x': sd.random_number(0, sd.resolution[0]),  # а также положения по оси У
-                             'y': sd.random_number(0, sd.resolution[1])})  # и положения по оси X
+                             'y': sd.random_number(0, sd.resolution[1]),
+                             'moving': 1})  # флаг активности
+    # ееее, вот это круто: прям внтури генерируется словарь. Отлично, хороший программист сделал бы так же
 
 # Пригодятся функции
 # sd.get_point()
@@ -43,27 +44,34 @@ while not sd.user_want_exit():
     #               print(elem['numb'])
     #  .
     for param_of_snowflake in snowflake_params:
-        # TODO: комментарий немного надо поправить.
-        # прячем снежинку
         snowflake_center = sd.get_point(param_of_snowflake['x'], param_of_snowflake['y'])
+        # передвигаем и прячем снежинку только если снежинка имеет флаг активности
+        if param_of_snowflake['moving'] == 1:
+            if param_of_snowflake['y'] > speed:
+                sd.snowflake(snowflake_center, param_of_snowflake['branch_len'], color=sd.background_color)
+                param_of_snowflake['y'] -= speed
+                param_of_snowflake['x'] += sd.random_number(-5, 5)
+            else:
+                # Добавляем еще одну снежинку на верх
+                snowflake_params.append({'branch_len': sd.random_number(10, 100),  # Раздаем длины лучей,
+                                         'x': sd.random_number(0, sd.resolution[0]),  # а также положения по оси У
+                                         'y': sd.resolution[1],
+                                         'moving': 1})  # флаг активности
+                # Убираем активность у старой снежинки
+                param_of_snowflake['moving'] = 0
 
-        # передвигаем
-
-        if param_of_snowflake['y'] > speed:
-            sd.snowflake(snowflake_center, param_of_snowflake['branch_len'], color=sd.background_color)
-            param_of_snowflake['y'] -= speed
-            param_of_snowflake['x'] += sd.random_number(-5, 5)
-        else:   # Добавляем снежинку с новыми параметрами
-            param_of_snowflake['y'] = sd.resolution[1]
-            param_of_snowflake['x'] = sd.random_number(0, sd.resolution[0])
-            param_of_snowflake['branch_len'] = sd.random_number(10, 100)
+    for param_of_snowflake in snowflake_params:
+        snowflake_center = sd.get_point(param_of_snowflake['x'], param_of_snowflake['y'])
 
         # TODO: цикл покраски снежинок в белый лучше вынести в отдельный цикл. Т.е. сначала все прячем+перемещаем.
         #  Потому у нас пустой экран. Потом красим белым.
         #  Зачем?
         #  Обратите внимание, что при пересечении снежинок у нас сейчас возникает перетирание веточек.
-        # красим белым
-        snowflake_center = sd.get_point(param_of_snowflake['x'], param_of_snowflake['y'])
+        #  Ответ: Не смог придумать ничего лучше как использовать перемнную активности для снежинки.
+        #  В данном варианте решения добавляем еще одно снежинку и с ней работаем. Раньше снежинок было фиксированное
+        #  количество, лишь менялись координаты, а старая (та что внизу) не перетиралась сама собой, но был баг.
+        #  Теперь бага нет
+        # красим белым весь список снежинок, даже не активные
         sd.snowflake(snowflake_center, param_of_snowflake['branch_len'], color=sd.COLOR_WHITE)
 
         #  добавить "упавшие снежинки возвращать назад"
