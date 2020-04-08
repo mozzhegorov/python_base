@@ -16,34 +16,25 @@ import district.soviet_street.house2.room2
 area = {
     'central_street': {
         'house1': {
-            'room1': [],
-            'room2': []
+            'room1': district.central_street.house1.room1.folks,
+            'room2': district.central_street.house1.room2.folks
         },
         'house2': {
-            'room1': [],
-            'room2': []
+            'room1': district.central_street.house2.room1.folks,
+            'room2': district.central_street.house2.room2.folks
         }
     },
     'soviet_street': {
         'house1': {
-            'room1': [],
-            'room2': []
+            'room1': district.soviet_street.house1.room1.folks,
+            'room2': district.soviet_street.house1.room2.folks
         },
         'house2': {
-            'room1': [],
-            'room2': []
+            'room1': district.soviet_street.house2.room1.folks,
+            'room2': district.soviet_street.house2.room2.folks
         }
     },
 }
-
-area['central_street']['house1']['room1'] = district.central_street.house1.room1.folks
-area['central_street']['house1']['room2'] = district.central_street.house1.room2.folks
-area['central_street']['house2']['room1'] = district.central_street.house2.room1.folks
-area['central_street']['house2']['room2'] = district.central_street.house2.room2.folks
-area['soviet_street']['house1']['room1'] = district.soviet_street.house1.room1.folks
-area['soviet_street']['house1']['room2'] = district.soviet_street.house1.room2.folks
-area['soviet_street']['house2']['room1'] = district.soviet_street.house2.room1.folks
-area['soviet_street']['house2']['room2'] = district.soviet_street.house2.room2.folks
 
 all_folks = []
 
