@@ -127,13 +127,13 @@ def draw_figure(num_ribs, start_point=sd.get_point(400, 400), angle=12, length=7
 
 
 def draw_triangle_v2(start_point=sd.get_point(100, 100), angle=0, length=50):
-    vector_start_point = draw_figure(3, start_point)
-    sd.line(start_point, vector_start_point, width=1, color=sd.COLOR_YELLOW)
+    end_line_point = draw_figure(3, start_point, angle=0, length=50)
+    sd.line(start_point, end_line_point, width=1, color=sd.COLOR_YELLOW)
 
 
 def draw_square_v2(start_point=sd.get_point(100, 100), angle=0, length=50):
-    vector_start_point = draw_figure(4, start_point)
-    sd.line(start_point, vector_start_point, width=1, color=sd.COLOR_YELLOW)
+    end_line_point = draw_figure(4, start_point, angle=angle, length=length)
+    sd.line(start_point, end_line_point, width=1, color=sd.COLOR_YELLOW)
 
 
 draw_triangle_v2()
