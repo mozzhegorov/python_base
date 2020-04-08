@@ -113,7 +113,7 @@ def draw_hexagon(start_point=sd.get_point(400, 400), angle=12, length=70):
 
 # TODO: сюда должен войти еще и цикл и рассчет угла.
 #  по факту, draw_triangle будет делать только 2 вещи: определять число сторон и вызывать draw_figure.
-def draw_figure(num_ribs, start_point=sd.get_point(400, 400), angle=12, length=70):
+def draw_figure(num_ribs, start_point=sd.get_point(400, 400), angle=12, length=70, color=sd.COLOR_YELLOW):
     step_angle = 360 / num_ribs
     end_angle = 360 - step_angle
 
@@ -122,7 +122,8 @@ def draw_figure(num_ribs, start_point=sd.get_point(400, 400), angle=12, length=7
         rib_end = sd.vector(start=rib_end,
                             angle=angle + figure_angle,
                             length=length,
-                            width=1)
+                            width=1,
+                            color=color)
     return rib_end
 
 
