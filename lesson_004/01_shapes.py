@@ -83,7 +83,7 @@ def draw_hexagon(start_point=sd.get_point(400, 400), angle=12, length=70):
 # draw_pentagon()
 # draw_hexagon()
 
-# TODO: Баг с ребром убран. Имя дано "нейтральное" (в целом, было достаточно убрать у "v1" единичку - "v").
+#  Баг с ребром убран. Имя дано "нейтральное" (в целом, было достаточно убрать у "v1" единичку - "v").
 
 
 #  .
@@ -113,26 +113,30 @@ def draw_hexagon(start_point=sd.get_point(400, 400), angle=12, length=70):
 
 # TODO: сюда должен войти еще и цикл и рассчет угла.
 #  по факту, draw_triangle будет делать только 2 вещи: определять число сторон и вызывать draw_figure.
-def draw_figure(figure_angle, start_point=sd.get_point(400, 400), angle=12, length=70):
-    # TODO: здесь должен быть рассчет угла по числу сторон
+def draw_figure(num_ribs, start_point=sd.get_point(400, 400), angle=12, length=70):
+    step_angle = 360 / num_ribs
+    end_angle = 360 - step_angle
 
-    # TODO: здесь должен быть цикл
-    vector_start_point = start_point
-    rib = sd.get_vector(start_point=vector_start_point,
-                        angle=angle + figure_angle,
-                        length=length,
-                        width=1)
-    rib.draw()
-    return rib.end_point
+    rib_end = start_point
+    for figure_angle in range(0, int(end_angle), int(step_angle)):
+        rib_end = sd.vector(start=rib_end,
+                            angle=angle + figure_angle,
+                            length=length,
+                            width=1)
+    return rib_end
 
 
 def draw_triangle_v2(start_point=sd.get_point(100, 100), angle=0, length=50):
-    vector_start_point = start_point
-    for figure_angle in range(0, 240, 120):
-        vector_start_point = draw_figure(figure_angle, vector_start_point)
+    vector_start_point = draw_figure(3, start_point)
+    sd.line(start_point, vector_start_point, width=1, color=sd.COLOR_YELLOW)
+
+
+def draw_square_v2(start_point=sd.get_point(100, 100), angle=0, length=50):
+    vector_start_point = draw_figure(4, start_point)
     sd.line(start_point, vector_start_point, width=1, color=sd.COLOR_YELLOW)
 
 
 draw_triangle_v2()
+draw_square_v2()
 
 sd.pause()
