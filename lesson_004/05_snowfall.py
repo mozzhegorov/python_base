@@ -12,17 +12,18 @@ sd.resolution = (1200, 600)
 N = 50
 
 
-def snow_append(branch_min=10, branch_max=100, y_min=0, y_max=sd.resolution[1], x_min=0, x_max=sd.resolution[0]):
-    snowflake_params.append({'branch_len': sd.random_number(branch_min, branch_max),  # Раздаем длины лучей,
-                             'x': sd.random_number(x_min, x_max),  # а также положения по оси У
-                             'y': sd.random_number(y_min, y_max),
-                             'moving': 1})  # флаг активности
+def snow_append(_snowflake_params, branch_min=10, branch_max=100, y_min=0, y_max=sd.resolution[1], x_min=0,
+                x_max=sd.resolution[0]):
+    _snowflake_params.append({'branch_len': sd.random_number(branch_min, branch_max),  # Раздаем длины лучей,
+                              'x': sd.random_number(x_min, x_max),  # а также положения по оси У
+                              'y': sd.random_number(y_min, y_max),
+                              'moving': 1})  # флаг активности
 
 
 snowflake_params = []
 # "i" можно заменить на "_", чтобы подчеркнуть, что переменная не используется. "_"
 for _ in range(N):
-    snow_append()
+    snow_append(_snowflake_params=snowflake_params)
     # ееее, вот это круто: прям внтури генерируется словарь. Отлично, хороший программист сделал бы так же
 
 # Пригодятся функции
@@ -60,7 +61,7 @@ while not sd.user_want_exit():
                 # Добавляем еще одну снежинку на верх
                 #  сделайте ф-цию. "вернуть снежинку", которая можно будет вызывать здесь и на 17ой строке,
                 #  чтобы у нас не было дублирования кода.
-                snow_append(y_min=sd.resolution[1])
+                snow_append(_snowflake_params=snowflake_params, y_min=sd.resolution[1])
                 # Убираем активность у старой снежинки
                 param_of_snowflake['moving'] = 0
 
