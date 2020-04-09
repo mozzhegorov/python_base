@@ -114,29 +114,35 @@ def draw_hexagon(start_point=sd.get_point(400, 400), angle=12, length=70):
 # TODO: сюда должен войти еще и цикл и рассчет угла.
 #  по факту, draw_triangle будет делать только 2 вещи: определять число сторон и вызывать draw_figure.
 def draw_figure(num_ribs, start_point=sd.get_point(400, 400), angle=12, length=70, color=sd.COLOR_YELLOW):
-    step_angle = 360 / num_ribs
-    end_angle = 360 - step_angle
+    step_angle = 360 / num_ribs     # TODO: предлагаю выполнить round() здесь
+    end_angle = 360 - step_angle    #  и здесь. Не будем приводить к int() внутри range()
 
     rib_end = start_point
     for figure_angle in range(0, int(end_angle), int(step_angle)):
         rib_end = sd.vector(start=rib_end,
-                            angle=angle + figure_angle,
+                            angle=angle + figure_angle,     # TODO: отличный выход!
                             length=length,
                             width=1,
                             color=color)
+    # TODO: ... (см.ниже)
     return rib_end
 
 
+# TODO: обратите внимание, если PyCharm выделяет темно-серым переменную/параметр - значит она не использована.
+#  Тут у нас 2 неиспользованных параметра.
 def draw_triangle_v2(start_point=sd.get_point(100, 100), angle=0, length=50):
     end_line_point = draw_figure(3, start_point, angle=0, length=50)
-    sd.line(start_point, end_line_point, width=1, color=sd.COLOR_YELLOW)
+    sd.line(start_point, end_line_point, width=1, color=sd.COLOR_YELLOW)        # TODO: это эквивалетно
 
 
 def draw_square_v2(start_point=sd.get_point(100, 100), angle=0, length=50):
     end_line_point = draw_figure(4, start_point, angle=angle, length=length)
-    sd.line(start_point, end_line_point, width=1, color=sd.COLOR_YELLOW)
+    sd.line(start_point, end_line_point, width=1, color=sd.COLOR_YELLOW)        # TODO: ... этому. Значит что?
+                                                                                #  Значит вызов этой ф-ции тоже кусочек общей части.
 
 
+# TODO: почти закончили 2ую часть. Можно добавить 2 оставшиеся фигуры.
+#  Давайте для ф-ций из 1ой части сделаем суфикс _v1, а для ф-ций из 2ой части, наоборот - уберем.
 draw_triangle_v2()
 draw_square_v2()
 

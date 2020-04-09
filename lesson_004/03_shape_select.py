@@ -59,6 +59,7 @@ for number, figure_info in enumerate(list_of_figure):
     print(number, ': ', figure_info['shape_name'])
 
 while True:
+    # TODO: global_color - копипаст это зло!
     global_color = input('Какую фигуру рисуем > ')
 
     if global_color.isdecimal() and 0 < int(global_color) < len(list_of_figure):
@@ -82,3 +83,5 @@ sd.pause()
 #  использовать радиус это фигуры в качестве отступов по осям X, Y
 #  Ответ: Вспомнил радиусы окружностей, всплакнув :( для каждой фигуры расчет свой, в пятиугольнике участвует синус.
 #  Оставлю так.
+
+# TODO: есть баг, нельзя выбрать Треугольник.
