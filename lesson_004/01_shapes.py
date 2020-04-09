@@ -29,7 +29,7 @@ import simple_draw as sd
 # Результат решения см lesson_004/results/exercise_01_shapes.jpg
 
 
-def draw_triangle(start_point=sd.get_point(100, 100), angle=0, length=50):
+def draw_triangle_v1(start_point=sd.get_point(100, 100), angle=0, length=50):
     vector_start_point = start_point
     for figure_angle in range(0, 240, 120):
         rib = sd.get_vector(start_point=vector_start_point,
@@ -42,7 +42,7 @@ def draw_triangle(start_point=sd.get_point(100, 100), angle=0, length=50):
     sd.line(start_point, vector_start_point, width=1, color=sd.COLOR_YELLOW)
 
 
-def draw_square(start_point=sd.get_point(400, 100), angle=100, length=100):
+def draw_square_v1(start_point=sd.get_point(400, 100), angle=100, length=100):
     vector_start_point = start_point
     for figure_angle in range(0, 270, 90):
         rib = sd.get_vector(start_point=vector_start_point,
@@ -54,7 +54,7 @@ def draw_square(start_point=sd.get_point(400, 100), angle=100, length=100):
     sd.line(start_point, vector_start_point, width=1, color=sd.COLOR_YELLOW)
 
 
-def draw_pentagon(start_point=sd.get_point(100, 400), angle=60, length=50):
+def draw_pentagon_v1(start_point=sd.get_point(100, 400), angle=60, length=50):
     vector_start_point = start_point
     for figure_angle in range(0, 288, 72):
         rib = sd.get_vector(start_point=vector_start_point,
@@ -66,7 +66,7 @@ def draw_pentagon(start_point=sd.get_point(100, 400), angle=60, length=50):
     sd.line(start_point, vector_start_point, width=1, color=sd.COLOR_YELLOW)
 
 
-def draw_hexagon(start_point=sd.get_point(400, 400), angle=12, length=70):
+def draw_hexagon_v1(start_point=sd.get_point(400, 400), angle=12, length=70):
     vector_start_point = start_point
     for figure_angle in range(0, 300, 60):
         rib = sd.get_vector(start_point=vector_start_point,
@@ -111,39 +111,46 @@ def draw_hexagon(start_point=sd.get_point(400, 400), angle=12, length=70):
 # Поэтому среди программистов есть принцип D.R.Y. https://clck.ru/GEsA9
 # Будьте ленивыми, не используйте копи-пасту!
 
-# TODO: сюда должен войти еще и цикл и рассчет угла.
+#  сюда должен войти еще и цикл и рассчет угла.
 #  по факту, draw_triangle будет делать только 2 вещи: определять число сторон и вызывать draw_figure.
 def draw_figure(num_ribs, start_point=sd.get_point(400, 400), angle=12, length=70, color=sd.COLOR_YELLOW):
-    step_angle = 360 / num_ribs     # TODO: предлагаю выполнить round() здесь
-    end_angle = 360 - step_angle    #  и здесь. Не будем приводить к int() внутри range()
+    step_angle = int(360 / num_ribs)  # предлагаю выполнить round() здесь
+    end_angle = int(360 - step_angle)  # и здесь. Не будем приводить к int() внутри range()
 
     rib_end = start_point
-    for figure_angle in range(0, int(end_angle), int(step_angle)):
+    for figure_angle in range(0, end_angle, step_angle):
         rib_end = sd.vector(start=rib_end,
-                            angle=angle + figure_angle,     # TODO: отличный выход!
+                            angle=angle + figure_angle,  # отличный выход!
                             length=length,
                             width=1,
                             color=color)
-    # TODO: ... (см.ниже)
-    return rib_end
+    sd.line(start_point, rib_end, width=1, color=sd.COLOR_YELLOW)
 
 
-# TODO: обратите внимание, если PyCharm выделяет темно-серым переменную/параметр - значит она не использована.
-#  Тут у нас 2 неиспользованных параметра.
-def draw_triangle_v2(start_point=sd.get_point(100, 100), angle=0, length=50):
-    end_line_point = draw_figure(3, start_point, angle=0, length=50)
-    sd.line(start_point, end_line_point, width=1, color=sd.COLOR_YELLOW)        # TODO: это эквивалетно
+def draw_triangle(start_point=sd.get_point(100, 100), angle=0, length=50):
+    draw_figure(3, start_point, angle=angle, length=length)
+    # sd.line(start_point, end_line_point, width=1, color=sd.COLOR_YELLOW)  #  это эквивалетно
 
 
-def draw_square_v2(start_point=sd.get_point(100, 100), angle=0, length=50):
-    end_line_point = draw_figure(4, start_point, angle=angle, length=length)
-    sd.line(start_point, end_line_point, width=1, color=sd.COLOR_YELLOW)        # TODO: ... этому. Значит что?
-                                                                                #  Значит вызов этой ф-ции тоже кусочек общей части.
+def draw_square(start_point=sd.get_point(100, 400), angle=0, length=50):
+    draw_figure(4, start_point, angle=angle, length=length)
+    # sd.line(start_point, end_line_point, width=1, color=sd.COLOR_YELLOW)  #  ... этому. Значит что?
+    #  Значит вызов этой ф-ции тоже кусочек общей части.
 
 
-# TODO: почти закончили 2ую часть. Можно добавить 2 оставшиеся фигуры.
+def draw_pentagon(start_point=sd.get_point(400, 100), angle=0, length=50):
+    draw_figure(5, start_point, angle=angle, length=length)
+
+
+def draw_hexagon(start_point=sd.get_point(400, 400), angle=0, length=50):
+    draw_figure(6, start_point, angle=angle, length=length)
+
+
+#  почти закончили 2ую часть. Можно добавить 2 оставшиеся фигуры.
 #  Давайте для ф-ций из 1ой части сделаем суфикс _v1, а для ф-ций из 2ой части, наоборот - уберем.
-draw_triangle_v2()
-draw_square_v2()
+draw_triangle()
+draw_square()
+draw_pentagon()
+draw_hexagon()
 
 sd.pause()
