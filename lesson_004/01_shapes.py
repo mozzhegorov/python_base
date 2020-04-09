@@ -124,26 +124,26 @@ def draw_figure(num_ribs, start_point=sd.get_point(400, 400), angle=12, length=7
                             length=length,
                             width=1,
                             color=color)
-    sd.line(start_point, rib_end, width=1, color=sd.COLOR_YELLOW)
+    sd.line(start_point, rib_end, width=1, color=color)
 
 
-def draw_triangle(start_point=sd.get_point(100, 100), angle=0, length=50):
-    draw_figure(3, start_point, angle=angle, length=length)
+def draw_triangle(start_point=sd.get_point(100, 100), angle=0, length=50, color=sd.COLOR_YELLOW):
+    draw_figure(3, start_point, angle=angle, length=length, color=color)
     # sd.line(start_point, end_line_point, width=1, color=sd.COLOR_YELLOW)  #  это эквивалетно
 
 
-def draw_square(start_point=sd.get_point(100, 400), angle=0, length=50):
-    draw_figure(4, start_point, angle=angle, length=length)
+def draw_square(start_point=sd.get_point(100, 400), angle=0, length=50, color=sd.COLOR_YELLOW):
+    draw_figure(4, start_point, angle=angle, length=length, color=color)
     # sd.line(start_point, end_line_point, width=1, color=sd.COLOR_YELLOW)  #  ... этому. Значит что?
     #  Значит вызов этой ф-ции тоже кусочек общей части.
 
 
-def draw_pentagon(start_point=sd.get_point(400, 100), angle=0, length=50):
-    draw_figure(5, start_point, angle=angle, length=length)
+def draw_pentagon(start_point=sd.get_point(400, 100), angle=0, length=50, color=sd.COLOR_YELLOW):
+    draw_figure(5, start_point, angle=angle, length=length, color=color)
 
 
-def draw_hexagon(start_point=sd.get_point(400, 400), angle=0, length=50):
-    draw_figure(6, start_point, angle=angle, length=length)
+def draw_hexagon(start_point=sd.get_point(400, 400), angle=0, length=50, color=sd.COLOR_YELLOW):
+    draw_figure(6, start_point, angle=angle, length=length, color=color)
 
 
 #  почти закончили 2ую часть. Можно добавить 2 оставшиеся фигуры.
