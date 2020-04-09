@@ -1,15 +1,19 @@
 import simple_draw as sd
 
 
-def draw_rainbow(x, y, radius):
-    rainbow_colors = (sd.COLOR_RED, sd.COLOR_ORANGE, sd.COLOR_YELLOW, sd.COLOR_GREEN,
-                      sd.COLOR_CYAN, sd.COLOR_BLUE, sd.COLOR_PURPLE)
+def draw_rainbow(x, y, radius, color_offset):
+    rainbow_colors = [sd.COLOR_RED, sd.COLOR_ORANGE, sd.COLOR_YELLOW, sd.COLOR_GREEN,
+                      sd.COLOR_CYAN, sd.COLOR_BLUE, sd.COLOR_PURPLE]
+
+    for _ in range(color_offset):
+        rainbow_colors.append(rainbow_colors[0])
+        rainbow_colors.pop(0)
 
     for color in rainbow_colors:
         radius += 4
         sd.circle(sd.get_point(x, y), radius, color, 4)
 
-# TODO: Пусть функция отрисовки радуги рисует радугу начиная с указанного в параметре номера цвета.
+#  Пусть функция отрисовки радуги рисует радугу начиная с указанного в параметре номера цвета.
 #  Мы добавим параметр "color_offset", который будет определяеть, начиная с какого цвета рисовать радугу.
 #  Допустим color_offset=0, тогда радуга: красный, оранжевый, желает, ..., феолетовый;
 #           color_offset=1, тогда радуга: оранжевый, желтый,..., феолетовый, красный (циклический сдвиг на 1 цвет);
