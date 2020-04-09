@@ -5,40 +5,40 @@
 # подсказка: для вывода элементов списка через запятую можно использовать функцию строки .join()
 # https://docs.python.org/3/library/stdtypes.html#str.join
 
-# TODO: дайте псевдонимы для каждого модуля, слишком длинный путь, чтобы просто так использовать.
-import district.central_street.house1.room1 as room_1       # TODO: пример
-import district.central_street.house1.room2
-import district.central_street.house2.room1
-import district.central_street.house2.room2
-import district.soviet_street.house1.room1
-import district.soviet_street.house1.room2
-import district.soviet_street.house2.room1
-import district.soviet_street.house2.room2
+# дайте псевдонимы для каждого модуля, слишком длинный путь, чтобы просто так использовать.
+import district.central_street.house1.room1 as central_h1_r1       # пример
+import district.central_street.house1.room2 as central_h1_r2
+import district.central_street.house2.room1 as central_h2_r1
+import district.central_street.house2.room2 as central_h2_r2
+import district.soviet_street.house1.room1 as soviet_h1_r1
+import district.soviet_street.house1.room2 as soviet_h1_r2
+import district.soviet_street.house2.room1 as soviet_h2_r1
+import district.soviet_street.house2.room2 as soviet_h2_r2
 
 area = {
     'central_street': {
         'house1': {
-            'room1': district.central_street.house1.room1.folks,
-            'room2': district.central_street.house1.room2.folks
+            'room1': central_h1_r1.folks,
+            'room2': central_h1_r2.folks
         },
         'house2': {
-            'room1': district.central_street.house2.room1.folks,
-            'room2': district.central_street.house2.room2.folks
+            'room1': central_h2_r1.folks,
+            'room2': central_h2_r2.folks
         }
     },
     'soviet_street': {
         'house1': {
-            'room1': district.soviet_street.house1.room1.folks,
-            'room2': district.soviet_street.house1.room2.folks
+            'room1': soviet_h1_r1.folks,
+            'room2': soviet_h1_r2.folks
         },
         'house2': {
-            'room1': district.soviet_street.house2.room1.folks,
-            'room2': district.soviet_street.house2.room2.folks
+            'room1': soviet_h2_r1.folks,
+            'room2': soviet_h2_r2.folks
         }
     },
 }
 
-# TODO: было бы достаточно врунчую сложить все списки, не создавая цикл и словарь.
+# было бы достаточно врунчую сложить все списки, не создавая цикл и словарь.
 all_folks = []
 
 for street_name, street in area.items():
@@ -46,5 +46,5 @@ for street_name, street in area.items():
         for room_name, room in house.items():
             all_folks.extend(area[street_name][house_name][room_name])
 
-# TODO: на 4ой строке указан формат вывода.
-print(', '.join(all_folks))
+# на 4ой строке указан формат вывода.
+print('На районе живут', ', '.join(all_folks))
