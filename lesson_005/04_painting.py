@@ -25,31 +25,31 @@ from epic_painting.snow import snowfall
 from epic_painting.snow import snowflake_dict_gen
 from epic_painting.house import build_wall
 from epic_painting.house import build_roof
+from epic_painting.house import build_window
 from epic_painting.wood import draw_random_branches
 
 sd.resolution = (1000, 400)
 
 # Растим деревья
-forest = []
-for _ in range(3):
-    forest.append({
-        'angle': sd.random_number(80, 100),
-        'length': sd.random_number(25, 55),
-        'x': sd.random_number(795, 900),
-        'y': sd.random_number(15, 20)
-    })
-# TODO: после отрисовки, деревья не перерисовываются. Может мы тогда сделаем 1 обезличенных цикл, который нарисует N
+#  после отрисовки, деревья не перерисовываются. Может мы тогда сделаем 1 обезличенных цикл, который нарисует N
 #  деревьев? Тогда нам не придется хранить список всех деревьев в течении всего времени работы
-for _, wood in enumerate(forest):
-    print(wood)     # TODO: видимо остался отладочный вывод?
-    root_point = sd.get_point(wood['x'], wood['y'])     # TODO: можно будет заменить на sd.random_point()
+wood = {
+    'angle': 0,
+    'length': 0,
+    'x': 0,
+    'y': 0
+}
+for _ in range(3):
+    wood['x'] = sd.random_number(795, 900)
+    wood['y'] = sd.random_number(15, 20)
+    wood['length'] = sd.random_number(25, 55)
+    wood['angle'] = sd.random_number(80, 100)
+    root_point = sd.get_point(wood['x'], wood['y'])
     draw_random_branches(start_point=root_point, angle=wood['angle'], length=wood['length'])
+    sd.random_point()
 
 # Травка
 sd.rectangle(sd.get_point(0, 0), sd.get_point(sd.resolution[0], 20), sd.COLOR_DARK_GREEN)
-
-# Радуга
-draw_rainbow(320, -170, 700)
 
 # Человечек
 draw_smile(450, 150, sd.COLOR_YELLOW)
@@ -62,47 +62,49 @@ sd.line(sd.get_point(450, 80), sd.get_point(480, 90))
 # Строим стену и крышку
 sd.rectangle(sd.get_point(600, 20), sd.get_point(770, 110), color=sd.COLOR_RED)
 build_wall(left_bottom=(600, 20), right_top=(750, 100), color=sd.COLOR_DARK_RED)
-# TODO: Сделайте так, чтобы у нас вызывалась ф-ция "нарисовать крышу" 1 раз и он рисовала крышу.
+#  Сделайте так, чтобы у нас вызывалась ф-ция "нарисовать крышу" 1 раз и он рисовала крышу.
 #  .
 #  p.s. чтобы нарисовать закрашенный треугольник укажите width=0
-for roof_length in range(230):
-    build_roof(sd.get_point(570, 110), length=roof_length, angle=0, width=2)
+build_roof(sd.get_point(570, 110), length=230)
 
-# TODO: добавить метод "нарисовать окно"
+# Рисуем окно
+build_window((650, 50), (720, 80))
 
 # Делаем список стартовых снежинок
-snowflake_dict = snowflake_dict_gen(left_bottom=(0, 20), right_top=(300, 100))
+FLAKES_NUMBER = 50
+snowflake_dict = snowflake_dict_gen(N=FLAKES_NUMBER, left_bottom=(0, 20), right_top=(300, 100))
 
 SUN_RADIUS_MAX = 50  # Радиус солнышка
-animate_angle = 0  # Угол для анимации
+animate = 0  # Угол для анимации
 
 while not sd.user_want_exit():
 
-    for angle in range(0, 361, 60):
-        angle += animate_angle
-        sd.vector(start=sd.get_point(100, 300), angle=angle, width=8, length=80, color=sd.background_color)
-        sd.circle(sd.get_point(100, 300), radius=50, width=50)
-        # TODO: Есть лаг с миганием солнышка. Пока не нашел как устранить( Наименьшие баги когда добавил отрисовку
-        #  солнышка в цикл
-        #  Также пока не реализовал мигание смайлика, переливание радуги. Сделаю во второй иттерации :D
+    sd.start_drawing()
 
-    # TODO: а это что?)
-    animate_angle += 10
+    # Рсиуем кружок цветом фона и потом рисуем солнышко :)
+    sd.circle(sd.get_point(100, 300), radius=85, width=50, color=sd.background_color)
+    sd.circle(sd.get_point(100, 300), radius=50, width=50)
+
+    #  а это что?)
+    #  Для анимации солнышка :)
+    # Крутим лучиками
+    animate += 1
     for angle in range(0, 361, 60):
-        angle += animate_angle
+        angle += animate * 5
         sd.vector(start=sd.get_point(100, 300), angle=angle, width=8, length=80)
 
-    # TODO: вызов ниже, нужно вызывать в самом начале итерации
-    sd.start_drawing()
-    snowfall(snowflake_params=snowflake_dict, left_bottom=(0, 20), right_top=(300, 100))
+    # Радуга
+    draw_rainbow(320, -170, 700, animate)
 
-    # TODO: вот это верно, завершение рисования вызываем в самом конце вместе со sleep)
+    # Работаем со снегом
+    snowfall(N_init=FLAKES_NUMBER, snowflake_params=snowflake_dict, left_bottom=(0, 20), right_top=(300, 100))
+
     sd.finish_drawing()
     sd.sleep(0.1)
 
 sd.pause()
 
-# TODO: если смайлик вышел на улицу - пусть. Но окно в доме долнжо остаться
+#  если смайлик вышел на улицу - пусть. Но окно в доме долнжо остаться
 
 # Усложненное задание (делать по желанию)
 # Анимировать картину.
