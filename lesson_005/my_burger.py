@@ -24,3 +24,11 @@ def adding_mayo():
 
 def adding_cheese():
     adding('сыра')
+
+
+def adding_catchup():
+    adding('кетчупа')
+
+
+def adding_jalapenos():
+    adding('халапенью')
