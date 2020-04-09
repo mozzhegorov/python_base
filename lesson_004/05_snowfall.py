@@ -11,13 +11,18 @@ sd.resolution = (1200, 600)
 
 N = 50
 
+
+def snow_append(branch_min=10, branch_max=100, y_min=0, y_max=sd.resolution[1], x_min=0, x_max=sd.resolution[0]):
+    snowflake_params.append({'branch_len': sd.random_number(branch_min, branch_max),  # Раздаем длины лучей,
+                             'x': sd.random_number(x_min, x_max),  # а также положения по оси У
+                             'y': sd.random_number(y_min, y_max),
+                             'moving': 1})  # флаг активности
+
+
 snowflake_params = []
 # "i" можно заменить на "_", чтобы подчеркнуть, что переменная не используется. "_"
 for _ in range(N):
-    snowflake_params.append({'branch_len': sd.random_number(10, 100),  # Раздаем длины лучей,
-                             'x': sd.random_number(0, sd.resolution[0]),  # а также положения по оси У
-                             'y': sd.random_number(0, sd.resolution[1]),
-                             'moving': 1})  # флаг активности
+    snow_append()
     # ееее, вот это круто: прям внтури генерируется словарь. Отлично, хороший программист сделал бы так же
 
 # Пригодятся функции
@@ -53,19 +58,16 @@ while not sd.user_want_exit():
                 param_of_snowflake['x'] += sd.random_number(-5, 5)
             else:
                 # Добавляем еще одну снежинку на верх
-                # TODO: сделайте ф-цию. "вернуть снежинку", которая можно будет вызывать здесь и на 17ой строке,
+                #  сделайте ф-цию. "вернуть снежинку", которая можно будет вызывать здесь и на 17ой строке,
                 #  чтобы у нас не было дублирования кода.
-                snowflake_params.append({'branch_len': sd.random_number(10, 100),  # Раздаем длины лучей,
-                                         'x': sd.random_number(0, sd.resolution[0]),  # а также положения по оси У
-                                         'y': sd.resolution[1],
-                                         'moving': 1})  # флаг активности
+                snow_append(y_min=sd.resolution[1])
                 # Убираем активность у старой снежинки
                 param_of_snowflake['moving'] = 0
 
     for param_of_snowflake in snowflake_params:
         snowflake_center = sd.get_point(param_of_snowflake['x'], param_of_snowflake['y'])
 
-        # TODO: цикл покраски снежинок в белый лучше вынести в отдельный цикл. Т.е. сначала все прячем+перемещаем.
+        #  цикл покраски снежинок в белый лучше вынести в отдельный цикл. Т.е. сначала все прячем+перемещаем.
         #  Потому у нас пустой экран. Потом красим белым.
         #  Зачем?
         #  Обратите внимание, что при пересечении снежинок у нас сейчас возникает перетирание веточек.
@@ -74,12 +76,19 @@ while not sd.user_want_exit():
         #  количество, лишь менялись координаты, а старая (та что внизу) не перетиралась сама собой, но был баг.
         #  Теперь бага нет
 
-        # TODO: Ответ.
+        #  Ответ.
         #  Мой косяк, нужно было еще точнее формулировать. Речь шла только о падающих снежинках. Сугробу почти не помочь
         #  Текущий вариант "спасает" сугроб, но нужны доп.меры. Нужно добавить проверку, что число снежинок не превысило
         #  N * 5. И если превысило, то при добавлении новой снежинки (крайней), удалять самую старую (первую).
         # красим белым весь список снежинок, даже не активные
+
         sd.snowflake(snowflake_center, param_of_snowflake['branch_len'], color=sd.COLOR_WHITE)
+        # print(len(snowflake_params))
+        can_i_del = len(snowflake_params) > 5 * N  # Проверяем сколько элеметнов там у нас
+        # print(can_i_del)
+        can_i_del and snowflake_params.pop(0)
+        # Нашел такой крутой способ условия. В общем он удаляет первый
+        # элемент. Вроде работает
 
         #  добавить "упавшие снежинки возвращать назад"
     sd.finish_drawing()
