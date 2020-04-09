@@ -27,7 +27,21 @@ my_burger.adding_tomato()
 my_burger.adding_mayo()
 my_burger.adding_bun()
 
+print('Создадим сейчас свой бургер! И... ')
+my_burger.adding_bun()
+my_burger.adding_mayo()
+my_burger.adding_catchup()
+my_burger.adding_cutlet()
+my_burger.adding_cheese()
+my_burger.adding_cutlet()
+my_burger.adding_cheese()
+my_burger.adding_jalapenos()
+my_burger.adding_cutlet()
+my_burger.adding_cheese()
+my_burger.adding_cucumber()
+my_burger.adding_tomato()
+my_burger.adding_bun()
 
-# TODO: задача требует 2 рецепта:
+#  задача требует 2 рецепта:
 #   рецепт двойного чизбургера (строка 12);
 #   рецепт своего бургера, по вашему вкусу (строка 15).
