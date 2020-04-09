@@ -1,6 +1,6 @@
 import simple_draw as sd
 
-
+# TODO: ф-ция называется "нарисовать фигуру", а рисует 1 линию. Маловато для функции обязанностей.
 def draw_figure(figure_angle, start_point=sd.get_point(400, 400), angle=12, length=70, width=1):
     vector_start_point = start_point
     rib = sd.get_vector(start_point=vector_start_point,
@@ -24,7 +24,11 @@ def build_wall(left_bottom=(0, 0), right_top=(100, 100), brick_height=10, brick_
                          sd.get_point(brick_bottom_x + brick_width, brick_bottom_y + brick_height),
                          color=color, width=1)
 
-
+# TODO: убрать параметры, который мы не используем (т.е. убираем атавизмы, которые перекочивали вместе с ф-цией
+#  "нарисовать треугольник".
+#  Слить воедино ф-ции build_roof и draw_figure, т.к. ф-цию объявляют тогда, когда она вызывается во множестве мест.
+#  Либо ф-ция должна делать какую-то определенную задачу (рисовать дом например).
+#  Функция "нарисовать фигуру" рисует 1 вектор, причем вызов этой ф-ции занимает почти столько же, как и она сама.
 def build_roof(start_point=sd.get_point(100, 100), angle=0, length=50, width=1):
     vector_start_point = start_point
     for figure_angle in range(0, 240, 120):

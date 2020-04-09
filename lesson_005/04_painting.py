@@ -38,9 +38,11 @@ for _ in range(3):
         'x': sd.random_number(795, 900),
         'y': sd.random_number(15, 20)
     })
+# TODO: после отрисовки, деревья не перерисовываются. Может мы тогда сделаем 1 обезличенных цикл, который нарисует N
+#  деревьев? Тогда нам не придется хранить список всех деревьев в течении всего времени работы
 for _, wood in enumerate(forest):
-    print(wood)
-    root_point = sd.get_point(wood['x'], wood['y'])
+    print(wood)     # TODO: видимо остался отладочный вывод?
+    root_point = sd.get_point(wood['x'], wood['y'])     # TODO: можно будет заменить на sd.random_point()
     draw_random_branches(start_point=root_point, angle=wood['angle'], length=wood['length'])
 
 # Травка
@@ -60,8 +62,13 @@ sd.line(sd.get_point(450, 80), sd.get_point(480, 90))
 # Строим стену и крышку
 sd.rectangle(sd.get_point(600, 20), sd.get_point(770, 110), color=sd.COLOR_RED)
 build_wall(left_bottom=(600, 20), right_top=(750, 100), color=sd.COLOR_DARK_RED)
+# TODO: Сделайте так, чтобы у нас вызывалась ф-ция "нарисовать крышу" 1 раз и он рисовала крышу.
+#  .
+#  p.s. чтобы нарисовать закрашенный треугольник укажите width=0
 for roof_length in range(230):
     build_roof(sd.get_point(570, 110), length=roof_length, angle=0, width=2)
+
+# TODO: добавить метод "нарисовать окно"
 
 # Делаем список стартовых снежинок
 snowflake_dict = snowflake_dict_gen(left_bottom=(0, 20), right_top=(300, 100))
@@ -79,17 +86,23 @@ while not sd.user_want_exit():
         #  солнышка в цикл
         #  Также пока не реализовал мигание смайлика, переливание радуги. Сделаю во второй иттерации :D
 
+    # TODO: а это что?)
     animate_angle += 10
     for angle in range(0, 361, 60):
         angle += animate_angle
         sd.vector(start=sd.get_point(100, 300), angle=angle, width=8, length=80)
 
+    # TODO: вызов ниже, нужно вызывать в самом начале итерации
     sd.start_drawing()
     snowfall(snowflake_params=snowflake_dict, left_bottom=(0, 20), right_top=(300, 100))
+
+    # TODO: вот это верно, завершение рисования вызываем в самом конце вместе со sleep)
     sd.finish_drawing()
     sd.sleep(0.1)
 
 sd.pause()
+
+# TODO: если смайлик вышел на улицу - пусть. Но окно в доме долнжо остаться
 
 # Усложненное задание (делать по желанию)
 # Анимировать картину.

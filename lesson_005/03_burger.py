@@ -26,3 +26,8 @@ my_burger.adding_cucumber()
 my_burger.adding_tomato()
 my_burger.adding_mayo()
 my_burger.adding_bun()
+
+
+# TODO: задача требует 2 рецепта:
+#   рецепт двойного чизбургера (строка 12);
+#   рецепт своего бургера, по вашему вкусу (строка 15).
