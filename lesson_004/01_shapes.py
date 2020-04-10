@@ -154,3 +154,5 @@ draw_pentagon()
 draw_hexagon()
 
 sd.pause()
+
+# зачет!
