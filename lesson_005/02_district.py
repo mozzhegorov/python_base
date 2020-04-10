@@ -48,3 +48,5 @@ for street_name, street in area.items():
 
 # на 4ой строке указан формат вывода.
 print('На районе живут', ', '.join(all_folks))
+
+# зачет!

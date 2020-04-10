@@ -1,6 +1,8 @@
 import simple_draw as sd
 
 
+# TODO: пусть ф-ция возращает снежинку, а не добавляется в список.
+#  Вместе snow_append будет get_snowflake.
 def snow_append(_snowflake_params, branch_min=10, branch_max=100, y_min=0, y_max=sd.resolution[1], x_min=0,
                 x_max=sd.resolution[0]):
     _snowflake_params.append({'branch_len': sd.random_number(branch_min, branch_max),  # Раздаем длины лучей,
@@ -69,8 +71,14 @@ def snowfall(N_init, snowflake_params=None, speed=2, left_bottom=(0, 0), right_t
         sd.snowflake(snowflake_center, param_of_snowflake['branch_len'], color=sd.COLOR_WHITE)
         #  добавить "упавшие снежинки возвращать назад"
         # print(len(snowflake_params))
+
+        # TODO:
+        #  "len(snowflake_params) > 5 * N_init" - это условие
+        #  snowflake_params.pop(0) - это действие.
+        #  .
+        #  Давайте сделаем из этого if-блок.
         can_i_del = len(snowflake_params) > 5 * N_init  # Проверяем сколько элеметнов там у нас
         # print(can_i_del)
-        can_i_del and snowflake_params.pop(0)
+        can_i_del and snowflake_params.pop(0)           # TODO: рабочая, но не очевидная запись. Повышает сложность чтение
         # Нашел такой крутой способ условия. В общем он удаляет первый
         # элемент. Вроде работает

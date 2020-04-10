@@ -2,9 +2,14 @@ import simple_draw as sd
 
 
 def draw_rainbow(x, y, radius, color_offset):
+    # TODO: вынесть rainbow_colors вне ф-ции.
     rainbow_colors = [sd.COLOR_RED, sd.COLOR_ORANGE, sd.COLOR_YELLOW, sd.COLOR_GREEN,
                       sd.COLOR_CYAN, sd.COLOR_BLUE, sd.COLOR_PURPLE]
 
+    # TODO: используйте срезы, чтобы склеить 2 половины rainbow_colors.
+    #  [1,2,3, (режем) 4,5,6]     - режем в нужном месте
+    #  [4,5,6, (клеем) 1,2,3]     - склеиваем половины поменяв местами.
+    #
     for _ in range(color_offset):
         rainbow_colors.append(rainbow_colors[0])
         rainbow_colors.pop(0)
