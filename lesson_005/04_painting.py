@@ -27,26 +27,20 @@ from epic_painting.house import build_wall
 from epic_painting.house import build_roof
 from epic_painting.house import build_window
 from epic_painting.wood import draw_random_branches
+from epic_painting.sun import draw_animate_sun
 
 sd.resolution = (1000, 400)
 
 # Растим деревья
 #  после отрисовки, деревья не перерисовываются. Может мы тогда сделаем 1 обезличенных цикл, который нарисует N
 #  деревьев? Тогда нам не придется хранить список всех деревьев в течении всего времени работы
-wood = {
-    'angle': 0,
-    'length': 0,
-    'x': 0,
-    'y': 0
-}
+
+# Рисуем деревья
 for _ in range(3):
-    # TODO: может просто сгенерируем переменные x,y, и т.п. и обойдемся без словаря wood?
-    wood['x'] = sd.random_number(795, 900)
-    wood['y'] = sd.random_number(15, 20)
-    wood['length'] = sd.random_number(25, 55)
-    wood['angle'] = sd.random_number(80, 100)
-    root_point = sd.get_point(wood['x'], wood['y'])
-    draw_random_branches(start_point=root_point, angle=wood['angle'], length=wood['length'])
+    root_point = sd.get_point(sd.random_number(795, 900), sd.random_number(15, 20))
+    draw_random_branches(start_point=root_point,
+                         angle=sd.random_number(80, 100),
+                         length=sd.random_number(25, 55))
     sd.random_point()
 
 # Травка
@@ -60,18 +54,10 @@ sd.line(sd.get_point(450, 50), sd.get_point(480, 20))
 sd.line(sd.get_point(450, 80), sd.get_point(420, 90))  # Руки
 sd.line(sd.get_point(450, 80), sd.get_point(480, 90))
 
-# Строим стену и крышку
+# Строим стену, крышу, окно
 sd.rectangle(sd.get_point(600, 20), sd.get_point(770, 110), color=sd.COLOR_RED)
 build_wall(left_bottom=(600, 20), right_top=(750, 100), color=sd.COLOR_DARK_RED)
-#  Сделайте так, чтобы у нас вызывалась ф-ция "нарисовать крышу" 1 раз и он рисовала крышу.
-#  .
-#  p.s. чтобы нарисовать закрашенный треугольник укажите width=0
-# TODO: перенесли цикл внутрь - хорошо. Про "width=0" - ступил. Это же не родной треугольник, а наш собственный.
-#  У методов библиотеки задание width=0 приводит к заливки фигуры одним цветом. К сожаление, треугольника в их числе
-#  нет.
 build_roof(sd.get_point(570, 110), length=230)
-
-# Рисуем окно
 build_window((650, 50), (720, 80))
 
 # Делаем список стартовых снежинок
@@ -84,19 +70,11 @@ animate = 0  # Угол для анимации
 while not sd.user_want_exit():
     sd.start_drawing()
 
-    # TODO: все что касается солнышка - вынести в отдельный модуль sun.py. Сделать в нем метод draw_sun.
-    #  Мы инкапсулируем внутрь ф-ции. Тогда здесь код будет состоять только из вызовов этих ф-ций.
-    # Рсиуем кружок цветом фона и потом рисуем солнышко :)
-    sd.circle(sd.get_point(100, 300), radius=85, width=50, color=sd.background_color)
-    sd.circle(sd.get_point(100, 300), radius=50, width=50)
-
-    #  а это что?)
-    #  Для анимации солнышка :)
-    # Крутим лучиками
     animate += 1
-    for angle in range(0, 361, 60):
-        angle += animate * 5
-        sd.vector(start=sd.get_point(100, 300), angle=angle, width=8, length=80)
+
+    draw_animate_sun(animate_factor=animate + 5,
+                     x_center=100,
+                     y_center=300)
 
     # Радуга
     draw_rainbow(320, -170, 700, animate)
