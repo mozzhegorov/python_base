@@ -12,20 +12,24 @@ sd.resolution = (1200, 600)
 N = 50
 
 
-# TODO: пусть ф-ция возращает снежинку, а не добавляется в список.
+#  пусть ф-ция возращает снежинку, а не добавляется в список.
 #  Вместе snow_append будет get_snowflake.
-def snow_append(_snowflake_params, branch_min=10, branch_max=100, y_min=0, y_max=sd.resolution[1], x_min=0,
-                x_max=sd.resolution[0]):
-    _snowflake_params.append({'branch_len': sd.random_number(branch_min, branch_max),  # Раздаем длины лучей,
-                              'x': sd.random_number(x_min, x_max),  # а также положения по оси У
-                              'y': sd.random_number(y_min, y_max),
-                              'moving': 1})  # флаг активности
+def get_snowflake(branch_min=10,
+                  branch_max=100,
+                  y_min=0,
+                  y_max=sd.resolution[1],
+                  x_min=0,
+                  x_max=sd.resolution[0]):
+    return {'branch_len': sd.random_number(branch_min, branch_max),  # Раздаем длины лучей,
+            'x': sd.random_number(x_min, x_max),  # а также положения по оси У
+            'y': sd.random_number(y_min, y_max),
+            'moving': 1}  # флаг активности
 
 
 snowflake_params = []
 # "i" можно заменить на "_", чтобы подчеркнуть, что переменная не используется. "_"
 for _ in range(N):
-    snow_append(_snowflake_params=snowflake_params)
+    snowflake_params.append(get_snowflake())
     # ееее, вот это круто: прям внтури генерируется словарь. Отлично, хороший программист сделал бы так же
 
 # Пригодятся функции
@@ -63,7 +67,7 @@ while not sd.user_want_exit():
                 # Добавляем еще одну снежинку на верх
                 #  сделайте ф-цию. "вернуть снежинку", которая можно будет вызывать здесь и на 17ой строке,
                 #  чтобы у нас не было дублирования кода.
-                snow_append(_snowflake_params=snowflake_params, y_min=sd.resolution[1])
+                snowflake_params.append(get_snowflake(y_min=sd.resolution[1]))
                 # Убираем активность у старой снежинки
                 param_of_snowflake['moving'] = 0
 
@@ -86,19 +90,9 @@ while not sd.user_want_exit():
         # красим белым весь список снежинок, даже не активные
 
         sd.snowflake(snowflake_center, param_of_snowflake['branch_len'], color=sd.COLOR_WHITE)
-        # print(len(snowflake_params))
-        # TODO:
-        #  "len(snowflake_params) > 5 * N_init" - это условие
-        #  snowflake_params.pop(0) - это действие.
-        #  .
-        #  Давайте сделаем из этого if-блок.
-        can_i_del = len(snowflake_params) > 5 * N  # Проверяем сколько элеметнов там у нас
-        # print(can_i_del)
-        can_i_del and snowflake_params.pop(0)       # TODO: рабочая, но не очевидная запись. Повышает сложность чтение
-        # Нашел такой крутой способ условия. В общем он удаляет первый
-        # элемент. Вроде работает
-
-        # TODO: еще удалить законменченный код и лишние комментарии и TODО
+        # Проверяем сколько элеметнов там у нас
+        if len(snowflake_params) > 5 * N:
+            snowflake_params.pop(0)
 
         #  добавить "упавшие снежинки возвращать назад"
     sd.finish_drawing()
