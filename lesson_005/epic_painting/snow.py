@@ -1,27 +1,27 @@
 import simple_draw as sd
 
 
-# TODO: пусть ф-ция возращает снежинку, а не добавляется в список.
-#  Вместе snow_append будет get_snowflake.
-def snow_append(_snowflake_params, branch_min=10, branch_max=100, y_min=0, y_max=sd.resolution[1], x_min=0,
-                x_max=sd.resolution[0]):
-    _snowflake_params.append({'branch_len': sd.random_number(branch_min, branch_max),  # Раздаем длины лучей,
-                              'x': sd.random_number(x_min, x_max),  # а также положения по оси У
-                              'y': sd.random_number(y_min, y_max),
-                              'moving': 1})  # флаг активности
+def get_snowflake(branch_min=10,
+                  branch_max=100,
+                  y_min=0,
+                  y_max=sd.resolution[1],
+                  x_min=0,
+                  x_max=sd.resolution[0]):
+    return {'branch_len': sd.random_number(branch_min, branch_max),  # Раздаем длины лучей,
+            'x': sd.random_number(x_min, x_max),  # а также положения по оси У
+            'y': sd.random_number(y_min, y_max),
+            'moving': 1}  # флаг активности
 
 
 def snowflake_dict_gen(N=10, left_bottom=(0, 0), right_top=(100, 100), min_branch_len=2, max_branch_len=7):
     snowflake_dict = []
     for _ in range(N):
-        snow_append(_snowflake_params=snowflake_dict,
-                    branch_min=min_branch_len,
-                    branch_max=max_branch_len,
-                    y_min=left_bottom[1],
-                    y_max=right_top[1],
-                    x_min=left_bottom[0],
-                    x_max=right_top[0]
-                    )
+        snowflake_dict.append(get_snowflake(branch_min=min_branch_len,
+                                            branch_max=max_branch_len,
+                                            y_min=sd.random_number(left_bottom[1], right_top[1]),
+                                            y_max=right_top[1],
+                                            x_min=left_bottom[0],
+                                            x_max=right_top[0]))
     return snowflake_dict
 
 
@@ -41,14 +41,13 @@ def snowfall(N_init, snowflake_params=None, speed=2, left_bottom=(0, 0), right_t
                 #  сделайте ф-цию. "вернуть снежинку", которая можно будет вызывать здесь и на 7ой строке,
                 #  чтобы у нас не было дублирования кода.
                 # Добавляем еще одну снежинку на верх
-                snow_append(_snowflake_params=snowflake_params,
-                            branch_min=min_branch_len,
-                            branch_max=max_branch_len,
-                            y_min=right_top[1],
-                            y_max=right_top[1],
-                            x_min=left_bottom[0],
-                            x_max=right_top[0]
-                            )
+                snowflake_params.append(get_snowflake(branch_min=min_branch_len,
+                                                      branch_max=max_branch_len,
+                                                      y_min=right_top[1],
+                                                      y_max=right_top[1],
+                                                      x_min=left_bottom[0],
+                                                      x_max=right_top[0]
+                                                      ))
                 # Убираем активность у старой снежинки
                 param_of_snowflake['moving'] = 0
 
@@ -72,13 +71,7 @@ def snowfall(N_init, snowflake_params=None, speed=2, left_bottom=(0, 0), right_t
         #  добавить "упавшие снежинки возвращать назад"
         # print(len(snowflake_params))
 
-        # TODO:
-        #  "len(snowflake_params) > 5 * N_init" - это условие
-        #  snowflake_params.pop(0) - это действие.
-        #  .
-        #  Давайте сделаем из этого if-блок.
-        can_i_del = len(snowflake_params) > 5 * N_init  # Проверяем сколько элеметнов там у нас
-        # print(can_i_del)
-        can_i_del and snowflake_params.pop(0)           # TODO: рабочая, но не очевидная запись. Повышает сложность чтение
-        # Нашел такой крутой способ условия. В общем он удаляет первый
-        # элемент. Вроде работает
+        sd.snowflake(snowflake_center, param_of_snowflake['branch_len'], color=sd.COLOR_WHITE)
+        # Проверяем сколько элеметнов там у нас
+        if len(snowflake_params) > 5 * N_init:
+            snowflake_params.pop(0)
