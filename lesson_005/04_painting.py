@@ -29,6 +29,9 @@ from epic_painting.house import build_window
 from epic_painting.wood import draw_random_branches
 from epic_painting.sun import draw_animate_sun
 
+FLAKES_NUMBER = 50  # Количество снежинок
+SUN_RADIUS_MAX = 50  # Радиус солнышка
+
 sd.resolution = (1000, 400)
 
 # Растим деревья
@@ -61,11 +64,8 @@ build_roof(sd.get_point(570, 110), length=230)
 build_window((650, 50), (720, 80))
 
 # Делаем список стартовых снежинок
-FLAKES_NUMBER = 50  # TODO: константы на самый верх (сразу после импорта модулей)
 snowflake_dict = snowflake_dict_gen(N=FLAKES_NUMBER, left_bottom=(0, 20), right_top=(300, 100))
 
-# TODO: константу на самый верх
-SUN_RADIUS_MAX = 50  # Радиус солнышка
 animate = 0  # Угол для анимации
 
 while not sd.user_want_exit():
@@ -78,7 +78,7 @@ while not sd.user_want_exit():
                      y_center=300)
 
     # Радуга
-    draw_rainbow(320, -170, 700, animate)
+    draw_rainbow(320, -170, 700, 1)
 
     # Работаем со снегом
     snowfall(N_init=FLAKES_NUMBER, snowflake_params=snowflake_dict, left_bottom=(0, 20), right_top=(300, 100))
