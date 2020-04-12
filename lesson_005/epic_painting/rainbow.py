@@ -14,7 +14,7 @@ def draw_rainbow(x, y, radius, color_offset):
         rainbow_colors.append(rainbow_colors[0])
         rainbow_colors.pop(0)
 
-    for color in rainbow_colors:
+    for color in rainbow_colors:    # TODO: можно даже здесь подставить, не создавая доп.переменную
         radius += 4
         sd.circle(sd.get_point(x, y), radius, color, 4)
 

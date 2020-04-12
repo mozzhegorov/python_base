@@ -28,7 +28,7 @@ def build_roof(start_point=sd.get_point(100, 100), length=50, color=sd.COLOR_YEL
                             angle=figure_angle,
                             length=roof_length,
                             color=color,
-                            width=2)        # TODO: убрать ширину - ошибка с моей стороны. Поэтому восстановил ваш параметр)
+                            width=2)
             vector_start_point = rib
         sd.line(start_point, vector_start_point, color=color)
 

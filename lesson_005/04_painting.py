@@ -61,9 +61,10 @@ build_roof(sd.get_point(570, 110), length=230)
 build_window((650, 50), (720, 80))
 
 # Делаем список стартовых снежинок
-FLAKES_NUMBER = 50
+FLAKES_NUMBER = 50  # TODO: константы на самый верх (сразу после импорта модулей)
 snowflake_dict = snowflake_dict_gen(N=FLAKES_NUMBER, left_bottom=(0, 20), right_top=(300, 100))
 
+# TODO: константу на самый верх
 SUN_RADIUS_MAX = 50  # Радиус солнышка
 animate = 0  # Угол для анимации
 
