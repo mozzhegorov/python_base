@@ -9,10 +9,14 @@ def draw_rainbow(x, y, radius, color_offset):
     #  [1,2,3, (режем) 4,5,6]     - режем в нужном месте
     #  [4,5,6, (клеем) 1,2,3]     - склеиваем половины поменяв местами.
     #   Ответ: не понимаю. Зачем это?
+    #   Была так сказать ошибочка в основном теле программы. В offset писалась инкрементированная переменная,
+    #   сейчас поставил просто контанту 1, и теперь в каждом цикле рисуется сдвинутая на 1 радуга. Вроде согласно ТЗ.
 
     for _ in range(color_offset):
         rainbow_colors.append(rainbow_colors[0])
+        print(rainbow_colors)
         rainbow_colors.pop(0)
+        print(rainbow_colors)
 
     for color in rainbow_colors:  # TODO: можно даже здесь подставить, не создавая доп.переменную
         radius += 4
