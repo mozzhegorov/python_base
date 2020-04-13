@@ -21,6 +21,7 @@
 import simple_draw as sd
 from epic_painting.rainbow import draw_rainbow
 from epic_painting.smile import draw_smile
+from epic_painting.smile import draw_eyes
 from epic_painting.snow import snowfall
 from epic_painting.snow import snowflake_dict_gen
 from epic_painting.house import build_wall
@@ -69,16 +70,17 @@ snowflake_dict = snowflake_dict_gen(N=FLAKES_NUMBER, left_bottom=(0, 20), right_
 animate = 0  # Угол для анимации
 
 while not sd.user_want_exit():
+    draw_eyes(450, 150, sd.COLOR_YELLOW, animate)
     sd.start_drawing()
 
     animate += 1
 
-    draw_animate_sun(animate_factor=animate + 5,
+    draw_animate_sun(shift_angle=animate + 5,
                      x_center=100,
                      y_center=300)
 
     # Радуга
-    draw_rainbow(320, -170, 700, 1)
+    draw_rainbow(320, -170, 700, animate)
 
     # Работаем со снегом
     snowfall(N_init=FLAKES_NUMBER, snowflake_params=snowflake_dict, left_bottom=(0, 20), right_top=(300, 100))
