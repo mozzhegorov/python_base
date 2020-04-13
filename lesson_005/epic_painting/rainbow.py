@@ -24,13 +24,16 @@ def draw_rainbow(x, y, radius, color_offset):
     #  .
     #  Преимущество первого метода: он не имеет состояния. Поэтому мы можем вызвать 2 (или 100500) радуг одновременно.
     #  Преимущество второго - не нужно следить за счетчиком, вызываем и каждый раз получаем следующий набор цветов.
-    for _ in range(color_offset):
-        rainbow_colors.append(rainbow_colors[0])
-        print(rainbow_colors)
-        rainbow_colors.pop(0)
-        print(rainbow_colors)       # TODO: не забудьте убрать отладочные выводы)
+    #  ОТВЕТ: Недоастаток первого метода также в том, что нужно отдельно контролировать offset, так как если
+    #  поставить обычный инкремент, то радуга пройдет только 1 цикл (как сейчас). С другой стороны тогда у нас
+    #  переменная не будет
+    #  улетать в большие значения. Это вообще критично?
 
-    for color in rainbow_colors:
+    # for _ in range(color_offset):
+    #     rainbow_colors.append(rainbow_colors[0])
+    #     rainbow_colors.pop(0)
+
+    for color in rainbow_colors[color_offset:] + rainbow_colors[:color_offset]:
         radius += 4
         sd.circle(sd.get_point(x, y), radius, color, 4)
 
