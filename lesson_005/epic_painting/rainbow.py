@@ -12,13 +12,25 @@ def draw_rainbow(x, y, radius, color_offset):
     #   Была так сказать ошибочка в основном теле программы. В offset писалась инкрементированная переменная,
     #   сейчас поставил просто контанту 1, и теперь в каждом цикле рисуется сдвинутая на 1 радуга. Вроде согласно ТЗ.
 
+    # TODO: Ответ.
+    #  Возможно 2 варианта.
+    #  1. color_offset есть, и он показывает насколько сдвинуть цвета в радуге. Извне можно контролировать какой сейчас
+    #     цвет будет первым;
+    #       for color in rainbow_colors[color_offset:] + rainbow_colors[:color_offset].
+    #  2. color_offset отсутствует. Ф-ция изменяет порядок в rainbow_colors при каждом запуске, сдвигая на 1 цвет.
+    #     Указать с какого цвета начинать снаружи нельзя. Цикл в этом случае не нужен т.к. итерация только 1.
+    #       rainbow_colors.append(rainbow_colors[0])
+    #       rainbow_colors.pop(0)
+    #  .
+    #  Преимущество первого метода: он не имеет состояния. Поэтому мы можем вызвать 2 (или 100500) радуг одновременно.
+    #  Преимущество второго - не нужно следить за счетчиком, вызываем и каждый раз получаем следующий набор цветов.
     for _ in range(color_offset):
         rainbow_colors.append(rainbow_colors[0])
         print(rainbow_colors)
         rainbow_colors.pop(0)
-        print(rainbow_colors)
+        print(rainbow_colors)       # TODO: не забудьте убрать отладочные выводы)
 
-    for color in rainbow_colors:  # TODO: можно даже здесь подставить, не создавая доп.переменную
+    for color in rainbow_colors:
         radius += 4
         sd.circle(sd.get_point(x, y), radius, color, 4)
 
