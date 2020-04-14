@@ -9,12 +9,17 @@ def draw_smile(x, y, color):
     sd.circle(sd.get_point(x + 15, y), 7, color, 1)
     sd.circle(sd.get_point(x - 15, y), 7, color, 1)
 
-
+# TODO: пусть 3 параметр будет флагом (переменной принимающей значение True или False), которая определяет открыт глаз
+#  или нет. Снаружи мы в зависимости от положения счетчика мы будет держать глаз открытым или закрытым. В итоге
+#  смайлик будет моргать.
+#  .
+#  f_blink можно назвать этот флаг.
 def draw_eyes(x, y, color, animate_factor):
     sd.circle(sd.get_point(x + 15, y), 6, sd.background_color, 0)
     sd.circle(sd.get_point(x - 15, y), 6, sd.background_color, 0)
     y += 7
     animate_factor -= animate_factor // 7 * 7
+    # TODO: отладочный выводы убрать
     print(animate_factor)
     sd.circle(sd.get_point(x + 15, y - animate_factor), animate_factor, color, 0)
     sd.circle(sd.get_point(x - 15, y - animate_factor), animate_factor, color, 0)

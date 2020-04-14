@@ -29,6 +29,9 @@ def draw_rainbow(x, y, radius, color_offset):
     #  переменная не будет
     #  улетать в большие значения. Это вообще критично?
 
+    # TODO: Да, эта проблема по хорошему будет сопутствовать все функции, которые занимаются анимацией.
+    #  Подробнее написал в 04_painting.py.
+
     # for _ in range(color_offset):
     #     rainbow_colors.append(rainbow_colors[0])
     #     rainbow_colors.pop(0)
