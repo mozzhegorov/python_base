@@ -68,7 +68,8 @@ build_window((650, 50), (720, 80))
 snowflake_dict = snowflake_dict_gen(N=FLAKES_NUMBER, left_bottom=(0, 20), right_top=(300, 100))
 
 animate = 0  # Угол для анимации
-# TODO: как сделать так, чтобы счетчик не уходил в бесконечность?
+animate_rainbow = 0
+#  как сделать так, чтобы счетчик не уходил в бесконечность?
 #  Можно ограничить положение счетчика каким-то числом, кратным 7 (чтобы радуга переключалась плавно).
 #  Для солнца кратность не играет роли. Для смайлика тоже.
 #  .
@@ -78,26 +79,26 @@ animate = 0  # Угол для анимации
 #  .
 #  Поэтому такой случай лучше учесть, и не оставлять не обработанным.
 while not sd.user_want_exit():
-    draw_eyes(450, 150, sd.COLOR_YELLOW, animate)   # TODO: здесь мы можем передавать условие, что отсток деления на 10,
-                                                    #  < 5 - глаз открыт,
-                                                    #  >5 и <10 - глаз закрыт.
-    # TODO: вызов должен идти в самом начале кадра
     sd.start_drawing()
 
-    animate += 1
+    # Моргаем глазками
+    draw_eyes(450, 150, sd.COLOR_YELLOW, animate)
 
-    draw_animate_sun(shift_angle=animate + 5,   # TODO: тут точно нужно +5?
+    # Крутим солнышко
+    animate += 1
+    animate %= 360
+    draw_animate_sun(shift_angle=animate,
                      x_center=100,
                      y_center=300)
 
     # Радуга
-    draw_rainbow(320, -170, 700, animate)       # TODO: чтобы с радугой не творилось безумия, будет правильным
-                                                #  передавать в нее остаток от деления animate на 7. Логично?
+    animate_rainbow += 1
+    animate_rainbow %= 7
+    draw_rainbow(320, -170, 700, animate_rainbow)
 
     # Работаем со снегом
     snowfall(N_init=FLAKES_NUMBER, snowflake_params=snowflake_dict, left_bottom=(0, 20), right_top=(300, 100))
 
-    # TODO: здесь можно добавить обрезание счетчика animate с использованием %=
     sd.finish_drawing()
     sd.sleep(0.1)
 
