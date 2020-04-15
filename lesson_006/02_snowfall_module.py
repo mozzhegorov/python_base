@@ -22,6 +22,9 @@ while not sd.user_want_exit():
     snowfall.move_snowflakes()
     snowfall.draw_snowflakes(color=sd.COLOR_RED)
     print(snowfall.get_fallen_snowflakes())
+
+    # TODO: ф-ция должна вызывать 1 раз, результат ее работы сохраняться и дальше мы будем работать уже с этим
+    #  результатом
     if snowfall.get_fallen_snowflakes() is not None:
         snowfall.snowflake_dict.pop(snowfall.get_fallen_snowflakes())
         snowfall.snowflake_dict.append(snowfall.get_snowflake(branch_min=15,

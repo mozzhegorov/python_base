@@ -21,6 +21,7 @@ def snowflake_dict_gen(N=10,
                        min_branch_len=2,
                        max_branch_len=7):
     for _ in range(N):
+        # TODO: указание глобальных переменных происходит раньше всех остальных операций
         global snowflake_dict
         snowflake_dict.append(get_snowflake(branch_min=min_branch_len,
                                             branch_max=max_branch_len,
@@ -36,7 +37,7 @@ def draw_snowflakes(color):
                      length=snowflake['branch_len'],
                      color=color)
 
-
+# TODO: что делает эта ф-ция? Пожалуйста добавьте комменатрии на каждую строку
 def get_fallen_snowflakes():
     for number, snowflake in enumerate(snowflake_dict):
         if snowflake['y'] < snowflake['branch_len']:
@@ -48,3 +49,6 @@ def move_snowflakes(speed=5):
     for snowflake in snowflake_dict:
         snowflake['y'] -= speed
         snowflake['x'] += sd.random_number(-5, 5)
+
+# TODO: по заданию здесь должна быть еще одна ф-ция. И ее нужно будет использовать в вечном цикле, а то она там сейчас
+#  раписана, вместо того, чтобы бы здесь)
