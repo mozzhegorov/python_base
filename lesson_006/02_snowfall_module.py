@@ -15,21 +15,22 @@ import snowfall
 # В текущем модуле реализовать главный цикл падения снежинок,
 # обращаясь ТОЛЬКО к функциям модуля snowfall
 
-snowfall.snowflake_dict_gen(N=10, min_branch_len=15, max_branch_len=30)
-print(snowfall.snowflake_dict)
+snowfall.snowflake_list_gen(N=10, min_branch_len=15, max_branch_len=30)
 while not sd.user_want_exit():
+    #  нарисовать_снежинки_цветом(color=sd.background_color)
     snowfall.draw_snowflakes(color=sd.background_color)
+    #  сдвинуть_снежинки()
     snowfall.move_snowflakes()
+    #  нарисовать_снежинки_цветом(color)
     snowfall.draw_snowflakes(color=sd.COLOR_RED)
-    print(snowfall.get_fallen_snowflakes())
 
-    # TODO: ф-ция должна вызывать 1 раз, результат ее работы сохраняться и дальше мы будем работать уже с этим
-    #  результатом
-    if snowfall.get_fallen_snowflakes() is not None:
-        snowfall.snowflake_dict.pop(snowfall.get_fallen_snowflakes())
-        snowfall.snowflake_dict.append(snowfall.get_snowflake(branch_min=15,
-                                                              branch_max=30,
-                                                              y_min=sd.resolution[1]))
+    fallen_snowflakes = snowfall.get_fallen_snowflakes()
+    #  если есть номера_достигших_низа_экрана() то
+    if fallen_snowflakes is not None:
+        # удалить_снежинки(номера)
+        snowfall.delete_snowflake(fallen_snowflakes)
+        # создать_снежинки(count)
+        snowfall.create_snowflake()
     sd.sleep(0.1)
 
 sd.pause()
