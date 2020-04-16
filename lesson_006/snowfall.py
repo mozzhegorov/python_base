@@ -1,6 +1,7 @@
 import simple_draw as sd
 
 snowflake_list = []
+list_of_fallen = []
 
 
 def get_snowflake(branch_min=10,
@@ -17,14 +18,14 @@ def get_snowflake(branch_min=10,
             'y': sd.random_number(y_min, y_max),
             'moving': 1}  # флаг активности
 
-# TODO: вот эта функция играет роль " создать_снежинки(N) - создает N снежинок"
+
 def snowflake_list_gen(N=10,
                        left_bottom=(0, 0),
                        right_top=(sd.resolution[0], sd.resolution[1]),
-                       min_branch_len=2,
-                       max_branch_len=7):
+                       min_branch_len=15,
+                       max_branch_len=30):
     """
-        Создаем список со снежинками
+        создает N снежинок
     """
     global snowflake_list
     for _ in range(N):
@@ -45,18 +46,18 @@ def draw_snowflakes(color):
                      length=snowflake['branch_len'],
                      color=color)
 
-# TODO: из задания
-#  "номера_достигших_низа_экрана() - выдает список номеров снежинок, которые вышли за границу экрана".
+
 def get_fallen_snowflakes():
     """
-        получаем номер упавшей снежинки
+        выдает список номеров снежинок, которые вышли за границу экрана
     """
+    global list_of_fallen
     for number, snowflake in enumerate(snowflake_list):
         if snowflake['y'] < snowflake['branch_len']:
-            print(number)
-            return number
+            list_of_fallen.append(number)
 
-    # TODO: ф-ция должна возвращать список упаших снежинок
+    return list_of_fallen
+
 
 def move_snowflakes(speed=5):
     """
@@ -67,18 +68,11 @@ def move_snowflakes(speed=5):
         snowflake['x'] += sd.random_number(-5, 5)
 
 
-# TODO: "удалить_снежинки(номера) - удаляет снежинки с номерами из списка"
-def delete_snowflake(number):
+def delete_snowflake():
     """
-        Удаляем номер упавшей снежинки
+        удаляет снежинки с номерами из списка
     """
-    snowflake_list.pop(number)
-
-# TODO: эта ф-ция уменьшенная версия самой первой ф-ции. Эту функциюу удалить.
-def create_snowflake():
-    """
-        Создаем новую снежинку
-    """
-    snowflake_list.append(get_snowflake(branch_min=15,
-                                        branch_max=30,
-                                        y_min=sd.resolution[1]))
+    global list_of_fallen
+    for del_item in list_of_fallen[::-1]:  # Удаляем в обратном порядке, чтобы не удалить не ту снежинку.
+        snowflake_list.pop(del_item)
+    list_of_fallen.clear()
