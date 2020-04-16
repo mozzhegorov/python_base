@@ -15,7 +15,7 @@ import snowfall
 # В текущем модуле реализовать главный цикл падения снежинок,
 # обращаясь ТОЛЬКО к функциям модуля snowfall
 
-snowfall.snowflake_list_gen(N=10, min_branch_len=15, max_branch_len=30)
+snowfall.snowflake_list_gen(N=30, min_branch_len=15, max_branch_len=30)
 while not sd.user_want_exit():
     #  нарисовать_снежинки_цветом(color=sd.background_color)
     snowfall.draw_snowflakes(color=sd.background_color)
@@ -24,19 +24,17 @@ while not sd.user_want_exit():
     #  нарисовать_снежинки_цветом(color)
     snowfall.draw_snowflakes(color=sd.COLOR_RED)
 
-    fallen_snowflakes = snowfall.get_fallen_snowflakes()    # TODO: название "упавшие снежинки" правильное. Это список упавших снежинок.
+    fallen_snowflakes = snowfall.get_fallen_snowflakes()
     #  если есть номера_достигших_низа_экрана() то
-    if fallen_snowflakes is not None:
-        # удалить_снежинки(номера)
-        snowfall.delete_snowflake(fallen_snowflakes)
+    if fallen_snowflakes:
+        # TODO: Поменял оередность созадния/удаления, критично ли? в функции удаления снежинки чиститится список с
+        #  упавшими снежинками. Их количество использую в функции создания снежинок.
         # создать_снежинки(count)
-        snowfall.create_snowflake()                         # TODO: раз это список упавших снежинок, то мы должны создать
-                                                            #  столько, сколько упало.
+        snowfall.snowflake_list_gen(N=len(fallen_snowflakes),
+                                    left_bottom=(0, sd.resolution[1]))
+        # удалить_снежинки(номера)
+        snowfall.delete_snowflake()
+
     sd.sleep(0.1)
 
 sd.pause()
-
-# TODO: сейчас основная зацепка в том, что мы детектируем упавшие снежинки по одной.
-#  Нам надо по вызову get_fallen_snowflakes() получить Список индексов упавших снежинок, и с ним работать.
-#  А сейчас функция возвращает только 1 индекс, вместо списка. Если снежинок будет 1000, то алгоритм не будет успевать
-#  их удалять и добавлять. Они будут падать вниз до бесконечности.
