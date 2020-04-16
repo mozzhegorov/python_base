@@ -17,7 +17,7 @@ def get_snowflake(branch_min=10,
             'y': sd.random_number(y_min, y_max),
             'moving': 1}  # флаг активности
 
-
+# TODO: вот эта функция играет роль " создать_снежинки(N) - создает N снежинок"
 def snowflake_list_gen(N=10,
                        left_bottom=(0, 0),
                        right_top=(sd.resolution[0], sd.resolution[1]),
@@ -45,7 +45,8 @@ def draw_snowflakes(color):
                      length=snowflake['branch_len'],
                      color=color)
 
-
+# TODO: из задания
+#  "номера_достигших_низа_экрана() - выдает список номеров снежинок, которые вышли за границу экрана".
 def get_fallen_snowflakes():
     """
         получаем номер упавшей снежинки
@@ -55,6 +56,7 @@ def get_fallen_snowflakes():
             print(number)
             return number
 
+    # TODO: ф-ция должна возвращать список упаших снежинок
 
 def move_snowflakes(speed=5):
     """
@@ -65,13 +67,14 @@ def move_snowflakes(speed=5):
         snowflake['x'] += sd.random_number(-5, 5)
 
 
+# TODO: "удалить_снежинки(номера) - удаляет снежинки с номерами из списка"
 def delete_snowflake(number):
     """
         Удаляем номер упавшей снежинки
     """
     snowflake_list.pop(number)
 
-
+# TODO: эта ф-ция уменьшенная версия самой первой ф-ции. Эту функциюу удалить.
 def create_snowflake():
     """
         Создаем новую снежинку

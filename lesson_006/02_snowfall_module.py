@@ -24,13 +24,19 @@ while not sd.user_want_exit():
     #  нарисовать_снежинки_цветом(color)
     snowfall.draw_snowflakes(color=sd.COLOR_RED)
 
-    fallen_snowflakes = snowfall.get_fallen_snowflakes()
+    fallen_snowflakes = snowfall.get_fallen_snowflakes()    # TODO: название "упавшие снежинки" правильное. Это список упавших снежинок.
     #  если есть номера_достигших_низа_экрана() то
     if fallen_snowflakes is not None:
         # удалить_снежинки(номера)
         snowfall.delete_snowflake(fallen_snowflakes)
         # создать_снежинки(count)
-        snowfall.create_snowflake()
+        snowfall.create_snowflake()                         # TODO: раз это список упавших снежинок, то мы должны создать
+                                                            #  столько, сколько упало.
     sd.sleep(0.1)
 
 sd.pause()
+
+# TODO: сейчас основная зацепка в том, что мы детектируем упавшие снежинки по одной.
+#  Нам надо по вызову get_fallen_snowflakes() получить Список индексов упавших снежинок, и с ним работать.
+#  А сейчас функция возвращает только 1 индекс, вместо списка. Если снежинок будет 1000, то алгоритм не будет успевать
+#  их удалять и добавлять. Они будут падать вниз до бесконечности.
