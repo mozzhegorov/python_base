@@ -1,7 +1,7 @@
 import simple_draw as sd
 
 snowflake_list = []
-list_of_fallen = []
+list_of_fallen = []     # TODO: убрать эту глобальную переменную (см. ниже)
 
 
 def get_snowflake(branch_min=10,
@@ -51,6 +51,7 @@ def get_fallen_snowflakes():
     """
         выдает список номеров снежинок, которые вышли за границу экрана
     """
+    # TODO: пусть этот список здесь и создается) Зачем он нам глобально? не зачем)
     global list_of_fallen
     for number, snowflake in enumerate(snowflake_list):
         if snowflake['y'] < snowflake['branch_len']:
@@ -67,12 +68,12 @@ def move_snowflakes(speed=5):
         snowflake['y'] -= speed
         snowflake['x'] += sd.random_number(-5, 5)
 
-
+# TODO: функция должна принимать на вход список индексов.
 def delete_snowflake():
     """
         удаляет снежинки с номерами из списка
     """
     global list_of_fallen
     for del_item in list_of_fallen[::-1]:  # Удаляем в обратном порядке, чтобы не удалить не ту снежинку.
-        snowflake_list.pop(del_item)
+        snowflake_list.pop(del_item)        # TODO: Круто!) Именно то, что нужно)
     list_of_fallen.clear()

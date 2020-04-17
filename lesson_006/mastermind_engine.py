@@ -11,7 +11,7 @@ def make_number():
     #  пример работы sample()
     #       random.sample([1,2,3,4,5,6,7,8,9], 4)		# вернет список из 4 рандомных чисел
 
-    sample_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    sample_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]        # TODO: list(range(N)) даст такой же результат
     main_number = sample(sample_list[1::], 1)
     sample_list.remove(*main_number)
     main_number += sample(sample_list, 3)
@@ -60,6 +60,12 @@ def check_number(checking_number):
 
 
 def check_right(number):
+    # TODO: преобразование.
+    #   if a and b and c or x or y or z:
+    #       return True
+    #  .
+    #  Может быть преобразовано в:
+    #   return a and b and c or x or y or z
     if len(set(number)) < 4 or \
             not number.isdigit() or \
             int(number) < 1000 or \

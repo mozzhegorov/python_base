@@ -26,14 +26,17 @@ while not sd.user_want_exit():
 
     fallen_snowflakes = snowfall.get_fallen_snowflakes()
     #  если есть номера_достигших_низа_экрана() то
+    # TODO: условие грамотно упростили. Молодец.
     if fallen_snowflakes:
         # TODO: Поменял оередность созадния/удаления, критично ли? в функции удаления снежинки чиститится список с
         #  упавшими снежинками. Их количество использую в функции создания снежинок.
+
+        # TODO: Шутите?)) Вы же сейчас удаление сделали с конца! А добавление снежинок куда идет?
         # создать_снежинки(count)
         snowfall.snowflake_list_gen(N=len(fallen_snowflakes),
                                     left_bottom=(0, sd.resolution[1]))
         # удалить_снежинки(номера)
-        snowfall.delete_snowflake()
+        snowfall.delete_snowflake() # TODO: функция должна принимать параметр - список упаших
 
     sd.sleep(0.1)
 
