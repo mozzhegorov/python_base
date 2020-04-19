@@ -11,7 +11,7 @@ def make_number():
     #  пример работы sample()
     #       random.sample([1,2,3,4,5,6,7,8,9], 4)		# вернет список из 4 рандомных чисел
 
-    sample_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]        # TODO: list(range(N)) даст такой же результат
+    sample_list = list(range(9))
     main_number = sample(sample_list[1::], 1)
     sample_list.remove(*main_number)
     main_number += sample(sample_list, 3)
@@ -37,7 +37,7 @@ def make_number():
     #   .
     #   В итоге получаем число из 4 цифр, 1ая не 0, и все не повторяющиеся.
 
-    # TODO: или вы заменили randint() на sample, потому то пытались сложить Число и Список и вылетала ошибка?
+    #  или вы заменили randint() на sample, потому то пытались сложить Число и Список и вылетала ошибка?
     #   ОТВЕТ:  Не, логика другая была) не додумал/не дочитал про Sample и пошел не по тому пути. Сейчас в итоге
     #   отказался от randint, так как не поулчилось уложиться в меньше чем 4 строки так как сейчас.
     return main_number
@@ -60,19 +60,17 @@ def check_number(checking_number):
 
 
 def check_right(number):
-    # TODO: преобразование.
+    # преобразование.
     #   if a and b and c or x or y or z:
     #       return True
     #  .
     #  Может быть преобразовано в:
     #   return a and b and c or x or y or z
-    if len(set(number)) < 4 or \
+    return len(set(number)) < 4 or \
             not number.isdigit() or \
             int(number) < 1000 or \
             len(number) > 4 or \
-            number[0] == '0':
-        return False
-    return True
+            number[0] == '0'
 
     #  у нас должны быть проверки для случае:
     #  1. введена фраза вместо числа;
