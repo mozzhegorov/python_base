@@ -19,8 +19,66 @@
 #   print(Water(), '+', Air(), '=', Water() + Air())
 #   print(Fire(), '+', Air(), '=', Fire() + Air())
 
-# TODO здесь ваш код
 
+class Water:
+
+    def __init__(self):
+        self.name = 'Вода'
+
+    def __str__(self, *args, **kwargs):
+        return self.name
+
+    def __add__(self, other):
+        if other.name == 'Воздух':
+            return 'Шторм'
+        elif other.name == 'Огонь':
+            return 'Молния'
+        elif other.name == 'Земля':
+            return 'Пыль'
+        else:
+            return 'Неизвестная реакция'
+
+
+class Air:
+
+    def __init__(self):
+        self.name = 'Воздух'
+
+    def __str__(self, *args, **kwargs):
+        return self.name
+
+    def __add__(self, other):
+        if other.name == 'Вода':
+            return 'Шторм'
+        elif other.name == 'Огонь':
+            return 'Пар'
+        elif other.name == 'Земля':
+            return 'Грязь'
+        else:
+            return 'Неизвестная реакция'
+
+
+class Fire:
+
+    def __init__(self):
+        self.name = 'Огонь'
+
+    def __str__(self, *args, **kwargs):
+        return self.name
+
+    def __add__(self, other):
+        if other.name == 'Воздух':
+            return 'Молния'
+        elif other.name == 'Вода':
+            return 'Пар'
+        elif other.name == 'Земля':
+            return 'Лава'
+        else:
+            return 'Неизвестная реакция'
+
+
+print(Water(), '+', Air(), '=', Water() + Air())
+print(Fire(), '+', Air(), '=', Fire() + Air())
 # Усложненное задание (делать по желанию)
 # Добавить еще элемент в игру.
 # Придумать что будет при сложении существующих элементов с новым.
