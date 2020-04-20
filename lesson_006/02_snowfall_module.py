@@ -36,3 +36,5 @@ while not sd.user_want_exit():
     sd.sleep(0.1)
 
 sd.pause()
+
+# зачет!
