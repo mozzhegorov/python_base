@@ -67,6 +67,7 @@ class Man:
         self.house.money += 150
         self.fullness -= 10
 
+    # TODO: давайте сделаем все буквы в названии метода строчными, чтобы соответствовать стилю PEP8.
     def watch_MTV(self):
         cprint('{} смотрел MTV целый день'.format(self.name), color='green')
         self.fullness -= 10
@@ -105,7 +106,8 @@ class Man:
         elif dice == 2:
             self.eat()
         else:
-            self.watch_MTV()
+            self.watch_MTV()        # TODO: телевизор (3,4,5,6), а есть() и работать() соответственно 1 и 2.
+                                    #  Однако Гарри Поттер тот еще лентяй!
 
     def get_cat(self, cat):
         self.cat = cat
@@ -123,6 +125,7 @@ class Man:
 
     def cleaning(self):
         cprint('{} прибрался в доме'.format(self.name), color='blue')
+        # TODO: а если грязи в доме меньше 100?
         self.house.dirt -= 100
         self.fullness -= 20
 

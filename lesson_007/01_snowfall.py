@@ -13,9 +13,9 @@ class Snowflake:
 
     def __init__(self):
         self.x = sd.random_number(0, sd.resolution[0])
-        self.y = sd.resolution[1]
+        self.y = sd.resolution[1]                   # TODO: все снежинки на одной высоте
         self.branch_len = sd.random_number(5, 15)
-        self.speed = 5
+        self.speed = 5                              # TODO: И падают с одинаковой скоростью. Выходит стройный ряд :(
         self.color = sd.COLOR_WHITE
 
     def clear_previous_picture(self):
@@ -54,10 +54,12 @@ while not sd.user_want_exit():
     flake.clear_previous_picture()
     flake.move()
     flake.draw()
-    print(flake.can_fall())
+    print(flake.can_fall())     # TODO: давайте уберем отладочный вывод.
     if not flake.can_fall():
         break
     sd.sleep(0.1)
+
+# TODO: можете делать 2ую часть.
 
 # шаг 2: создать снегопад - список объектов Снежинка в отдельном списке, обработку примерно так:
 # flakes = get_flakes(count=N)  # создать список снежинок
