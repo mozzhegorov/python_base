@@ -28,18 +28,18 @@ class Water:
     def __str__(self, *args, **kwargs):
         return self.name
 
-    # TODO: Как можно реализовать метод __add__.
+    #   Как можно реализовать метод __add__.
     #   Сравнение лучше производить через isinstance и сам класс (а не просто поле name у объекта).
     #   По условие __add__ Должен возвращать None.
     def __add__(self, other):
-        if other.name == 'Воздух':
-            return 'Шторм'
-        elif other.name == 'Огонь':
-            return 'Молния'
-        elif other.name == 'Земля':
-            return 'Пыль'
+        if isinstance(other, Air):
+            return Storm()
+        elif isinstance(other, Fire):
+            return Lightning()
+        elif isinstance(other, Earth):
+            return Dust()
         else:
-            return 'Неизвестная реакция'
+            return None
 
 
 class Air:
@@ -51,14 +51,14 @@ class Air:
         return self.name
 
     def __add__(self, other):
-        if other.name == 'Вода':
-            return 'Шторм'
-        elif other.name == 'Огонь':
-            return 'Пар'
-        elif other.name == 'Земля':
-            return 'Грязь'
+        if isinstance(other, Water):
+            return Storm()
+        elif isinstance(other, Fire):
+            return Steam()
+        elif isinstance(other, Earth):
+            return Filth()
         else:
-            return 'Неизвестная реакция'
+            return None
 
 
 class Fire:
@@ -70,16 +70,126 @@ class Fire:
         return self.name
 
     def __add__(self, other):
-        if other.name == 'Воздух':
-            return 'Молния'
-        elif other.name == 'Вода':
-            return 'Пар'
-        elif other.name == 'Земля':
-            return 'Лава'
+        if isinstance(other, Air):
+            return Lightning()
+        elif isinstance(other, Water):
+            return Steam()
+        elif isinstance(other, Earth):
+            return Lava()
         else:
-            return 'Неизвестная реакция'
+            return None
 
-# TODO: Добавьте цикл.
+
+class Earth:
+
+    def __init__(self):
+        self.name = 'Земля'
+
+    def __str__(self, *args, **kwargs):
+        return self.name
+
+    def __add__(self, other):
+        if isinstance(other, Air):
+            return Dust()
+        elif isinstance(other, Water):
+            return Filth()
+        elif isinstance(other, Fire):
+            return Lava()
+        else:
+            return None
+
+
+class Storm:
+
+    def __init__(self):
+        self.name = 'Шторм'
+
+    def __str__(self, *args, **kwargs):
+        return self.name
+
+    def __add__(self, other):
+        if isinstance(other, Pressure):
+            return Volcano()
+        else:
+            return None
+
+
+class Dust:
+
+    def __init__(self):
+        self.name = 'Шторм'
+
+    def __str__(self, *args, **kwargs):
+        return self.name
+
+    def __add__(self, other):
+        if isinstance(other, Pressure):
+            return Volcano()
+        else:
+            return None
+
+
+class Lightning:
+
+    def __init__(self):
+        self.name = 'Молния'
+
+    def __str__(self):
+        return self.name
+
+
+class Filth:
+
+    def __init__(self):
+        self.name = 'Грязь'
+
+    def __str__(self):
+        return self.name
+
+
+class Steam:
+
+    def __init__(self):
+        self.name = 'Пар'
+
+    def __str__(self):
+        return self.name
+
+
+class Lava:
+
+    def __init__(self):
+        self.name = 'Лава'
+
+    def __str__(self, *args, **kwargs):
+        return self.name
+
+    def __add__(self, other):
+        if isinstance(other, Pressure):
+            return Volcano()
+        else:
+            return None
+
+
+class Pressure:
+
+    def __init__(self):
+        self.name = 'Давление'
+
+    def __str__(self, *args, **kwargs):
+        return self.name
+
+
+class Volcano:
+
+    def __init__(self):
+        self.name = 'Вулкан'
+
+    def __str__(self, *args, **kwargs):
+        return self.name
+
+
+#  Добавьте цикл.
 #  Давайте создадим список из всех элементов и перескрещиваем их между собой.
 #  Причем цикл сделаем так, чтобы не было повторных пересечений. Например:
 #       Вода + Огонь = Пар
@@ -98,8 +208,15 @@ class Fire:
 #            3-3, 3-4
 #                 4-4
 #  .
-print(Water(), '+', Air(), '=', Water() + Air())
-print(Fire(), '+', Air(), '=', Fire() + Air())
+
+element_list = [Water, Air, Fire, Earth]
+for num, element in enumerate(element_list):
+    for sub_element in element_list[num::]:
+        if element != sub_element:  # добавил проверку на одинаковость элемента, можно убрать, но так думаю лучше
+            print(element(), '+', sub_element(), '=', element() + sub_element())
+
+print(Earth(), '+', Fire(), '+', Pressure(), '=', Earth() + Fire() + Pressure())
+
 # Усложненное задание (делать по желанию)
 # Добавить еще элемент в игру.
 # Придумать что будет при сложении существующих элементов с новым.
