@@ -44,6 +44,8 @@ from random import randint
 
 
 class House:
+    # TODO: лучше нам эти поля сделать полями объекта.
+    #  Иначе, если будет несколько домов, мы не сможем точно определить сколько денег/еды/шуб в каждом.
     total_earned_money = 0
     total_eaten_food = 0
     total_bought_coats = 0
@@ -72,6 +74,7 @@ class Person:
         return ', счастья {}, сытость {}'.format(self.happiness, self.fullness)
 
     def eat(self):
+        # TODO: метод не безопасен. Мы можем уйти в отрицательные значения для еды.
         cprint('{} поел(а)'.format(self.name), color='blue')
         self.house.food -= 20
         self.fullness += 20
@@ -87,11 +90,13 @@ class Husband(Person):
         return 'Муж {}'.format(self.name) + super().__str__()
 
     def act(self):
+        # TODO: понижение уровня счастья и проверка, что человек умер, может быть вынесена в act() Общего класса
         if self.house.dirty >= 90:
             self.happiness -= 10
         if self.happiness < 10 or self.fullness < 0:
             cprint('Муж {} умер...'.format(self.name), color='red')
             return
+
         if self.fullness <= 30:
             self.eat()
         elif self.house.money <= 50:
@@ -99,6 +104,11 @@ class Husband(Person):
         elif self.happiness <= 30:
             self.gaming()
         else:
+            # TODO: понизить уровень счастья Мужа на 50% можно, если он помимо 3х действий ниже он будет еще и есть.
+            #  У него тогда конечно "сытость" начнет расти быстро. Но иначе, пока не появился Кот, сделать это нельзя
+            #  внутри класса Муж (еще есть способ в классе Жена).
+
+            # TODO: 5 строк ниже можно заменить 1 строкой с choice() из списка функций
             rand_act = randint(0, 2)
             if rand_act == 0:
                 self.work()
@@ -126,11 +136,15 @@ class Wife(Person):
         return 'Жена {}, счастья {}, сытость {}'.format(self.name, self.happiness, self.fullness)
 
     def act(self):
+        # TODO: дублированный блок из act`а мужа
         if self.house.dirty >= 90:
             self.happiness -= 10
         if self.happiness < 10 or self.fullness < 0:
-            cprint('Жена {} умерла...'.format(self.name), color='red')
+            cprint('Жена {} умерла...'.format(self.name), color='red')  # TODO: Отличие в 2х словах в выводе.
             return
+
+        # TODO: нам нужно больше рандома в действиях жены. Тогда убораться она будет не сразу как только наступило 100+
+        #  а как пришло в голову. Сейчас у нее оптимальный алгоритм, поэтому семья сыта и счастлива.
         if self.fullness <= 30:
             self.eat()
         elif self.house.food <= 40:
@@ -142,6 +156,8 @@ class Wife(Person):
         else:
             self.clean_house()
 
+    # TODO: это уже не 7ой модуль. Здесь будет 2 взрослых, 1 ребенок и Кот.
+    #  Если не делать проверки вида "если ли деньги на покупки" - у нас будут отрицательные значения.
     def shopping(self):
         cprint('{} купила еды домой'.format(self.name), color='blue')
         self.fullness -= 10
@@ -152,11 +168,13 @@ class Wife(Person):
         cprint('{} купила шубу'.format(self.name), color='blue')
         self.happiness += 60
         self.fullness -= 10
+        # TODO: жена может купить шубу и оставить отрицательный баланс (кредиты по условию задачи не выдаются)
         self.house.money -= 350
         self.house.total_bought_coat += 1
 
     def clean_house(self):
         cprint('{} сделала уборку в доме'.format(self.name), color='blue')
+        # TODO: можно применить тернарный оператор условия
         if self.house.dirty > 100:
             self.house.dirty -= 100
         else:
@@ -170,6 +188,7 @@ masha = Wife(name='Маша', house=home)
 
 for day in range(365):
     cprint('================== День {} =================='.format(day), color='red')
+    # TODO: пусть act() возвращает True - если все ок, и False - если человек умер.
     home.act()
     serge.act()
     masha.act()
