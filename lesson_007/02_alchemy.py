@@ -211,12 +211,18 @@ class Volcano:
 
 element_list = [Water, Air, Fire, Earth]
 for num, element in enumerate(element_list):
+    # TODO: Запись "...[num::]" можно сократить до "...[num:]". Второе двоеточие указывать не обязательно.
+    #  Это как лишние скобки, поэтому лучще привести ко 2ому варианту.
     for sub_element in element_list[num::]:
+        # TODO: посмотрел и с ней, и без - работает верно)
         if element != sub_element:  # добавил проверку на одинаковость элемента, можно убрать, но так думаю лучше
             print(element(), '+', sub_element(), '=', element() + sub_element())
 
+# TODO: оригинально)
 print(Earth(), '+', Fire(), '+', Pressure(), '=', Earth() + Fire() + Pressure())
 
 # Усложненное задание (делать по желанию)
 # Добавить еще элемент в игру.
 # Придумать что будет при сложении существующих элементов с новым.
+
+# зачет!

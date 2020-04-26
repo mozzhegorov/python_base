@@ -55,14 +55,15 @@ class Snowflake:
         return self.y > self.branch_len
 
 
-# flake = Snowflake()
-# while not sd.user_want_exit():
-#     flake.clear_previous_picture()
-#     flake.move()
-#     flake.draw()
-#     if not flake.can_fall():
-#         break
-#     sd.sleep(0.1)
+flake = Snowflake()
+while not sd.user_want_exit():
+    flake.clear_previous_picture()
+    flake.move()
+    flake.draw()
+    if not flake.can_fall():
+        break
+    sd.sleep(0.1)
+
 
 
 def get_flakes(count=10):
@@ -70,8 +71,9 @@ def get_flakes(count=10):
         Собираем первоначальный список снежинок
     """
     list_of_flakes = []
+    # TODO: можно заменить "i" на "_"
     for i in range(count):
-        list_of_flakes.append(Snowflake())
+        list_of_flakes.append(Snowflake())      # TODO: сразу подставили - хорошо)
     return list_of_flakes
 
 
@@ -102,6 +104,12 @@ while not sd.user_want_exit():
     for flake in flakes:
         flake.clear_previous_picture()
         flake.move()
+        # TODO: нам лучше разделить эти циклы. While-цикл - это не железный шаблон, который нельзя менять. В задаче
+        #  прописано "обработку примерно так:", и если у нас есть объективная причина его улучшить - надо улучшать.
+        #  .
+        #  Наша объективная причина: баг. При пересечении падающих снежинок происходит перетирание их краев (нарисовали
+        #  1 на новом месте, стерли черточки снежинок с которыми пересекались на старом месте). Чем больше снежинок
+        #  пересекается в одной точке, тем больше повреждений и мерцаний в этой области.
         flake.draw()
     fallen_flakes = get_fallen_flakes(flakes)  # подчитать сколько снежинок уже упало
     if fallen_flakes:
@@ -112,3 +120,6 @@ while not sd.user_want_exit():
     sd.sleep(0.1)
 
 sd.pause()
+
+# TODO: чтобы сделать процесс отрисовки более плавным, используйте sd.start_drawing + sd.finish_drawing. Мы исползовали
+#  их в 5ом модуле, в задаче 04.
