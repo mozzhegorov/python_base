@@ -152,8 +152,11 @@ class Wife(Person):
             self.fullness -= 10
             self.house.food += 50
             self.house.money -= 50
+            return False
         else:
             cprint('{} хотела купить еды, но денег нет...'.format(self.name), color='red')
+            self.fullness -= 5
+            return True
 
     def buy_fur_coat(self):
         if self.house.money > 350:
@@ -165,6 +168,7 @@ class Wife(Person):
             return False
         else:
             cprint('{} хотела купить шубу, но денег не хватило'.format(self.name), color='red')
+            self.fullness -= 5
             return True
 
     def clean_house(self):
