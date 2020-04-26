@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from termcolor import cprint
-from random import randint
+from random import randint, choice
 
 
 ######################################################## Часть первая
@@ -44,16 +44,14 @@ from random import randint
 
 
 class House:
-    # TODO: лучше нам эти поля сделать полями объекта.
-    #  Иначе, если будет несколько домов, мы не сможем точно определить сколько денег/еды/шуб в каждом.
-    total_earned_money = 0
-    total_eaten_food = 0
-    total_bought_coats = 0
 
     def __init__(self):
         self.food = 50
         self.money = 100
         self.dirty = 0
+        self.total_earned_money = 0
+        self.total_eaten_food = 0
+        self.total_bought_coats = 0
 
     def __str__(self):
         return 'В доме еды {}, денег {}, грязи {}'.format(self.food, self.money, self.dirty)
@@ -74,11 +72,25 @@ class Person:
         return ', счастья {}, сытость {}'.format(self.happiness, self.fullness)
 
     def eat(self):
-        # TODO: метод не безопасен. Мы можем уйти в отрицательные значения для еды.
-        cprint('{} поел(а)'.format(self.name), color='blue')
-        self.house.food -= 20
-        self.fullness += 20
-        self.house.total_eaten_food += 20
+        if self.house.food >= 20:
+            cprint('{} поел(а)'.format(self.name), color='blue')
+            self.house.food -= 20
+            self.fullness += 15
+            self.house.total_eaten_food += 20
+        else:
+            # TODO: Добавил также что если нет еды, то все равно тратим энергию
+            #  при этом если едим 20 еды, то пополняем только на 15 пунктов сытости
+            #  иначе чисто по условию не сможем умереть, однако по логике даже в тот день когда должны поесть -
+            #  тратим энергию
+            self.fullness -= 5
+            cprint('{} хотел(а) поесть, но еды нет...'.format(self.name), color='blue')
+
+    def act(self):
+        if self.house.dirty >= 90:
+            self.happiness -= 10
+        if self.happiness < 10 or self.fullness < 0:
+            cprint('Перс {} умер...'.format(self.name), color='red')
+            return False
 
 
 class Husband(Person):
@@ -90,13 +102,7 @@ class Husband(Person):
         return 'Муж {}'.format(self.name) + super().__str__()
 
     def act(self):
-        # TODO: понижение уровня счастья и проверка, что человек умер, может быть вынесена в act() Общего класса
-        if self.house.dirty >= 90:
-            self.happiness -= 10
-        if self.happiness < 10 or self.fullness < 0:
-            cprint('Муж {} умер...'.format(self.name), color='red')
-            return
-
+        super().act()
         if self.fullness <= 30:
             self.eat()
         elif self.house.money <= 50:
@@ -104,16 +110,8 @@ class Husband(Person):
         elif self.happiness <= 30:
             self.gaming()
         else:
-            # TODO: понизить уровень счастья Мужа на 50% можно, если он помимо 3х действий ниже он будет еще и есть.
-            #  У него тогда конечно "сытость" начнет расти быстро. Но иначе, пока не появился Кот, сделать это нельзя
-            #  внутри класса Муж (еще есть способ в классе Жена).
-
-            # TODO: 5 строк ниже можно заменить 1 строкой с choice() из списка функций
-            rand_act = randint(0, 2)
-            if rand_act == 0:
-                self.work()
-            else:
-                self.gaming()
+            choice([self.work, self.gaming])()
+        return True
 
     def work(self):
         cprint('{} поработал'.format(self.name), color='blue')
@@ -136,49 +134,49 @@ class Wife(Person):
         return 'Жена {}, счастья {}, сытость {}'.format(self.name, self.happiness, self.fullness)
 
     def act(self):
-        # TODO: дублированный блок из act`а мужа
-        if self.house.dirty >= 90:
-            self.happiness -= 10
-        if self.happiness < 10 or self.fullness < 0:
-            cprint('Жена {} умерла...'.format(self.name), color='red')  # TODO: Отличие в 2х словах в выводе.
-            return
+        super().act()
 
-        # TODO: нам нужно больше рандома в действиях жены. Тогда убораться она будет не сразу как только наступило 100+
-        #  а как пришло в голову. Сейчас у нее оптимальный алгоритм, поэтому семья сыта и счастлива.
         if self.fullness <= 30:
             self.eat()
         elif self.house.food <= 40:
             self.shopping()
-        elif self.house.dirty >= 100:
-            self.clean_house()
         elif self.happiness <= 30:
             self.buy_fur_coat()
         else:
-            self.clean_house()
+            choice([self.clean_house, self.eat, self.eat, self.shopping, self.shopping])()
+        return True
 
-    # TODO: это уже не 7ой модуль. Здесь будет 2 взрослых, 1 ребенок и Кот.
-    #  Если не делать проверки вида "если ли деньги на покупки" - у нас будут отрицательные значения.
     def shopping(self):
-        cprint('{} купила еды домой'.format(self.name), color='blue')
-        self.fullness -= 10
-        self.house.food += 50
-        self.house.money -= 50
+        if self.house.money > 50:
+            cprint('{} купила еды домой'.format(self.name), color='blue')
+            self.fullness -= 10
+            self.house.food += 50
+            self.house.money -= 50
+        else:
+            cprint('{} хотела купить еды, но денег нет...'.format(self.name), color='red')
 
     def buy_fur_coat(self):
-        cprint('{} купила шубу'.format(self.name), color='blue')
-        self.happiness += 60
-        self.fullness -= 10
-        # TODO: жена может купить шубу и оставить отрицательный баланс (кредиты по условию задачи не выдаются)
-        self.house.money -= 350
-        self.house.total_bought_coat += 1
+        if self.house.money > 350:
+            cprint('{} купила шубу'.format(self.name), color='blue')
+            self.happiness += 60
+            self.fullness -= 10
+            self.house.money -= 350
+            self.house.total_bought_coats += 1
+            return False
+        else:
+            cprint('{} хотела купить шубу, но денег не хватило'.format(self.name), color='red')
+            return True
 
     def clean_house(self):
         cprint('{} сделала уборку в доме'.format(self.name), color='blue')
-        # TODO: можно применить тернарный оператор условия
+
+        # self.house.dirty = 6 if self.house.dirty > 100 else self.house.dirty = 0
+        # TODO: Почему-то с тернарным оператором не получается использовать функции -=, += (((
+        #       и выскакивает ошибка SyntaxError: can't assign to conditional expression
         if self.house.dirty > 100:
             self.house.dirty -= 100
         else:
-            self.house.dirty -= self.house.dirty
+            self.house.dirty = 0
         self.fullness -= 10
 
 
@@ -188,10 +186,11 @@ masha = Wife(name='Маша', house=home)
 
 for day in range(365):
     cprint('================== День {} =================='.format(day), color='red')
-    # TODO: пусть act() возвращает True - если все ок, и False - если человек умер.
     home.act()
-    serge.act()
-    masha.act()
+    # print(serge.act())
+    # print(masha.act())
+    if not (serge.act() and masha.act()):
+        break
     cprint(serge, color='cyan')
     cprint(masha, color='cyan')
     cprint(home, color='cyan')
