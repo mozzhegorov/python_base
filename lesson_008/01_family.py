@@ -87,7 +87,7 @@ class Person:
             self.fullness -= 5
             cprint('{} хотел(а) поесть, но еды нет...'.format(self.name), color='blue')
 
-    # TODO: очень важно!
+    #  очень важно!
     #  Каждый act() любого класса должен в Любом случае, в абсолютно любом случае, возвращать True или False.
     #  .
     #  Предположем, что кто-то добавит класс МужКаскадер, который конечно же будет наследником класса Муж.
@@ -99,12 +99,16 @@ class Person:
     #  .
     #  Понятна ли идея? Я могу подробнее описать или привести другой пример. Задавайте вопросы, если что-то кажется
     #  не логичным и не понятным. У нас демократия, я тоже могу ошибаться.
+    # TODO: Думал немного проще будет инкапсуляция и если в родительском акте получим False, то он вернется и в
+    #  дочернем. Сейчас сделал когда родительский акт возвращает True если дошел до конца, а в дочернем проверяем это
+    #  дело.
     def act(self):
         if self.house.dirty >= 90:
             self.happiness -= 10
         if self.happiness < 10 or self.fullness < 0:
             cprint('Перс {} умер...'.format(self.name), color='red')
             return False
+        return True
 
 
 class Husband(Person):
@@ -116,9 +120,11 @@ class Husband(Person):
         return 'Муж {}'.format(self.name) + super().__str__()
 
     def act(self):
-        # TODO: допустим Персона умерла. Т.е. муж мертв. Мы не проверяем, что нам вернул вышестоящий метод. А надо.
+        #  допустим Персона умерла. Т.е. муж мертв. Мы не проверяем, что нам вернул вышестоящий метод. А надо.
         #  Нам нужен каскад act`ов. Тогда можно не писать в каждом act`е класса-наследнике проверку if.
-        super().act()
+        if not super().act():
+            return False
+
         if self.fullness <= 30:
             self.eat()
         elif self.house.money <= 50:
@@ -127,7 +133,6 @@ class Husband(Person):
             self.gaming()
         else:
             choice([self.work, self.gaming])()
-        # TODO: вот это верно - смогли что-то сделать, значит муж жив, значит act() имеет право вернуть True.
         return True
 
     def work(self):
@@ -151,10 +156,8 @@ class Wife(Person):
         return 'Жена {}, счастья {}, сытость {}'.format(self.name, self.happiness, self.fullness)
 
     def act(self):
-        # TODO: детали того, как проводится проверка на "жив или нет" мы спрятали в "super().act()". Это называется
-        #  инкасупляция кода. Это позволяет нам не вдаваться в детали, класс Person как-то по своему может проверять
-        #  жив или нет. А здесь мы просто используем его метод и если False - тоже возвращаем False.
-        super().act()
+        if not super().act():
+            return False
 
         if self.fullness <= 30:
             self.eat()
@@ -178,7 +181,7 @@ class Wife(Person):
             self.fullness -= 5
             return True
 
-    # TODO: на всякий пожарный скажу, что в этом методе и в методе выше, возвращать True|False не обязательно.
+    #  на всякий пожарный скажу, что в этом методе и в методе выше, возвращать True|False не обязательно.
     #  Мы это не используем пока никак. Но в целом, никто не запрящает. Если что - можно будет понять "снаружи" удалось
     #  ли купить шубу или нет.
     def buy_fur_coat(self):
@@ -197,11 +200,9 @@ class Wife(Person):
     def clean_house(self):
         cprint('{} сделала уборку в доме'.format(self.name), color='blue')
 
-        # self.house.dirty = 6 if self.house.dirty > 100 else self.house.dirty = 0
-        # TODO: Почему-то с тернарным оператором не получается использовать функции -=, += (((
-        #       и выскакивает ошибка SyntaxError: can't assign to conditional expression
+        self.house.dirty -= 100 if self.house.dirty > 100 else self.house.dirty
 
-        # TODO: Пример.
+        #  Пример.
         #               if some_condition:
         #                   a = 100
         #               else:                       			 # было
@@ -215,11 +216,11 @@ class Wife(Person):
         #  .
         #  Оператор =, += и т.п пишется 1 раз. Не 2 раза, только 1 раз слева.
 
-        if self.house.dirty > 100:
-            self.house.dirty -= 100
-        else:
-            self.house.dirty = 0
-        self.fullness -= 10
+        # if self.house.dirty > 100:
+        #     self.house.dirty -= 100
+        # else:
+        #     self.house.dirty = 0
+        # self.fullness -= 10
 
 
 home = House()
@@ -231,8 +232,6 @@ for day in range(365):
     home.act()
     # print(serge.act())
     # print(masha.act())
-    # TODO: да, вот тут верно проверяем. Внутри act`ов есть вышеупомянутые ошибки, но когда мы их исправим, эта проверка
-    #  нам пригодится. В итоге мы должны получить возможность проверять жив или нет персонаж по его act`у.
     if not (serge.act() and masha.act()):
         break
     cprint(serge, color='cyan')
