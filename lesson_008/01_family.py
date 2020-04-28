@@ -47,6 +47,7 @@ class House:
 
     def __init__(self):
         self.food = 50
+        self.cats_food = 30
         self.money = 100
         self.dirty = 0
         self.total_earned_money = 0
@@ -81,6 +82,10 @@ class Person:
             self.fullness -= 5
             cprint('{} хотел(а) поесть, но еды нет...'.format(self.name), color='blue')
 
+    def caress_cat(self):
+        self.fullness -= 10
+        self.happiness += 5
+
     #  очень важно!
     #  Каждый act() любого класса должен в Любом случае, в абсолютно любом случае, возвращать True или False.
     #  .
@@ -93,7 +98,7 @@ class Person:
     #  .
     #  Понятна ли идея? Я могу подробнее описать или привести другой пример. Задавайте вопросы, если что-то кажется
     #  не логичным и не понятным. У нас демократия, я тоже могу ошибаться.
-    # TODO: Думал немного проще будет инкапсуляция и если в родительском акте получим False, то он вернется и в
+    #  Думал немного проще будет инкапсуляция и если в родительском акте получим False, то он вернется и в
     #  дочернем. Сейчас сделал когда родительский акт возвращает True если дошел до конца, а в дочернем проверяем это
     #  дело.
     def act(self):
@@ -169,11 +174,23 @@ class Wife(Person):
             self.fullness -= 10
             self.house.food += 50
             self.house.money -= 50
-            return False
+            return True
         else:
             cprint('{} хотела купить еды, но денег нет...'.format(self.name), color='red')
             self.fullness -= 5
+            return False
+
+    def buy_cats_food(self):
+        if self.house.money > 50:
+            cprint('{} купила еды для кота'.format(self.name), color='blue')
+            self.house.cats_food += 50
+            self.house.money -= 50
+            self.fullness -= 10
             return True
+        else:
+            self.fullness -= 5
+            return False
+
 
     #  на всякий пожарный скажу, что в этом методе и в методе выше, возвращать True|False не обязательно.
     #  Мы это не используем пока никак. Но в целом, никто не запрящает. Если что - можно будет понять "снаружи" удалось
@@ -185,11 +202,11 @@ class Wife(Person):
             self.fullness -= 10
             self.house.money -= 350
             self.house.total_bought_coats += 1
-            return False
+            return True
         else:
             cprint('{} хотела купить шубу, но денег не хватило'.format(self.name), color='red')
             self.fullness -= 5
-            return True
+            return False
 
     def clean_house(self):
         cprint('{} сделала уборку в доме'.format(self.name), color='blue')
@@ -238,9 +255,6 @@ cprint('Всего заработано денег: {}, всего съеден�
        , color='cyan')
 
 
-# TODO после реализации первой части - отдать на проверку учителю
-
-# TODO: переходим ко 2ой части!
 
 ######################################################## Часть вторая
 #
@@ -269,20 +283,39 @@ cprint('Всего заработано денег: {}, всего съеден�
 
 class Cat:
 
-    def __init__(self):
-        pass
+    names = ('Муська', 'Дуська')
+
+    def __init__(self, house):
+        self.fullness = 30
+        self.house = house
+        self.name = choice(Cat.names)
 
     def act(self):
-        pass
+        if self.fullness < 0:
+            print(f'{self.name} умер...')
+            return False
+        if self.fullness < 10:
+            self.eat()
+        else:
+            choice(self.eat, self.sleep, self.soil)
+        return True
 
     def eat(self):
-        pass
+        if self.house.cats_food > 10:
+            self.house.cats_food -= 10
+            self.fullness += 15
+            return True
+        else:
+            self.fullness -= 5
+            return False
 
     def sleep(self):
-        pass
+        self.fullness -= 10
+        return True
 
     def soil(self):
-        pass
+        self.fullness -= 10
+        self.house.dirty += 5
 
 
 ######################################################## Часть вторая бис
