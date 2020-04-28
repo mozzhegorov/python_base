@@ -74,7 +74,7 @@ class SortingUpToFolders:
         # else:
         #     os.makedirs(self.direct_folder)
 
-        for file, time in sorting.files_time.items():
+        for file, time in self.files_time.items():
             if os.path.exists(os.path.join(self.direct_folder,
                                            str(time.tm_year),
                                            str(time.tm_mon),
@@ -86,6 +86,18 @@ class SortingUpToFolders:
                                          str(time.tm_mon),
                                          str(time.tm_mday)))
 
+    def copy_files(self):
+        for dir, dir_files in self.files_list.items():
+            for file in dir_files:
+                year = self.files_time[file].tm_year
+                mon = self.files_time[file].tm_mon
+                mday = self.files_time[file].tm_mday
+
+                shutil.copy2(os.path.join(dir, file), os.path.join(self.direct_folder,
+                                                                   str(year),
+                                                                   str(mon),
+                                                                   str(mday)))
+
 
 sorting = SortingUpToFolders(basic_folder='icons', direct_folder='icons_by_year')
 sorting.unzipping()
@@ -93,6 +105,7 @@ sorting.get_files_list()
 sorting.get_files_stat()
 # # print(sorting.files_time)
 sorting.create_new_dirs()
+sorting.copy_files()
 
 # z = zipfile.ZipFile('icons.zip')
 # info = z.infolist()
@@ -102,13 +115,13 @@ sorting.create_new_dirs()
 # print(zipfile.ZipFile('icons.zip').from_file(filename='\\icons\\actions\\address-book-new.png'))
 # with zipfile.ZipInfo('icons.zip') as myzip:
 #     print(myzip)
-    # for dirs in myzip.namelist():
-    #     print(dirs)
-    #     secs = os.path.getmtime(dirs)
-    #     file_time = time.gmtime(secs)
-    #     print(file_time)
-        # with myzip.open('eggs.txt') as myfile:
-        #     print(myfile.read())
+# for dirs in myzip.namelist():
+#     print(dirs)
+#     secs = os.path.getmtime(dirs)
+#     file_time = time.gmtime(secs)
+#     print(file_time)
+# with myzip.open('eggs.txt') as myfile:
+#     print(myfile.read())
 
 # Усложненное задание (делать по желанию)
 # Нужно обрабатывать zip-файл, содержащий фотографии, без предварительного извлечения файлов в папку.
