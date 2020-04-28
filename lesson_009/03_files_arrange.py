@@ -46,25 +46,25 @@ class SortingUpToFolders:
         self.files_list = {}
 
     def unzipping(self):
-        zfile = zipfile.ZipFile(self.basic_folder + '.zip', 'r')
-        for filename in zfile.namelist():
-            zfile.extract(filename)
+        self.zfile = zipfile.ZipFile(self.basic_folder + '.zip', 'r')
+        for filename in self.zfile.namelist():
+            self.zfile.extract(filename)
 
     def get_files_list(self):
         for dirname, dirnames, filenames in os.walk(self.basic_folder):
             self.files_list[dirname] = filenames
 
     def get_files_stat(self):
-        for dir, dir_files in self.files_list.items():
-            for file in dir_files:
-                secs = os.path.getmtime(os.path.join(dir, file))
-                file_time = time.gmtime(secs)
-                # print(file)
-                self.files_time[file] = file_time
-        # z = zipfile.ZipFile(self.basic_folder + '.zip')
-        # info = z.infolist()
-        # for file in info:
-        #     self.files_time[file] = file.date_time[0:3]
+        # for dir, dir_files in self.files_list.items():
+        #     for file in dir_files:
+        #         secs = os.path.getmtime(os.path.join(dir, file))
+        #         file_time = time.gmtime(secs)
+        #         # print(file)
+        #         self.files_time[file] = file_time
+        z = zipfile.ZipFile(self.basic_folder + '.zip')
+        info = z.infolist()
+        for file in info:
+            self.files_time[file.filename] = file.date_time[0:3]
 
     def create_new_dirs(self):
         inside_dirs = {}
@@ -75,32 +75,69 @@ class SortingUpToFolders:
         #     os.makedirs(self.direct_folder)
 
         for file, time in self.files_time.items():
+            filename = os.path.basename(file)
+            if not filename:
+                continue
             if os.path.exists(os.path.join(self.direct_folder,
-                                           str(time.tm_year),
-                                           str(time.tm_mon),
-                                           str(time.tm_mday))):
+                                           str(time[0]),
+                                           str(time[1]),
+                                           str(time[2]))):
                 pass
             else:
                 os.makedirs(os.path.join(self.direct_folder,
-                                         str(time.tm_year),
-                                         str(time.tm_mon),
-                                         str(time.tm_mday)))
+                                         str(time[0]),
+                                         str(time[1]),
+                                         str(time[2])))
 
     def copy_files(self):
-        for dir, dir_files in self.files_list.items():
-            for file in dir_files:
-                year = self.files_time[file].tm_year
-                mon = self.files_time[file].tm_mon
-                mday = self.files_time[file].tm_mday
+        self.zfile = zipfile.ZipFile(self.basic_folder + '.zip', 'r')
+        for file, time in self.files_time.items():
+            filename = os.path.basename(file)
+            if not filename:
+                continue
+            print(file)
 
-                shutil.copy2(os.path.join(dir, file), os.path.join(self.direct_folder,
-                                                                   str(year),
-                                                                   str(mon),
-                                                                   str(mday)))
+            member = self.zfile.open(file)
+            nor = os.path.normpath(os.path.join(self.direct_folder,
+                                   str(time[0]),
+                                   str(time[1]),
+                                   str(time[2]),
+                                   os.path.basename(file)))
+            print(nor)
+            with open(nor, 'wb') as outfile:
+                shutil.copyfileobj(member, outfile)
+        # for file, time in self.files_time.items():
+        #     print(file)
+        #     year = time[0]
+        #     mon = time[1]
+        #     mday = time[2]
+        #     print(file)
+        #     shutil.copy2()
+        #     self.zfile.extract(file, os.path.join(self.direct_folder, os.path.join(self.direct_folder,
+        #                                                                            str(year),
+        #                                                                            str(mon),
+        #                                                                            str(mday))))
+
+        # for dir, dir_files in self.files_list.items():
+        #     for file in dir_files:
+        #         year = self.files_time[file].tm_year
+        #         mon = self.files_time[file].tm_mon
+        #         mday = self.files_time[file].tm_mday
+        #         origin_file = os.path.normpath(os.path.join(dir, file))
+        #         print(origin_file)
+        #         self.zfile.extract(origin_file, os.path.join(dir, file), os.path.join(self.direct_folder,
+        #                                                                               str(year),
+        #                                                                               str(mon),
+        #                                                                               str(mday)))
+        #
+        # shutil.copy2(os.path.join(dir, file), os.path.join(self.direct_folder,
+        #                                                    str(year),
+        #                                                    str(mon),
+        #                                                    str(mday)))
 
 
 sorting = SortingUpToFolders(basic_folder='icons', direct_folder='icons_by_year')
-sorting.unzipping()
+# sorting.unzipping()
 sorting.get_files_list()
 sorting.get_files_stat()
 # # print(sorting.files_time)
