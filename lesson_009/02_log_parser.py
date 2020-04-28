@@ -18,9 +18,33 @@
 #
 # Входные параметры: файл для анализа, файл результата
 # Требования к коду: он должен быть готовым к расширению функциональности. Делать сразу на классах.
+from pprint import pprint
 
-# TODO здесь ваш код
 
+class ReadLog:
+
+    def __init__(self, filename):
+        self.file_name = filename
+        self.nok_count = {}
+
+    def open_file(self):
+        with open(self.file_name, 'r', encoding='utf8') as file:
+            for line in file:
+                if 'NOK' in line:
+                    print(line)
+                    self.counting_nok(date_time=line[1:17])
+
+    def counting_nok(self, date_time):
+        if date_time in self.nok_count:
+            self.nok_count[date_time] += 1
+        else:
+            self.nok_count[date_time] = 1
+        return self.nok_count
+
+
+read_file = ReadLog(filename='events.txt')
+read_file.open_file()
+pprint(read_file.nok_count)
 # После выполнения первого этапа нужно сделать группировку событий
 #  - по часам
 #  - по месяцу
