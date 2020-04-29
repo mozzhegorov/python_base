@@ -20,18 +20,20 @@
 # Требования к коду: он должен быть готовым к расширению функциональности. Делать сразу на классах.
 from pprint import pprint
 
-
+# TODO: скорее ParseLog, т.к. мы парсим и анализуем данные, а не просто читаем и закрываем файл.
 class ReadLog:
 
     def __init__(self, filename):
         self.file_name = filename
-        self.nok_count = {}
+        self.nok_count = {}     # TODO: использовать defaultdict
 
+    # TODO: выбирая имя функции, всегда спрашивайте себя "что делает эта функция? отражает ли название ее действие?"
+    #  Что открывает файл - согласен. Но она же еще и всю работу делает!
     def open_file(self):
         with open(self.file_name, 'r', encoding='utf8') as file:
             for line in file:
                 if 'NOK' in line:
-                    print(line)
+                    print(line)     # TODO: отладочные выводы долой
                     self.counting_nok(date_time=line[1:17])
 
     def counting_nok(self, date_time):
@@ -40,6 +42,8 @@ class ReadLog:
         else:
             self.nok_count[date_time] = 1
         return self.nok_count
+
+    # TODO: нам еще нужно запись в итоговый файл, согласно ТЗ
 
 
 read_file = ReadLog(filename='events.txt')
