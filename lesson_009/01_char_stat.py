@@ -85,6 +85,8 @@ class TextStat:
 
     # TODO: добавить форматированный вывод, в виде таблицы, согласно ТЗ.
 
+    # TODO: добавить сортировку по алфавиту (т.к. это сейчас за нас делает pprint)
+
 
 text = TextStat(file_name='python_snippets\\voyna-i-mir.txt.zip')
 text.open_file()
