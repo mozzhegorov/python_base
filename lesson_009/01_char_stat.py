@@ -52,14 +52,26 @@ class TextStat:
                 self.stat[char] += 1
         return self.stat
 
-    # TODO: добавить форматированный вывод, в виде таблицы, согласно ТЗ.
-
-    # TODO: добавить сортировку по алфавиту (т.к. это сейчас за нас делает pprint)
-
 
 text = TextStat(file_name='python_snippets\\voyna-i-mir.txt.zip')
 text.open_file()
-pprint(text.stat)
+# print(ord(min(text.stat)))
+first_letter = ord(min(text.stat))
+last_letter = ord(max(text.stat))
+total_letters = 0
+
+print('''+---------+----------+
+|  буква  | частота  |
++---------+----------+''')
+
+for i in range(first_letter, last_letter + 1):
+    if chr(i) in text.stat:
+        print(f'|{chr(i):^9}|{text.stat[chr(i)]:^10}|')
+        total_letters += text.stat[chr(i)]
+
+print(f'''+---------+----------+
+|  итого  |{total_letters:^10}|
++---------+----------+''')
 
 # После выполнения первого этапа нужно сделать упорядочивание статистики
 #  - по частоте по возрастанию
