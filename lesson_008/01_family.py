@@ -75,20 +75,21 @@ class House:
 
 class Creature:
 
-    def __init__(self, name, house, INIT_FULLNESS=30):
+    def __init__(self, name, house, gluttony, INIT_FULLNESS=30):
         self.name = name
         self.house = house
         self.fullness = INIT_FULLNESS
+        self.gluttony = gluttony
 
-    def eat(self, TYPE_FOOD, quantity):
-        if self.house.icebox[TYPE_FOOD] > quantity:
-            self.fullness += quantity - 5
-            self.house.icebox[TYPE_FOOD] -= quantity
-            self.house.total[TYPE_FOOD] += quantity
+    def eat(self, TYPE_FOOD):
+        if self.house.icebox[TYPE_FOOD] > self.gluttony:
+            self.fullness += self.gluttony - 5
+            self.house.icebox[TYPE_FOOD] -= self.gluttony
+            self.house.total[TYPE_FOOD] += self.gluttony
             cprint('{} поел'.format(self.name), color='blue')
             return True
         else:
-            self.fullness -= quantity
+            self.fullness -= self.gluttony
             cprint('{} хотел поесть, но нет еды'.format(self.name), color='red')
             return False
 
@@ -101,8 +102,8 @@ class Creature:
 
 class Person(Creature):
 
-    def __init__(self, name, house):
-        super().__init__(name=name, house=house)
+    def __init__(self, name, house, gluttony=10):
+        super().__init__(name=name, house=house, gluttony=gluttony)
         self.happiness = 100
 
     def __str__(self):
@@ -113,7 +114,7 @@ class Person(Creature):
         self.happiness += 5
 
     def person_eat(self):
-        super().eat(TYPE_FOOD=FOOD, quantity=20)
+        super().eat(TYPE_FOOD=FOOD)
 
     def act(self):
         if self.house.dirty >= 90:
@@ -127,7 +128,7 @@ class Person(Creature):
 class Husband(Person):
 
     def __init__(self, name, house):
-        super().__init__(name=name, house=house)
+        super().__init__(name=name, house=house, gluttony=20)
 
     def __str__(self):
         return 'Муж {}'.format(self.name) + super().__str__()
@@ -161,7 +162,7 @@ class Husband(Person):
 class Wife(Person):
 
     def __init__(self, name, house):
-        super().__init__(name=name, house=house)
+        super().__init__(name=name, house=house, gluttony=20)
 
     def __str__(self):
         return 'Жена {}, счастья {}, сытость {}'.format(self.name, self.happiness, self.fullness)
@@ -245,10 +246,9 @@ cprint('''Всего заработано денег: {},
 всего съедено еды: {}, 
 кошачьей еды {}, 
 куплено шуб: {}'''.format(home.total['money'],
-                                                                                                    home.total[FOOD],
-                                                                                                    home.total[
-                                                                                                        CATS_FOOD],
-                                                                                                    home.total['coats'])
+                          home.total[FOOD],
+                          home.total[CATS_FOOD],
+                          home.total['coats'])
        , color='cyan')
 
 
@@ -276,7 +276,7 @@ cprint('''Всего заработано денег: {},
 #
 # Если кот дерет обои, то грязи становится больше на 5 пунктов
 
-# TODO: Общий класс с Cat.
+#  Общий класс с Cat.
 #  Вообще с котом вы способны на большее. Посмотрите сколько методов пришлось для Кота скопировать. Почему? Потому что
 #  у него не общего класс с Мужем, Женой и Ребенком. Почему? Потому у них общий родитель - Human, а кот это не человек.
 #  Как быть? Сделать еще один класс. Как вы думаете что между ними общего, если на секундочку
@@ -299,13 +299,13 @@ cprint('''Всего заработано денег: {},
 class Cat(Creature):
 
     def __init__(self, name, house):
-        super().__init__(name=name, house=house)
+        super().__init__(name=name, house=house, gluttony=10)
 
     def act(self):
         if not super().is_alive():
             return False
         if self.fullness < 10:
-            self.eat(CATS_FOOD, 10)
+            self.eat(CATS_FOOD)
         else:
             choice(self.eat, self.sleep, self.soil)()
         return True
