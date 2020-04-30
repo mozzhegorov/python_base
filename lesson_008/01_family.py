@@ -3,7 +3,6 @@
 from termcolor import cprint
 from random import randint, choice
 
-
 ######################################################## Часть первая
 #
 # Создать модель жизни небольшой семьи.
@@ -42,69 +41,84 @@ from random import randint, choice
 #
 # Подвести итоги жизни за год: сколько было заработано денег, сколько сьедено еды, сколько куплено шуб.
 
+FOOD = 'food'
+CATS_FOOD = 'cats_food'
+
 
 class House:
 
     def __init__(self):
-        self.food = 50
-        self.cats_food = 30
         self.money = 100
         self.dirty = 0
-        self.total_earned_money = 0
-        self.total_eaten_food = 0
-        self.total_bought_coats = 0
+
+        self.icebox = {
+            FOOD: 50,
+            CATS_FOOD: 30
+        }
+
+        self.total = {
+            'money': 0,
+            FOOD: 0,
+            CATS_FOOD: 0,
+            'coats': 0
+        }
 
     def __str__(self):
-        return 'В доме еды {}, денег {}, грязи {}'.format(self.food, self.money, self.dirty)
+        return 'В доме еды {}, еды кошака {}, денег {}, грязи {}'.format(self.icebox[FOOD],
+                                                                         self.icebox[CATS_FOOD],
+                                                                         self.money,
+                                                                         self.dirty)
 
     def act(self):
         self.dirty += 5
 
 
-class Person:
+class Creature:
+
+    def __init__(self, name, house, INIT_FULLNESS=30):
+        self.name = name
+        self.house = house
+        self.fullness = INIT_FULLNESS
+
+    def eat(self, TYPE_FOOD, quantity):
+        if self.house.icebox[TYPE_FOOD] > quantity:
+            self.fullness += quantity - 5
+            self.house.icebox[TYPE_FOOD] -= quantity
+            self.house.total[TYPE_FOOD] += quantity
+            cprint('{} поел'.format(self.name), color='blue')
+            return True
+        else:
+            self.fullness -= quantity
+            cprint('{} хотел поесть, но нет еды'.format(self.name), color='red')
+            return False
+
+    def is_alive(self):
+        if self.fullness < 0:
+            cprint('Перс {} умер...'.format(self.name), color='red')
+            return False
+        return True
+
+
+class Person(Creature):
 
     def __init__(self, name, house):
-        self.name = name
-        self.fullness = 30
+        super().__init__(name=name, house=house)
         self.happiness = 100
-        self.house = house
 
     def __str__(self):
         return ', счастья {}, сытость {}'.format(self.happiness, self.fullness)
-
-    def eat(self):
-        if self.house.food >= 20:
-            cprint('{} поел(а)'.format(self.name), color='blue')
-            self.house.food -= 20
-            self.fullness += 15
-            self.house.total_eaten_food += 20
-        else:
-            self.fullness -= 5
-            cprint('{} хотел(а) поесть, но еды нет...'.format(self.name), color='blue')
 
     def caress_cat(self):
         self.fullness -= 10
         self.happiness += 5
 
-    #  очень важно!
-    #  Каждый act() любого класса должен в Любом случае, в абсолютно любом случае, возвращать True или False.
-    #  .
-    #  Предположем, что кто-то добавит класс МужКаскадер, который конечно же будет наследником класса Муж.
-    #  У объекта класса МужКаскадер в методе work будет 1/100 вероятность погибнуть при исполнении.
-    #  Его метод act() будет возвращать False - Если муж погиб, и True - если трюк удался и удалось заработать.
-    #  Это если архитектура нормальная. А если как сейчас, то внутри метода act() у класса МужКаскадер мы не сможем
-    #  вызывать "if super().act()", т.к. это всегда будет False (если метод ничего не возвращает - он возвращает None).
-    #  А мы хотим, что наши классы можно было наследовать и использовать наш код. А не перегружать метод act().
-    #  .
-    #  Понятна ли идея? Я могу подробнее описать или привести другой пример. Задавайте вопросы, если что-то кажется
-    #  не логичным и не понятным. У нас демократия, я тоже могу ошибаться.
-    #  Думал немного проще будет инкапсуляция и если в родительском акте получим False, то он вернется и в
-    #  дочернем. Сейчас сделал когда родительский акт возвращает True если дошел до конца, а в дочернем проверяем это
-    #  дело.
+    def person_eat(self):
+        super().eat(TYPE_FOOD=FOOD, quantity=20)
+
     def act(self):
         if self.house.dirty >= 90:
             self.happiness -= 10
-        if self.happiness < 10 or self.fullness < 0:
+        if self.happiness < 10 or not super().is_alive():
             cprint('Перс {} умер...'.format(self.name), color='red')
             return False
         return True
@@ -119,13 +133,11 @@ class Husband(Person):
         return 'Муж {}'.format(self.name) + super().__str__()
 
     def act(self):
-        #  допустим Персона умерла. Т.е. муж мертв. Мы не проверяем, что нам вернул вышестоящий метод. А надо.
-        #  Нам нужен каскад act`ов. Тогда можно не писать в каждом act`е класса-наследнике проверку if.
         if not super().act():
             return False
 
         if self.fullness <= 30:
-            self.eat()
+            self.person_eat()
         elif self.house.money <= 50:
             self.work()
         elif self.happiness <= 30:
@@ -138,7 +150,7 @@ class Husband(Person):
         cprint('{} поработал'.format(self.name), color='blue')
         self.fullness -= 10
         self.house.money += 150
-        self.house.total_earned_money += 150
+        self.house.total['money'] += 150
 
     def gaming(self):
         cprint('{} поиграл'.format(self.name), color='blue')
@@ -159,20 +171,24 @@ class Wife(Person):
             return False
 
         if self.fullness <= 30:
-            self.eat()
-        elif self.house.food <= 40:
+            super().person_eat()
+        elif self.house.icebox[FOOD] <= 40:
             self.shopping()
         elif self.happiness <= 30:
             self.buy_fur_coat()
         else:
-            choice([self.clean_house, self.eat, self.eat, self.shopping, self.shopping])()
+            choice([self.clean_house,
+                    self.person_eat,
+                    self.person_eat,
+                    self.shopping,
+                    self.shopping])()
         return True
 
     def shopping(self):
         if self.house.money > 50:
             cprint('{} купила еды домой'.format(self.name), color='blue')
             self.fullness -= 10
-            self.house.food += 50
+            self.house.icebox[FOOD] += 50
             self.house.money -= 50
             return True
         else:
@@ -191,16 +207,13 @@ class Wife(Person):
             self.fullness -= 5
             return False
 
-    #  на всякий пожарный скажу, что в этом методе и в методе выше, возвращать True|False не обязательно.
-    #  Мы это не используем пока никак. Но в целом, никто не запрящает. Если что - можно будет понять "снаружи" удалось
-    #  ли купить шубу или нет.
     def buy_fur_coat(self):
         if self.house.money > 350:
             cprint('{} купила шубу'.format(self.name), color='blue')
             self.happiness += 60
             self.fullness -= 10
             self.house.money -= 350
-            self.house.total_bought_coats += 1
+            self.house.total['coats'] += 1
             return True
         else:
             cprint('{} хотела купить шубу, но денег не хватило'.format(self.name), color='red')
@@ -211,26 +224,6 @@ class Wife(Person):
         cprint('{} сделала уборку в доме'.format(self.name), color='blue')
 
         self.house.dirty -= 100 if self.house.dirty > 100 else self.house.dirty
-
-        #  Пример.
-        #               if some_condition:
-        #                   a = 100
-        #               else:                       			 # было
-        #                   a = 200.
-        #  .
-        #               a = 100 if some_condition else 200       # стало
-        #  .              ↑  ↑                          ↑
-        #  Аналогично и +=, *=, -=, /=:
-        #               a *= 4 if some_condition_2 else 2        # если ДА - умножим в 4 раза, если НЕТ - в 2 раза
-        #  .               ↑ ↑                          ↑
-        #  .
-        #  Оператор =, += и т.п пишется 1 раз. Не 2 раза, только 1 раз слева.
-
-        # if self.house.dirty > 100:
-        #     self.house.dirty -= 100
-        # else:
-        #     self.house.dirty = 0
-        # self.fullness -= 10
 
 
 home = House()
@@ -248,9 +241,14 @@ for day in range(365):
     cprint(masha, color='cyan')
     cprint(home, color='cyan')
 
-cprint('Всего заработано денег: {}, всего съедено еды: {}, куплено шуб: {}'.format(home.total_earned_money,
-                                                                                   home.total_eaten_food,
-                                                                                   home.total_bought_coats)
+cprint('''Всего заработано денег: {}, 
+всего съедено еды: {}, 
+кошачьей еды {}, 
+куплено шуб: {}'''.format(home.total['money'],
+                                                                                                    home.total[FOOD],
+                                                                                                    home.total[
+                                                                                                        CATS_FOOD],
+                                                                                                    home.total['coats'])
        , color='cyan')
 
 
@@ -298,31 +296,19 @@ cprint('Всего заработано денег: {}, всего съеден�
 #  его достаточно. А в классе Человек, мы можем использовать is_alive родителя и дополнить его проверкой на уровень
 #  счастья.
 #  Т.е. сейчас наша главная задача при проектировании классов: сделать так, чтобы все общие часть попали в родителей.
-class Cat:
+class Cat(Creature):
 
     def __init__(self, name, house):
-        self.fullness = 30
-        self.house = house
-        self.name = name
+        super().__init__(name=name, house=house)
 
     def act(self):
-        if self.fullness < 0:
-            print(f'{self.name} умер...')
+        if not super().is_alive():
             return False
         if self.fullness < 10:
-            self.eat()
+            self.eat(CATS_FOOD, 10)
         else:
-            choice(self.eat, self.sleep, self.soil)
+            choice(self.eat, self.sleep, self.soil)()
         return True
-
-    def eat(self):
-        if self.house.cats_food > 10:
-            self.house.cats_food -= 10
-            self.fullness += 15
-            return True
-        else:
-            self.fullness -= 5
-            return False
 
     def sleep(self):
         self.fullness -= 10
@@ -331,6 +317,7 @@ class Cat:
     def soil(self):
         self.fullness -= 10
         self.house.dirty += 5
+        return True
 
 
 ######################################################## Часть вторая бис
