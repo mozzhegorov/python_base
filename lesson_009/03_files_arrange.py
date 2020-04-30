@@ -4,6 +4,7 @@ import os
 import shutil
 import zipfile
 
+
 # Нужно написать скрипт для упорядочивания фотографий (вообще любых файлов)
 # Скрипт должен разложить файлы из одной папки по годам и месяцам в другую.
 # Например, так:
@@ -37,48 +38,41 @@ import zipfile
 # Требования к коду: он должен быть готовым к расширению функциональности. Делать сразу на классах.
 
 
-
 class SortingUpToFolders:
 
     def __init__(self, basic_folder, direct_folder):
-        # TODO: зачем нам это поле, если мы сразу открываем архив?
         self.basic_folder = basic_folder
         self.direct_folder = direct_folder
         self.files_time = {}
         self.files_list = {}
-        # TODO: или зачем открывать сразу архив? Мне кажется более правильным, открывать архив не сразу в конструкторе,
-        #  а непосредственно при команде get_files_stat()
-        self.zfile = zipfile.ZipFile(self.basic_folder + '.zip', 'r')
+        self.zfile = None
 
     def get_files_stat(self):
-        infolist = self.zfile.infolist()    # TODO: можно не использовать промежуточную переменную infolist
-        for file in infolist:
+        self.zfile = zipfile.ZipFile(self.basic_folder + '.zip', 'r')
+        for file in self.zfile.infolist():
             self.files_time[file.filename] = file.date_time[0:3]
 
     def create_new_dirs(self):
-        # TODO: хорошо, удачно применили items(). Обычно вместо time пишу ts (timestamp)
-        for file, time in self.files_time.items():
-            filename = os.path.basename(file)       # TODO: можно убрать промежуточную переменную.
-            if not filename:
+        for file, ts in self.files_time.items():
+            if not os.path.basename(file):
                 continue
             checking_path = os.path.normpath(os.path.join(self.direct_folder,
-                                           str(time[0]),
-                                           str(time[1]),
-                                           str(time[2])))
+                                                          str(ts[0]),
+                                                          str(ts[1]),
+                                                          str(ts[2])))
             if not os.path.exists(checking_path):
                 os.makedirs(os.path.join(checking_path))
 
     def copy_files(self):
-        for file, time in self.files_time.items():
-            filename = os.path.basename(file)       # TODO: можно убрать промежуточную переменную filename
-            if not filename:
+        for file, ts in self.files_time.items():
+            if not os.path.basename(file):
                 continue
 
             source = self.zfile.open(file)
             destination = os.path.normpath(os.path.join(self.direct_folder,
-                                                        str(time[0]),
-                                                        str(time[1]),
-                                                        str(time[2]),
+                                                        str(ts[0]),
+                                                        str(ts[1]),
+                                                        str(ts[2]),
                                                         os.path.basename(file)))
             with open(destination, 'wb') as outfile:
                 shutil.copyfileobj(source, outfile)
