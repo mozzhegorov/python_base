@@ -41,20 +41,24 @@ import zipfile
 class SortingUpToFolders:
 
     def __init__(self, basic_folder, direct_folder):
+        # TODO: зачем нам это поле, если мы сразу открываем архив?
         self.basic_folder = basic_folder
         self.direct_folder = direct_folder
         self.files_time = {}
         self.files_list = {}
+        # TODO: или зачем открывать сразу архив? Мне кажется более правильным, открывать архив не сразу в конструкторе,
+        #  а непосредственно при команде get_files_stat()
         self.zfile = zipfile.ZipFile(self.basic_folder + '.zip', 'r')
 
     def get_files_stat(self):
-        infolist = self.zfile.infolist()
+        infolist = self.zfile.infolist()    # TODO: можно не использовать промежуточную переменную infolist
         for file in infolist:
             self.files_time[file.filename] = file.date_time[0:3]
 
     def create_new_dirs(self):
+        # TODO: хорошо, удачно применили items(). Обычно вместо time пишу ts (timestamp)
         for file, time in self.files_time.items():
-            filename = os.path.basename(file)
+            filename = os.path.basename(file)       # TODO: можно убрать промежуточную переменную.
             if not filename:
                 continue
             checking_path = os.path.normpath(os.path.join(self.direct_folder,
@@ -66,7 +70,7 @@ class SortingUpToFolders:
 
     def copy_files(self):
         for file, time in self.files_time.items():
-            filename = os.path.basename(file)
+            filename = os.path.basename(file)       # TODO: можно убрать промежуточную переменную filename
             if not filename:
                 continue
 
