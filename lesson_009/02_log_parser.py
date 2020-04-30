@@ -19,36 +19,38 @@
 # Входные параметры: файл для анализа, файл результата
 # Требования к коду: он должен быть готовым к расширению функциональности. Делать сразу на классах.
 from pprint import pprint
+from collections import defaultdict
 
-# TODO: скорее ParseLog, т.к. мы парсим и анализуем данные, а не просто читаем и закрываем файл.
-class ReadLog:
 
-    def __init__(self, filename):
-        self.file_name = filename
-        self.nok_count = {}     # TODO: использовать defaultdict
+class ParseLog:
 
-    # TODO: выбирая имя функции, всегда спрашивайте себя "что делает эта функция? отражает ли название ее действие?"
-    #  Что открывает файл - согласен. Но она же еще и всю работу делает!
-    def open_file(self):
+    def __init__(self, source, target_prefix):
+        self.file_name = source
+        self.target_file = target_prefix + source
+        self.nok_count = defaultdict(int)
+
+    def parsing(self):
         with open(self.file_name, 'r', encoding='utf8') as file:
             for line in file:
                 if 'NOK' in line:
-                    print(line)     # TODO: отладочные выводы долой
                     self.counting_nok(date_time=line[1:17])
 
     def counting_nok(self, date_time):
-        if date_time in self.nok_count:
-            self.nok_count[date_time] += 1
-        else:
-            self.nok_count[date_time] = 1
+        self.nok_count[date_time] += 1
         return self.nok_count
 
-    # TODO: нам еще нужно запись в итоговый файл, согласно ТЗ
+    def write_target_file(self):
+        file_name = self.target_file
+        file = open(file_name, mode='w')  # mode (режим): запись символьная, кодировка по умолчанию utf8
+        for string in self.nok_count:
+            file.write(f'{string}: {self.nok_count[string]}\n')
+        file.close()
 
 
-read_file = ReadLog(filename='events.txt')
-read_file.open_file()
+read_file = ParseLog(source='events.txt', target_prefix='parsing_')
+read_file.parsing()
 pprint(read_file.nok_count)
+read_file.write_target_file()
 # После выполнения первого этапа нужно сделать группировку событий
 #  - по часам
 #  - по месяцу
