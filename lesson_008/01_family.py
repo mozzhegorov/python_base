@@ -41,10 +41,18 @@ from random import randint, choice
 #
 # Подвести итоги жизни за год: сколько было заработано денег, сколько сьедено еды, сколько куплено шуб.
 
-
+# TODO: сейчас происходит попытка хакнуть задание. В этой ветке не должно быть никаких упоминаний про кота.
+#  Представьте, что мастер-ветку и девело-ветку пишут 2 разных программиста. Оба знают, что один отвечает за Child, а
+#  другой за Cat, но детали между собой они не обсуждают.
+#  .
+#  Сейчас у нас 2 ветки, поэтому мы можем вносить одинаковые изменения в каждую ветку, но в реальном проекте, при самой
+#  минимальной команде в 4 человека, веток ставноит 5+. Нет физической возможности вносить одинаковые правки, даже
+#  археважные в кажду веткув отдельности. Поэтому правки делают ТОЛЬКО в 1 ветке, а потом мерджат эту ветку в остальные,
+#  выполняя resolve случающихся конфликтов.
 FOOD = 'food'
-CATS_FOOD = 'cats_food'
+CATS_FOOD = 'cats_food'     # TODO: удаляем CATS_FOOD
 
+# TODO: 'money' и 'coats' встречаются по коду 3 раза в разных местах. Стоит ли вводить константу?
 
 class House:
 
@@ -53,20 +61,20 @@ class House:
         self.dirty = 0
 
         self.icebox = {
-            FOOD: 50,
-            CATS_FOOD: 30
-        }
+            FOOD: 50,           # TODO: строго говоря здесь надо вообще вернуть "self.food = 50"
+            CATS_FOOD: 30       #  но у меня рука не поднимется, так жестко откатывать выполненную работу.
+        }                       # TODO: поэтому холодильник и мод с ключом FOOD мы оставим, НО CATS_FOOD и все что с кошкой - все уберем
 
         self.total = {
             'money': 0,
             FOOD: 0,
-            CATS_FOOD: 0,
+            CATS_FOOD: 0,       # TODO: кошка!
             'coats': 0
         }
 
     def __str__(self):
         return 'В доме еды {}, еды кошака {}, денег {}, грязи {}'.format(self.icebox[FOOD],
-                                                                         self.icebox[CATS_FOOD],
+                                                                         self.icebox[CATS_FOOD],        # TODO: кошка!
                                                                          self.money,
                                                                          self.dirty)
 
@@ -75,18 +83,42 @@ class House:
 
 
 class Creature:
-
-    def __init__(self, name, house, gluttony, INIT_FULLNESS=30):
+    # TODO: INIT_FULLNESS - это имя параметра. Это не константа, это параметр.
+    #   scp_001 = Creature(name='Страж Врат', house=None, gluttony=10, INIT_FULLNESS=100500)
+    #  .
+    #  Скорее всего идея была в том, чтобы INIT_FULLNESS был константой и хранил 30.
+    #  А вызов выглядел как: "...fullness=INIT_FULLNESS)".
+    def __init__(self, name, house, gluttony, INIT_FULLNESS=30):        # TODO: "тип еды" лучше добавить в конструктор
         self.name = name
         self.house = house
         self.fullness = INIT_FULLNESS
         self.gluttony = gluttony
 
+    # TODO: TYPE_FOOD - это стиль констант. А на самом деле это параметр, который может менять значение по ходу программы.
+    #  Т.е. мы можем вызвать данный метод, указав ему любое значение в качестве параметра. И выйдет, что TYPE_FOOD сначала
+    #  будет 1, потом 123, потом 100500. Константа - это "монолит", который остается собой при старте и завершении программы.
+    #  .
+    #  I. Переменные.
+    #  Имя должно отражаться суть того, что хранит переменная. Имена написаны исключительно строчными (маленькими) буквами.
+    #  Имя переменной может состоять максимум из 3-4 слов, в таком случае слова разделяются символом "_".
+    #   Правильно:      user_input, months_31_days, sorted_dict, point_2;
+    #   Не правильно:   userinput, userInput, UserInput, USERINPUT, Userinput, point2       (не верный стиль);
+    #                   my_var, my_lst, point_13, point_15, thing, peremennay               (не понятно что хранит).
+    #  .
+    #  .
+    #  II. Константы.
+    #  Контстанта. Это тоже переменная, НО ее значение не изменяется по ходу работы программы. Никогда. Например, число Пи.
+    #  Вы можете объявить собственную переменную pi, которая будет равна 3.14, и по ходу выполнения скрипта нигда не будет
+    #  изменено значение этой переменной pi. Не будет изменено, т.к. это значение должно оставаться неизменным пока работае
+    #  скрипт. Имена объявленных константа помимо правил для переменных, отличаются одним - все буквы заглавные.
+    #   Правильно:      PI, MAX_NUMBER, LIMIT_OF_TRANS, THREAD_NUMB;
+    #   Не правильно:   все те же самые ошибки, что и для переменных
+    #                   + нельзя использовать строчные букв
     def eat(self, TYPE_FOOD):
         if self.house.icebox[TYPE_FOOD] > self.gluttony:
             self.fullness += self.gluttony - 5
-            self.house.icebox[TYPE_FOOD] -= self.gluttony
-            self.house.total[TYPE_FOOD] += self.gluttony
+            self.house.icebox[TYPE_FOOD] -= self.gluttony       # TODO: нам будет гораздо удобнее, есть "тип еды" будет устанавливаться
+            self.house.total[TYPE_FOOD] += self.gluttony        #  в конструкторе.
             cprint('{} поел'.format(self.name), color='blue')
             return True
         else:
@@ -114,6 +146,7 @@ class Person(Creature):
         self.fullness -= 10
         self.happiness += 5
 
+    # TODO: этот метод изменится
     def person_eat(self):
         super().eat(TYPE_FOOD=FOOD)
 
@@ -198,6 +231,9 @@ class Wife(Person):
             self.fullness -= 5
             return False
 
+    # TODO: кошка! Это метод воообще не должен тут существовать. В это вселенной (ветке гита) Кошки не существует
+    #  Здесь же нет методов "купить корм крокодилу", потому что про крокодила никто ничего не знает, если им кто и
+    #  занимается, так это отдельные программист.
     def buy_cats_food(self):
         if self.house.money > 50:
             cprint('{} купила еды для кота'.format(self.name), color='blue')
@@ -248,7 +284,7 @@ cprint('''Всего заработано денег: {},
 кошачьей еды {}, 
 куплено шуб: {}'''.format(home.total['money'],
                           home.total[FOOD],
-                          home.total[CATS_FOOD],
+                          home.total[CATS_FOOD],        # TODO: кошка!
                           home.total['coats'])
        , color='cyan')
 
