@@ -41,7 +41,7 @@ from random import randint, choice
 #
 # Подвести итоги жизни за год: сколько было заработано денег, сколько сьедено еды, сколько куплено шуб.
 
-FOOD = 'food'               # TODO: здесь оба типа еды обоснованы. Кошка разрабатываться начала в этой ветке гита.
+FOOD = 'food'
 CATS_FOOD = 'cats_food'
 
 
@@ -75,18 +75,18 @@ class House:
 
 class Creature:
 
-    # TODO: INIT_FULLNESS - стиль константы. А нужен стиль переменной
-    def __init__(self, name, house, gluttony, INIT_FULLNESS=30):        # TODO: Добавить параметр "тип еды"
+    def __init__(self, name, house, gluttony, type_food, init_fullness=30):
         self.name = name
         self.house = house
-        self.fullness = INIT_FULLNESS
+        self.fullness = init_fullness
         self.gluttony = gluttony
+        self.type_food = type_food
 
-    def eat(self, TYPE_FOOD):
-        if self.house.icebox[TYPE_FOOD] > self.gluttony:
+    def eat(self):
+        if self.house.icebox[self.type_food] > self.gluttony:
             self.fullness += self.gluttony - 5
-            self.house.icebox[TYPE_FOOD] -= self.gluttony
-            self.house.total[TYPE_FOOD] += self.gluttony
+            self.house.icebox[self.type_food] -= self.gluttony
+            self.house.total[self.type_food] += self.gluttony
             cprint('{} поел'.format(self.name), color='blue')
             return True
         else:
@@ -114,16 +114,10 @@ class Person(Creature):
         self.fullness -= 10
         self.happiness += 5
 
-    # TODO: person_eat изчезнет в обоих ветках, т.к. мы будет устанавливать тип еды в конструкторе.
-    #  При этом у самого верхнего класса может быть задан тип еды и порция, а у классов Муж, Жена, Ребенок - изменить
-    #  тип еды при создании объект должно быть нельзя, у них будет отсутствовать такой параметр.
-    def person_eat(self):
-        super().eat(TYPE_FOOD=FOOD)
-
     def act(self):
         if self.house.dirty >= 90:
             self.happiness -= 10
-        # TODO: код выполняется слева направо. Если первое условие будет нарушено - второе не будет проверяться.
+        #  код выполняется слева направо. Если первое условие будет нарушено - второе не будет проверяться.
         #  Нам лучше проверять сначала "not super().is_alive()", а потом "уровень счастья".
         #  .
         #  Почему?
@@ -136,7 +130,7 @@ class Person(Creature):
         #  Вернемся к нашим делам. У нас внутри "super().is_alive()" может быть спрятана подобная операция сравнения,
         #  которая не позволяет обращаться к полям, которых нет. Т.е. еще раз: в данном случае, это не критично, но
         #  лучше вырабатывать в себе привычку "что порядок условий важен", условие родителя может быть важнее.
-        if self.happiness < 10 or not super().is_alive():
+        if not super().is_alive() or self.happiness < 10:
             cprint('Перс {} умер...'.format(self.name), color='red')
             return False
         return True
@@ -155,7 +149,7 @@ class Husband(Person):
             return False
 
         if self.fullness <= 30:
-            self.person_eat()
+            self.eat()
         elif self.house.money <= 50:
             self.work()
         elif self.happiness <= 30:
@@ -189,15 +183,15 @@ class Wife(Person):
             return False
 
         if self.fullness <= 30:
-            super().person_eat()
+            super().eat()
         elif self.house.icebox[FOOD] <= 40:
             self.shopping()
         elif self.happiness <= 30:
             self.buy_fur_coat()
         else:
             choice([self.clean_house,
-                    self.person_eat,
-                    self.person_eat,
+                    self.eat,
+                    self.eat,
                     self.shopping,
                     self.shopping])()
         return True
@@ -316,13 +310,13 @@ cprint('''Всего заработано денег: {},
 class Cat(Creature):
 
     def __init__(self, name, house):
-        super().__init__(name=name, house=house, gluttony=10)       # TODO: не хватает параметра "тип еды"
+        super().__init__(name=name, house=house, gluttony=10, type_food=CATS_FOOD)
 
     def act(self):
         if not super().is_alive():
             return False
         if self.fullness < 10:
-            self.eat(CATS_FOOD)                                     # TODO: который бы использовался внутри eat()
+            self.eat()
         else:
             choice(self.eat, self.sleep, self.soil)()
         return True
