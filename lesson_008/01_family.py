@@ -41,7 +41,7 @@ from random import randint, choice
 #
 # Подвести итоги жизни за год: сколько было заработано денег, сколько сьедено еды, сколько куплено шуб.
 
-FOOD = 'food'
+FOOD = 'food'               # TODO: здесь оба типа еды обоснованы. Кошка разрабатываться начала в этой ветке гита.
 CATS_FOOD = 'cats_food'
 
 
@@ -75,7 +75,8 @@ class House:
 
 class Creature:
 
-    def __init__(self, name, house, gluttony, INIT_FULLNESS=30):
+    # TODO: INIT_FULLNESS - стиль константы. А нужен стиль переменной
+    def __init__(self, name, house, gluttony, INIT_FULLNESS=30):        # TODO: Добавить параметр "тип еды"
         self.name = name
         self.house = house
         self.fullness = INIT_FULLNESS
@@ -113,12 +114,28 @@ class Person(Creature):
         self.fullness -= 10
         self.happiness += 5
 
+    # TODO: person_eat изчезнет в обоих ветках, т.к. мы будет устанавливать тип еды в конструкторе.
+    #  При этом у самого верхнего класса может быть задан тип еды и порция, а у классов Муж, Жена, Ребенок - изменить
+    #  тип еды при создании объект должно быть нельзя, у них будет отсутствовать такой параметр.
     def person_eat(self):
         super().eat(TYPE_FOOD=FOOD)
 
     def act(self):
         if self.house.dirty >= 90:
             self.happiness -= 10
+        # TODO: код выполняется слева направо. Если первое условие будет нарушено - второе не будет проверяться.
+        #  Нам лучше проверять сначала "not super().is_alive()", а потом "уровень счастья".
+        #  .
+        #  Почему?
+        #  В данном случае это не влечет за собой последствий никаких. Но часто условия строят таким образом:
+        #       if my_object is not None and my_object.my_field > 100500
+        #  .
+        #  Если в условии выше поменять местами условие, то в случае, когда my_object будет None, "my_object.my_field"
+        #  попытается обратиться к полю .my_field у None. Т.е. в этом случае порядок важен.
+        #  .
+        #  Вернемся к нашим делам. У нас внутри "super().is_alive()" может быть спрятана подобная операция сравнения,
+        #  которая не позволяет обращаться к полям, которых нет. Т.е. еще раз: в данном случае, это не критично, но
+        #  лучше вырабатывать в себе привычку "что порядок условий важен", условие родителя может быть важнее.
         if self.happiness < 10 or not super().is_alive():
             cprint('Перс {} умер...'.format(self.name), color='red')
             return False
@@ -299,13 +316,13 @@ cprint('''Всего заработано денег: {},
 class Cat(Creature):
 
     def __init__(self, name, house):
-        super().__init__(name=name, house=house, gluttony=10)
+        super().__init__(name=name, house=house, gluttony=10)       # TODO: не хватает параметра "тип еды"
 
     def act(self):
         if not super().is_alive():
             return False
         if self.fullness < 10:
-            self.eat(CATS_FOOD)
+            self.eat(CATS_FOOD)                                     # TODO: который бы использовался внутри eat()
         else:
             choice(self.eat, self.sleep, self.soil)()
         return True
