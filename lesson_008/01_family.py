@@ -72,13 +72,7 @@ class House:
 
 
 class Creature:
-    # TODO: INIT_FULLNESS - это имя параметра. Это не константа, это параметр.
-    #   scp_001 = Creature(name='Страж Врат', house=None, gluttony=10, INIT_FULLNESS=100500)
-    #  .
-    #  Скорее всего идея была в том, чтобы INIT_FULLNESS был константой и хранил 30.
-    #  А вызов выглядел как: "...fullness=INIT_FULLNESS)".
-    #   ОТВЕТ: да, идея была в этом. С другой стороны сейчас понял что в принципе и дом, и имя, и
-    #   прожорливость такого же смысла параметры. Переименовал. Надеюсь зачтется.
+
     def __init__(self, name, house, gluttony, type_food, init_fullness=30):  # TODO: "тип еды" лучше добавить в
         # конструктор
         self.name = name
@@ -87,21 +81,6 @@ class Creature:
         self.gluttony = gluttony
         self.type_food = type_food
 
-    # TODO: TYPE_FOOD - это стиль констант. А на самом деле это параметр, который может менять значение по ходу
-    #  программы.
-    #  ОТВЕТ: Я очень надеюсь что человек не будет есть кошачью (например) еду :))) , но в принципе
-    #  допускаю что кошак может есть человечью еду. Поэтому признаю свою ошибку, перенес тип еды в __init__ . Но если
-    #  вдруг все же кошак будет есть человечью еду, то резонно было бы оставить тип еды в методе "eat"?
-    #  ОТВЕТ на ОТВЕТ: Работая с другой веткой понял что можно будет потом динамически поменять тип еды если вдруг
-    #  будем кормить кота человечьей едой. Понял свою ошибку. Константы не меняемы.
-
-    # TODO: чем больше сейчас ошибок мы сделаем, тем легче будет на стажеровке/работе. Поэтому все путем.
-    #  В целом, если бы мы задали условие, что в случае голода, кот можем начинать есть человеческую еду, то да, можно
-    #  было бы задать ему тип еды по умолчанию "кошачий", но в случае голода явно указывать человеческую еду.
-    #  .
-    #  Лучше нам этого не делать, т.к. задача огромная. У нас 3 этапа, мы на втором (создаем ветки). Потом еще этап
-    #  симуляции, в нем надо будет еще 2 класс (симуляция и эксперимент) объявить. В общем, работы будет много)
-    #  Но зато с классами и наследованием все встанет на свои места.
     def eat(self):
         if self.house.icebox[self.type_food] > self.gluttony:
             self.fullness += self.gluttony - 5
@@ -134,11 +113,6 @@ class Person(Creature):
         self.fullness -= 10
         self.happiness += 5
 
-    # TODO: теперь этот метод можно убрать, а у всех людей вызывать метод eat(), который мы так успешно реализовали
-    #  в родительском классе.
-    def person_eat(self):
-        super().eat()
-
     def act(self):
         if self.house.dirty >= 90:
             self.happiness -= 10
@@ -161,7 +135,7 @@ class Husband(Person):
             return False
 
         if self.fullness <= 30:
-            self.person_eat()
+            self.eat()
         elif self.house.money <= 50:
             self.work()
         elif self.happiness <= 30:
@@ -195,15 +169,15 @@ class Wife(Person):
             return False
 
         if self.fullness <= 30:
-            super().person_eat()                # TODO: любопытно, что здесь даже не свой метод вызываем) а сразу родителя
-        elif self.house.icebox[FOOD] <= 40:     #  будет заменено на self.eat() - надеюсь это стало ясно еще в TODО выше,
-            self.shopping()                     #  а здесь просто подтвердилось правильное мнение)
+            self.eat()
+        elif self.house.icebox[FOOD] <= 40:
+            self.shopping()
         elif self.happiness <= 30:
             self.buy_fur_coat()
         else:
             choice([self.clean_house,
-                    self.person_eat,
-                    self.person_eat,
+                    self.eat,
+                    self.eat,
                     self.shopping,
                     self.shopping])()
         return True
@@ -233,10 +207,10 @@ class Wife(Person):
             self.fullness -= 5
             return False
 
-    # TODO: кстати, уборка стоит 20 сытости
     def clean_house(self):
         cprint('{} сделала уборку в доме'.format(self.name), color='blue')
         self.house.dirty -= 100 if self.house.dirty > 100 else self.house.dirty
+        self.fullness -= 20
 
 
 home = House()
@@ -332,9 +306,9 @@ class Child(Person):
         if super().act():
             return False
         if self.fullness < 20:
-            self.person_eat()
+            self.eat()
         else:
-            choice(self.person_eat, self.sleep)()
+            choice(self.eat, self.sleep)()
         return True
 
     def sleep(self):
