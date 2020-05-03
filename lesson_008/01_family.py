@@ -95,7 +95,7 @@ class Creature:
             cprint('{} поел'.format(self.name), color='blue')
             return True
         else:
-            self.fullness -= self.gluttony
+            self.fullness -= 5
             cprint('{} хотел поесть, но нет еды'.format(self.name), color='red')
             return False
 
@@ -109,7 +109,7 @@ class Creature:
 class Person(Creature):
 
     def __init__(self, name, house, gluttony=10):
-        super().__init__(name=name, house=house, gluttony=gluttony)
+        super().__init__(name=name, house=house, gluttony=gluttony, type_food=FOOD)
         self.happiness = 100
 
     def __str__(self):
@@ -239,7 +239,7 @@ class Wife(Person):
 
     def clean_house(self):
         cprint('{} сделала уборку в доме'.format(self.name), color='blue')
-
+        self.fullness -= 20
         self.house.dirty -= 100 if self.house.dirty > 100 else self.house.dirty
 
 
