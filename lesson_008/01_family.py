@@ -44,11 +44,14 @@ from random import randint, choice
 FOOD = 'food'
 CATS_FOOD = 'cats_food'
 
+
 # TODO:
 #  1. запускать код перед коммитом - хорошая идея) Он не запускается, т.к. кое-что кое-где мы потеряли;
 #  2. Когда пункт №1 будет пофикшен, перед нами встанет новая задача: у Кота усвояемость в 2 раза лучше, чем Человека,
 #     т.е. 10 пунктов еды человеку дадут 10 пунктов сытости; а коту, 10 пунктов его еды, дадут 20 пункто сытости.
 #     Надо апгрейдить какой-то класс. Какой?
+#       ОТВЕТ: Первый пункт конечно да((( прямо стыдно. По поводу второго пункта видимо немного не понял. Поясню в
+#       классе Creature
 
 class House:
 
@@ -88,11 +91,14 @@ class Creature:
         self.type_food = type_food
 
     def eat(self):
+        # TODO: ОТВЕТ: Для людей gluttony указываем 20, что соответственно у нас вычитается из холодильника и
+        #  прибавляется в fullness (с коррекцией -5 для реальности). Для кота же указали gluttony 10, то есть те же
+        #  10 вычитаем из холодильника его еды.
         if self.house.icebox[self.type_food] > self.gluttony:
             self.fullness += self.gluttony - 5
             self.house.icebox[self.type_food] -= self.gluttony
             self.house.total[self.type_food] += self.gluttony
-            cprint('{} поел'.format(self.name), color='blue')
+            cprint('{} поел(а)'.format(self.name), color='blue')
             return True
         else:
             self.fullness -= 5
@@ -108,7 +114,7 @@ class Creature:
 
 class Person(Creature):
 
-    def __init__(self, name, house, gluttony=10):
+    def __init__(self, name, house, gluttony=20):
         super().__init__(name=name, house=house, gluttony=gluttony, type_food=FOOD)
         self.happiness = 100
 
@@ -144,6 +150,7 @@ class Person(Creature):
 class Husband(Person):
 
     def __init__(self, name, house):
+        # TODO: ОТВЕТ: именно здесь указываем прожорливость для людей =20
         super().__init__(name=name, house=house, gluttony=20)
 
     def __str__(self):
@@ -315,6 +322,7 @@ cprint('''Всего заработано денег: {},
 class Cat(Creature):
 
     def __init__(self, name, house):
+        # TODO: ОТВЕТ: именно здесь указываем прожорливость для людей =10
         super().__init__(name=name, house=house, gluttony=10, type_food=CATS_FOOD)
 
     def act(self):
