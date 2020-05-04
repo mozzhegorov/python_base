@@ -41,10 +41,9 @@ from random import randint, choice
 #
 # Подвести итоги жизни за год: сколько было заработано денег, сколько сьедено еды, сколько куплено шуб.
 
-FOOD = 'food'       # TODO: по коду 9 раз встречается FOOD и только 1 раз 'food' (при объявлении). Это хорошо. Это то,
-                    #  ради чего мы ввели эту константу). Шубы и Деньги встречаются по 3 раза каждый. Возможно для них
-                    #  тоже стоит ввести контстанты.
-
+FOOD = 'food'
+COATS = 'coats'
+MONEY = 'money'
 
 class House:
 
@@ -57,9 +56,9 @@ class House:
         }
 
         self.total = {
-            'money': 0,
+            MONEY: 0,
             FOOD: 0,
-            'coats': 0
+            COATS: 0
         }
 
     def __str__(self):
@@ -73,8 +72,7 @@ class House:
 
 class Creature:
 
-    def __init__(self, name, house, gluttony, type_food, init_fullness=30):  # TODO: "тип еды" лучше добавить в
-        # конструктор
+    def __init__(self, name, house, gluttony, type_food, init_fullness=30):
         self.name = name
         self.house = house
         self.fullness = init_fullness
@@ -148,7 +146,7 @@ class Husband(Person):
         cprint('{} поработал'.format(self.name), color='blue')
         self.fullness -= 10
         self.house.money += 150
-        self.house.total['money'] += 150
+        self.house.total[MONEY] += 150
 
     def gaming(self):
         cprint('{} поиграл'.format(self.name), color='blue')
@@ -200,7 +198,7 @@ class Wife(Person):
             self.happiness += 60
             self.fullness -= 10
             self.house.money -= 350
-            self.house.total['coats'] += 1
+            self.house.total[COATS] += 1
             return True
         else:
             cprint('{} хотела купить шубу, но денег не хватило'.format(self.name), color='red')
@@ -230,9 +228,9 @@ for day in range(365):
 
 cprint('''Всего заработано денег: {}, 
 всего съедено еды: {}, 
-куплено шуб: {}'''.format(home.total['money'],
+куплено шуб: {}'''.format(home.total[MONEY],
                           home.total[FOOD],
-                          home.total['coats'])
+                          home.total[COATS])
        , color='cyan')
 
 
