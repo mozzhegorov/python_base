@@ -33,8 +33,10 @@ class ParseLog:
         with open(self.file_name, 'r', encoding='utf8') as file:
             for line in file:
                 if 'NOK' in line:
+                    # TODO: внутрь лучше предавать line
                     self.counting_nok(date_time=line[1:17])
 
+    # TODO: а в ней уже резать строку и добавлять в словарь
     def counting_nok(self, date_time):
         self.nok_count[date_time] += 1
         return self.nok_count
@@ -42,6 +44,7 @@ class ParseLog:
     def write_target_file(self):
         file_name = self.target_file
         file = open(file_name, mode='w')  # mode (режим): запись символьная, кодировка по умолчанию utf8
+        # TODO: Здесь лучше применть items()
         for string in self.nok_count:
             file.write(f'{string}: {self.nok_count[string]}\n')
         file.close()
@@ -49,10 +52,16 @@ class ParseLog:
 
 read_file = ParseLog(source='events.txt', target_prefix='parsing_')
 read_file.parsing()
-pprint(read_file.nok_count)
+#pprint(read_file.nok_count)
 read_file.write_target_file()
+
+
+# TODO: После описанных правок, можно создать 3 новых класса-наследника, которые будут прегружать метод counting_nok()
+#  и определять в нем какой длины должен быть ключ (часы, минуты или год).
 # После выполнения первого этапа нужно сделать группировку событий
 #  - по часам
 #  - по месяцу
 #  - по году
 # Для этого пригодится шаблон проектирование "Шаблонный метод" см https://goo.gl/Vz4828
+
+
