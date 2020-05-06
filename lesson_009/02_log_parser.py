@@ -18,11 +18,10 @@
 #
 # Входные параметры: файл для анализа, файл результата
 # Требования к коду: он должен быть готовым к расширению функциональности. Делать сразу на классах.
-from pprint import pprint
 from collections import defaultdict
 
 
-class ParseLog:
+class ParseMinLog:
 
     def __init__(self, source, target_prefix):
         self.file_name = source
@@ -33,35 +32,74 @@ class ParseLog:
         with open(self.file_name, 'r', encoding='utf8') as file:
             for line in file:
                 if 'NOK' in line:
-                    # TODO: внутрь лучше предавать line
-                    self.counting_nok(date_time=line[1:17])
+                    self.counting_nok(line)
 
-    # TODO: а в ней уже резать строку и добавлять в словарь
-    def counting_nok(self, date_time):
+    def counting_nok(self, line):
+        date_time = line[1:17]
         self.nok_count[date_time] += 1
         return self.nok_count
 
     def write_target_file(self):
         file_name = self.target_file
         file = open(file_name, mode='w')  # mode (режим): запись символьная, кодировка по умолчанию utf8
-        # TODO: Здесь лучше применть items()
-        for string in self.nok_count:
-            file.write(f'{string}: {self.nok_count[string]}\n')
+        for date_time, quantity in self.nok_count.items():
+            file.write(f'{date_time}: {quantity}\n')
         file.close()
 
 
-read_file = ParseLog(source='events.txt', target_prefix='parsing_')
+class ParseHourLog(ParseMinLog):
+
+    def __init__(self, source, target_prefix):
+        super().__init__(source=source, target_prefix=target_prefix)
+
+    def counting_nok(self, line):
+        date_time = line[1:14]
+        self.nok_count[date_time] += 1
+        return self.nok_count
+
+
+class ParseDayLog(ParseMinLog):
+
+    def __init__(self, source, target_prefix):
+        super().__init__(source=source, target_prefix=target_prefix)
+
+    def counting_nok(self, line):
+        date_time = line[1:11]
+        self.nok_count[date_time] += 1
+        return self.nok_count
+
+
+class ParseMonthLog(ParseMinLog):
+
+    def __init__(self, source, target_prefix):
+        super().__init__(source=source, target_prefix=target_prefix)
+
+    def counting_nok(self, line):
+        date_time = line[1:8]
+        self.nok_count[date_time] += 1
+        return self.nok_count
+
+
+read_file = ParseMinLog(source='events.txt', target_prefix='parsing_Min_')
 read_file.parsing()
-#pprint(read_file.nok_count)
 read_file.write_target_file()
 
+read_file = ParseHourLog(source='events.txt', target_prefix='parsing_Hour_')
+read_file.parsing()
+read_file.write_target_file()
 
-# TODO: После описанных правок, можно создать 3 новых класса-наследника, которые будут прегружать метод counting_nok()
+read_file = ParseDayLog(source='events.txt', target_prefix='parsing_Day_')
+read_file.parsing()
+read_file.write_target_file()
+
+read_file = ParseMonthLog(source='events.txt', target_prefix='parsing_Month_')
+read_file.parsing()
+read_file.write_target_file()
+
+#  После описанных правок, можно создать 3 новых класса-наследника, которые будут прегружать метод counting_nok()
 #  и определять в нем какой длины должен быть ключ (часы, минуты или год).
 # После выполнения первого этапа нужно сделать группировку событий
 #  - по часам
 #  - по месяцу
 #  - по году
 # Для этого пригодится шаблон проектирование "Шаблонный метод" см https://goo.gl/Vz4828
-
-
