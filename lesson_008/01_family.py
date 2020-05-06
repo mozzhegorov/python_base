@@ -45,6 +45,7 @@ FOOD = 'food'
 COATS = 'coats'
 MONEY = 'money'
 
+
 class House:
 
     def __init__(self):
