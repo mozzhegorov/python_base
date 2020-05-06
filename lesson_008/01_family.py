@@ -45,18 +45,6 @@ FOOD = 'food'
 CATS_FOOD = 'cats_food'
 
 
-# TODO:
-#  1. запускать код перед коммитом - хорошая идея) Он не запускается, т.к. кое-что кое-где мы потеряли;
-#  2. Когда пункт №1 будет пофикшен, перед нами встанет новая задача: у Кота усвояемость в 2 раза лучше, чем Человека,
-#     т.е. 10 пунктов еды человеку дадут 10 пунктов сытости; а коту, 10 пунктов его еды, дадут 20 пункто сытости.
-#     Надо апгрейдить какой-то класс. Какой?
-#       ОТВЕТ: Первый пункт конечно да((( прямо стыдно. По поводу второго пункта видимо немного не понял. Поясню в
-#       классе Creature
-
-# TODO: в задании написано: "# Кушает кот максимум по 10 единиц еды, степень сытости растет на 2 пункта за 1 пункт еды."
-#  А для человека за 10 единиц будет сытость +10. Т.е. то, как усвояется пища у Кота и Человека - отличается.
-#  Надо апгрейдить какой-то класс. Какие будут идеи?
-
 class House:
 
     def __init__(self):
@@ -87,19 +75,17 @@ class House:
 
 class Creature:
 
-    def __init__(self, name, house, gluttony, type_food, init_fullness=30):
+    def __init__(self, name, house, gluttony, type_food, metabolism=1, init_fullness=30):
         self.name = name
         self.house = house
         self.fullness = init_fullness
         self.gluttony = gluttony
         self.type_food = type_food
+        self.metabolism = metabolism
 
     def eat(self):
-        # TODO: ОТВЕТ: Для людей gluttony указываем 20, что соответственно у нас вычитается из холодильника и
-        #  прибавляется в fullness (с коррекцией -5 для реальности). Для кота же указали gluttony 10, то есть те же
-        #  10 вычитаем из холодильника его еды.
         if self.house.icebox[self.type_food] > self.gluttony:
-            self.fullness += self.gluttony - 5
+            self.fullness += self.gluttony * self.metabolism - 5
             self.house.icebox[self.type_food] -= self.gluttony
             self.house.total[self.type_food] += self.gluttony
             cprint('{} поел(а)'.format(self.name), color='blue')
@@ -154,7 +140,6 @@ class Person(Creature):
 class Husband(Person):
 
     def __init__(self, name, house):
-        # TODO: ОТВЕТ: именно здесь указываем прожорливость для людей =20
         super().__init__(name=name, house=house, gluttony=20)
 
     def __str__(self):
@@ -326,11 +311,7 @@ cprint('''Всего заработано денег: {},
 class Cat(Creature):
 
     def __init__(self, name, house):
-        # TODO: ОТВЕТ: именно здесь указываем прожорливость для людей =10
-        # TODO: комментарии копируете?) догадываюсь, что здесь речь про кошек.
-        #  Про размер порции я полностью согласен. Речь о том, сколько 10 единиц еды приносит сытости. Человеку +10,
-        #  а вот Коту +20.
-        super().__init__(name=name, house=house, gluttony=10, type_food=CATS_FOOD)
+        super().__init__(name=name, house=house, gluttony=10, metabolism=2, type_food=CATS_FOOD)
 
     def act(self):
         if not super().is_alive():
