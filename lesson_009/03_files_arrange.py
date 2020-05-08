@@ -2,6 +2,7 @@
 
 import os
 import shutil
+import time
 import zipfile
 
 
@@ -38,7 +39,7 @@ import zipfile
 # Требования к коду: он должен быть готовым к расширению функциональности. Делать сразу на классах.
 
 
-class SortingUpToFolders:
+class SortingAbstract:
 
     def __init__(self, basic_folder, direct_folder):
         self.basic_folder = basic_folder
@@ -48,9 +49,7 @@ class SortingUpToFolders:
         self.zfile = None
 
     def get_files_stat(self):
-        self.zfile = zipfile.ZipFile(self.basic_folder + '.zip', 'r')
-        for file in self.zfile.infolist():
-            self.files_time[file.filename] = file.date_time[0:3]
+        pass
 
     def create_new_dirs(self):
         for file, ts in self.files_time.items():
@@ -62,6 +61,17 @@ class SortingUpToFolders:
                                                           str(ts[2])))
             if not os.path.exists(checking_path):
                 os.makedirs(os.path.join(checking_path))
+
+    def copy_files(self):
+        pass
+
+
+class SortingZipToFolders(SortingAbstract):
+
+    def get_files_stat(self):
+        self.zfile = zipfile.ZipFile(self.basic_folder + '.zip', 'r')
+        for file in self.zfile.infolist():
+            self.files_time[file.filename] = file.date_time[0:3]
 
     def copy_files(self):
         for file, ts in self.files_time.items():
@@ -78,18 +88,48 @@ class SortingUpToFolders:
                 shutil.copyfileobj(source, outfile)
 
 
-sorting = SortingUpToFolders(basic_folder='icons', direct_folder='icons_by_year')
+class SortingFolderToFolders(SortingAbstract):
+
+    def get_files_stat(self):
+        for dirpath, _, filenames in os.walk(self.basic_folder):
+            for file in filenames:
+                filename = os.path.normpath(os.path.join(dirpath, file))
+                self.files_time[filename] = (time.gmtime(os.path.getmtime(filename)).tm_year,
+                                             time.gmtime(os.path.getmtime(filename)).tm_mon,
+                                             time.gmtime(os.path.getmtime(filename)).tm_mday)
+
+    def copy_files(self):
+        for file, ts in self.files_time.items():
+            if not os.path.basename(file):
+                continue
+
+            source = os.path.normpath(file)
+            destination = os.path.normpath(os.path.join(self.direct_folder,
+                                                        str(ts[0]),
+                                                        str(ts[1]),
+                                                        str(ts[2]),
+                                                        os.path.basename(file)))
+            shutil.copy2(source, destination)
+
+
+sorting = SortingFolderToFolders(basic_folder='icons', direct_folder='icons_by_year')
 sorting.get_files_stat()
 sorting.create_new_dirs()
 sorting.copy_files()
 
-# TODO: как насчет усложненной версии?
+
+sorting = SortingZipToFolders(basic_folder='icons', direct_folder='icons_by_year_zip')
+sorting.get_files_stat()
+sorting.create_new_dirs()
+sorting.copy_files()
+
+# как насчет усложненной версии?
 #       ОТВЕТ: а мне показалось я изначально усложненную версию начал. потому что
 #       когда сделал предварительной распаковкой файлов в папку - они получились у меня датой создания днем распаковки
 #       и в итоге все файлы в одну папку летели. я в итоге переделал на чтение из зип файла чтобы бралась дата создания
 #       файла из зип. Сейчас немного не соображу как быть...
 
-# TODO: да, думаю некорректно задал вопрос.
+#  да, думаю некорректно задал вопрос.
 #  Усложненная версия: реализованный шаблонный метод для двух классов. Один работает по архивам (текущий класс), второй
 #  по разархивированным папкам (os.walk() и копировани файла простым copy2())
 #  .
