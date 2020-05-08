@@ -212,27 +212,7 @@ class Wife(Person):
         self.fullness -= 20
 
 
-home = House()
-serge = Husband(name='Сережа', house=home)
-masha = Wife(name='Маша', house=home)
 
-for day in range(365):
-    cprint('================== День {} =================='.format(day), color='red')
-    home.act()
-    # print(serge.act())
-    # print(masha.act())
-    if not (serge.act() and masha.act()):
-        break
-    cprint(serge, color='cyan')
-    cprint(masha, color='cyan')
-    cprint(home, color='cyan')
-
-cprint('''Всего заработано денег: {}, 
-всего съедено еды: {}, 
-куплено шуб: {}'''.format(home.total[MONEY],
-                          home.total[FOOD],
-                          home.total[COATS])
-       , color='cyan')
 
 
 # после реализации первой части - отдать на проверку учителю
@@ -362,3 +342,26 @@ for day in range(365):
 #       for salary in range(50, 401, 50):
 #           max_cats = life.experiment(salary)
 #           print(f'При зарплате {salary} максимально можно прокормить {max_cats} котов')
+
+
+# home = House()
+# serge = Husband(name='Сережа', house=home)
+# masha = Wife(name='Маша', house=home)
+#
+# for day in range(365):
+#     cprint('================== День {} =================='.format(day), color='red')
+#     home.act()
+#     # print(serge.act())
+#     # print(masha.act())
+#     if not (serge.act() and masha.act()):
+#         break
+#     cprint(serge, color='cyan')
+#     cprint(masha, color='cyan')
+#     cprint(home, color='cyan')
+#
+# cprint('''Всего заработано денег: {},
+# всего съедено еды: {},
+# куплено шуб: {}'''.format(home.total[MONEY],
+#                           home.total[FOOD],
+#                           home.total[COATS])
+#        , color='cyan')
