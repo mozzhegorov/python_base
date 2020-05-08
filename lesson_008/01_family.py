@@ -42,6 +42,7 @@ from random import randint, choice
 # Подвести итоги жизни за год: сколько было заработано денег, сколько сьедено еды, сколько куплено шуб.
 
 FOOD = 'food'
+CATS_FOOD = 'cats_food'
 COATS = 'coats'
 MONEY = 'money'
 
@@ -54,18 +55,21 @@ class House:
 
         self.icebox = {
             FOOD: 50,
+            CATS_FOOD: 30
         }
 
         self.total = {
             MONEY: 0,
             FOOD: 0,
-            COATS: 0
+            COATS: 0,
+            CATS_FOOD: 0
         }
 
     def __str__(self):
-        return 'В доме еды {}, денег {}, грязи {}'.format(self.icebox[FOOD],
-                                                          self.money,
-                                                          self.dirty)
+        return 'В доме еды {}, еды кошака {}, денег {}, грязи {}'.format(self.icebox[FOOD],
+                                                                         self.icebox[CATS_FOOD],
+                                                                         self.money,
+                                                                         self.dirty)
 
     def act(self):
         self.dirty += 5
@@ -73,22 +77,23 @@ class House:
 
 class Creature:
 
-    def __init__(self, name, house, gluttony, type_food, init_fullness=30):
+    def __init__(self, name, house, gluttony, type_food, metabolism=1, init_fullness=30):
         self.name = name
         self.house = house
         self.fullness = init_fullness
         self.gluttony = gluttony
         self.type_food = type_food
+        self.metabolism = metabolism
 
     def eat(self):
         if self.house.icebox[self.type_food] > self.gluttony:
-            self.fullness += self.gluttony - 5
+            self.fullness += self.gluttony * self.metabolism - 5
             self.house.icebox[self.type_food] -= self.gluttony
             self.house.total[self.type_food] += self.gluttony
-            cprint('{} поел'.format(self.name), color='blue')
+            cprint('{} поел(а)'.format(self.name), color='blue')
             return True
         else:
-            self.fullness -= self.gluttony
+            self.fullness -= 5
             cprint('{} хотел поесть, но нет еды'.format(self.name), color='red')
             return False
 
@@ -101,7 +106,7 @@ class Creature:
 
 class Person(Creature):
 
-    def __init__(self, name, house, gluttony=10):
+    def __init__(self, name, house, gluttony=20):
         super().__init__(name=name, house=house, gluttony=gluttony, type_food=FOOD)
         self.happiness = 100
 
@@ -115,7 +120,7 @@ class Person(Creature):
     def act(self):
         if self.house.dirty >= 90:
             self.happiness -= 10
-        if self.happiness < 10 or not super().is_alive():
+        if not super().is_alive() or self.happiness < 10:
             cprint('Перс {} умер...'.format(self.name), color='red')
             return False
         return True
@@ -168,7 +173,7 @@ class Wife(Person):
             return False
 
         if self.fullness <= 30:
-            self.eat()
+            super().eat()
         elif self.house.icebox[FOOD] <= 40:
             self.shopping()
         elif self.happiness <= 30:
@@ -193,6 +198,17 @@ class Wife(Person):
             self.fullness -= 5
             return False
 
+    def buy_cats_food(self):
+        if self.house.money > 50:
+            cprint('{} купила еды для кота'.format(self.name), color='blue')
+            self.house.cats_food += 50
+            self.house.money -= 50
+            self.fullness -= 10
+            return True
+        else:
+            self.fullness -= 5
+            return False
+
     def buy_fur_coat(self):
         if self.house.money > 350:
             cprint('{} купила шубу'.format(self.name), color='blue')
@@ -208,16 +224,11 @@ class Wife(Person):
 
     def clean_house(self):
         cprint('{} сделала уборку в доме'.format(self.name), color='blue')
-        self.house.dirty -= 100 if self.house.dirty > 100 else self.house.dirty
         self.fullness -= 20
+        self.house.dirty -= 100 if self.house.dirty > 100 else self.house.dirty
 
 
 
-
-
-# после реализации первой части - отдать на проверку учителю
-
-#  переходим ко 2ой части!
 
 ######################################################## Часть вторая
 #
@@ -243,23 +254,48 @@ class Wife(Person):
 #
 # Если кот дерет обои, то грязи становится больше на 5 пунктов
 
+#  Общий класс с Cat.
+#  Вообще с котом вы способны на большее. Посмотрите сколько методов пришлось для Кота скопировать. Почему? Потому что
+#  у него не общего класс с Мужем, Женой и Ребенком. Почему? Потому у них общий родитель - Human, а кот это не человек.
+#  Как быть? Сделать еще один класс. Как вы думаете что между ними общего, если на секундочку
+#  забыть, что они живут в одном доме. Что общего между кошкой, собакой, Человеком?
+#  Какие методы можно было вынести в этот класс? (их немного, но вынести можно)
+#  .
+#  Примечание: чтобы проделать такой фокус, в классе Дом лучше вместо полей "кошачья еда" и "человеческая еда"
+#  ввести поле "холодильник", которое может быть словарем с 2 ключами: "кошачья еда" и ...;
+#  Так же лучше создать глобальные, вне классов, константы CAT_FOOD = 'cat' и ... Что будут играть роль ключей в этом
+#  холодильнике. При создании объекта Cat конструктор класса будет вызывать конструктор Общего класса, который будет
+#  принимать на вход "тип пищи", который кушает создаваемый объект.
+#  .
+#  А в методе eat() просто будет по умолчанию брать "тип пищи" из холодильника и отниматься от нужной пищи.
+#  .
+#  Примечание: помните, что в общем классе мы можем реализовать метод, допустим, is_alive(), который будет проверять
+#  только уровень еды (т.к. для кошки уровень счастья не нужен). В классе кошики перегружать is_alive тогда не нужно,
+#  его достаточно. А в классе Человек, мы можем использовать is_alive родителя и дополнить его проверкой на уровень
+#  счастья.
+#  Т.е. сейчас наша главная задача при проектировании классов: сделать так, чтобы все общие часть попали в родителей.
+class Cat(Creature):
 
-class Cat:
-
-    def __init__(self):
-        pass
+    def __init__(self, name, house):
+        super().__init__(name=name, house=house, gluttony=10, metabolism=2, type_food=CATS_FOOD)
 
     def act(self):
-        pass
-
-    def eat(self):
-        pass
+        if not super().is_alive():
+            return False
+        if self.fullness < 10:
+            self.eat()
+        else:
+            choice(self.eat, self.sleep, self.soil)()
+        return True
 
     def sleep(self):
-        pass
+        self.fullness -= 10
+        return True
 
     def soil(self):
-        pass
+        self.fullness -= 10
+        self.house.dirty += 5
+        return True
 
 
 ######################################################## Часть вторая бис
@@ -293,8 +329,6 @@ class Child(Person):
     def sleep(self):
         self.fullness -= 10
 
-
-# TODO после реализации второй части - отдать на проверку учителем две ветки
 
 
 ######################################################## Часть третья
