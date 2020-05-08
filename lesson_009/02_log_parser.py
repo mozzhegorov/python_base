@@ -21,7 +21,7 @@
 from collections import defaultdict
 
 
-class ParseMinLog:
+class ParseLogAbstract:
 
     def __init__(self, source, target_prefix):
         self.file_name = source
@@ -32,17 +32,11 @@ class ParseMinLog:
         with open(self.file_name, 'r', encoding='utf8') as file:
             for line in file:
                 if 'NOK' in line:
-                    self.counting_nok(line)
+                    date_time = self.parse_line(line=line)
+                    self.nok_count[date_time] += 1
 
-    # TODO: вижу свой косяк в прошлом TODО. Его последствия:
-    def counting_nok(self, line):
-        date_time = line[1:17]
-        self.nok_count[date_time] += 1      # TODO: Эта строка дубилруется в каждом counting_nok
-        return self.nok_count
-
-    # TODO: давайте изменим кое-что. Пусть counting_nok превратится в parse_line(), и будет возвращать нам дату события
-    #  .
-    #  Тогда в parsing, мы будем проверять тип события, и уже в нем добавлять в словарь, если это нужно нам событие.
+    def parse_line(self, line):
+        pass
 
     def write_target_file(self):
         file_name = self.target_file
@@ -52,38 +46,28 @@ class ParseMinLog:
         file.close()
 
 
-class ParseHourLog(ParseMinLog):
+class ParseMinLog(ParseLogAbstract):
 
-    def __init__(self, source, target_prefix):
-        super().__init__(source=source, target_prefix=target_prefix)
-
-    # TODO: тогда в каждом методе будет только "return line[1:14]"
-    def counting_nok(self, line):
-        date_time = line[1:14]
-        self.nok_count[date_time] += 1
-        return self.nok_count
+    def parse_line(self, line):
+        return line[1:17]
 
 
-class ParseDayLog(ParseMinLog):
+class ParseHourLog(ParseLogAbstract):
 
-    def __init__(self, source, target_prefix):
-        super().__init__(source=source, target_prefix=target_prefix)
-
-    def counting_nok(self, line):
-        date_time = line[1:11]
-        self.nok_count[date_time] += 1
-        return self.nok_count
+    def parse_line(self, line):
+        return line[1:14]
 
 
-class ParseMonthLog(ParseMinLog):
+class ParseDayLog(ParseLogAbstract):
 
-    def __init__(self, source, target_prefix):
-        super().__init__(source=source, target_prefix=target_prefix)
+    def parse_line(self, line):
+        return line[1:11]
 
-    def counting_nok(self, line):
-        date_time = line[1:8]
-        self.nok_count[date_time] += 1
-        return self.nok_count
+
+class ParseMonthLog(ParseLogAbstract):
+
+    def parse_line(self, line):
+        return line[1:8]
 
 
 read_file = ParseMinLog(source='events.txt', target_prefix='parsing_Min_')
