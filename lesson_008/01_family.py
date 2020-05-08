@@ -54,7 +54,7 @@ class House:
         self.dirty = 0
 
         self.icebox = {
-            FOOD: 50,
+            FOOD: 80,
             CATS_FOOD: 30
         }
 
@@ -172,10 +172,14 @@ class Wife(Person):
         if not super().act():
             return False
 
-        if self.fullness <= 30:
+        if self.fullness <= 40:
             super().eat()
-        elif self.house.icebox[FOOD] <= 40:
+        elif self.house.icebox[FOOD] <= 80:
             self.shopping()
+        elif self.house.icebox[CATS_FOOD] <= 20:
+            self.buy_cats_food()
+        elif self.house.dirty > 80:
+            self.clean_house()
         elif self.happiness <= 30:
             self.buy_fur_coat()
         else:
@@ -187,11 +191,11 @@ class Wife(Person):
         return True
 
     def shopping(self):
-        if self.house.money > 50:
+        if self.house.money > 100:
             cprint('{} купила еды домой'.format(self.name), color='blue')
             self.fullness -= 10
-            self.house.icebox[FOOD] += 50
-            self.house.money -= 50
+            self.house.icebox[FOOD] += 100
+            self.house.money -= 100
             return True
         else:
             cprint('{} хотела купить еды, но денег нет...'.format(self.name), color='red')
@@ -201,7 +205,7 @@ class Wife(Person):
     def buy_cats_food(self):
         if self.house.money > 50:
             cprint('{} купила еды для кота'.format(self.name), color='blue')
-            self.house.cats_food += 50
+            self.house.icebox[CATS_FOOD] += 50
             self.house.money -= 50
             self.fullness -= 10
             return True
@@ -226,8 +230,6 @@ class Wife(Person):
         cprint('{} сделала уборку в доме'.format(self.name), color='blue')
         self.fullness -= 20
         self.house.dirty -= 100 if self.house.dirty > 100 else self.house.dirty
-
-
 
 
 ######################################################## Часть вторая
@@ -279,13 +281,16 @@ class Cat(Creature):
     def __init__(self, name, house):
         super().__init__(name=name, house=house, gluttony=10, metabolism=2, type_food=CATS_FOOD)
 
+    def __str__(self):
+        return 'Котик {} сытость {}'.format(self.name, self.fullness)
+
     def act(self):
         if not super().is_alive():
             return False
-        if self.fullness < 10:
+        if self.fullness < 20:
             self.eat()
         else:
-            choice(self.eat, self.sleep, self.soil)()
+            choice([self.eat, self.sleep, self.soil])()
         return True
 
     def sleep(self):
@@ -318,17 +323,16 @@ class Child(Person):
         return 'Ребенок {}'.format(self.name) + super().__str__()
 
     def act(self):
-        if super().act():
+        if not super().act():
             return False
         if self.fullness < 20:
             self.eat()
         else:
-            choice(self.eat, self.sleep)()
+            choice([self.eat, self.sleep, self.sleep])()
         return True
 
     def sleep(self):
         self.fullness -= 10
-
 
 
 ######################################################## Часть третья
@@ -339,21 +343,31 @@ class Child(Person):
 
 
 home = House()
-serge = Husband(name='Сережа')
-masha = Wife(name='Маша')
-kolya = Child(name='Коля')
-murzik = Cat(name='Мурзик')
+serge = Husband(name='Сережа', house=home)
+masha = Wife(name='Маша', house=home)
+kolya = Child(name='Коля', house=home)
+murzik = Cat(name='Мурзик', house=home)
 
 for day in range(365):
     cprint('================== День {} =================='.format(day), color='red')
-    serge.act()
-    masha.act()
-    kolya.act()
-    murzik.act()
+    home.act()
+    if not (serge.act() and
+            masha.act() and
+            kolya.act() and
+            murzik.act()):
+        break
+    cprint(home, color='cyan')
     cprint(serge, color='cyan')
     cprint(masha, color='cyan')
     cprint(kolya, color='cyan')
     cprint(murzik, color='cyan')
+
+cprint('''Всего заработано денег: {},
+всего съедено еды: {},
+куплено шуб: {}'''.format(home.total[MONEY],
+                          home.total[FOOD],
+                          home.total[COATS])
+       , color='cyan')
 
 # Усложненное задание (делать по желанию)
 #
