@@ -24,8 +24,7 @@ import zipfile
 from operator import itemgetter
 from collections import defaultdict
 
-
-class TextStat:
+class SortingAbstract:
 
     def __init__(self, file_name):
         self.stat = defaultdict(int)
@@ -53,11 +52,10 @@ class TextStat:
         return self.stat
 
     def sorting(self):
-        return sorted(self.stat.items())
+        pass
 
     def print_stat(self):
         total_letters = 0
-        # TODO: как можно сделать запись более читабельнной. Используем простые строки + символ "\n".
         print('+---------+----------+\n'
               '|  буква  | частота  |\n'
               '+---------+----------+')
@@ -66,36 +64,30 @@ class TextStat:
             print(f'|{pair[0]:^9}|{pair[1]:^10}|')
             total_letters += pair[1]
 
-        # TODO: здесь можно так же сделать, сразу будет понятно, что это footer таблицы
-        print(f'''+---------+----------+
-|  итого  |{total_letters:^10}|
-+---------+----------+''')
+        print('+---------+----------+ \n'
+              f'|  итого  |{total_letters:^10}|\n'
+              '+---------+----------+')
 
 
-class RevAlphabeticSort(TextStat):
-    # TODO: Конструктор - это такой же метод, как и остальные. Он подчиняется закону: если не нашли у текущего класса,
-    #  идем искать у родительского.
-    #  Поэтому если наш конструктор принимает точно такие же параметры, как и его родитель, то мы можем его не писать.
-    #  .
-    #  Это же касает и других классов (задача 02).
-    def __init__(self, file_name):
-        super().__init__(file_name=file_name)
+class AlphabeticSort(SortingAbstract):
 
-    # TODO: в итоге у нас останется только перегруженный метод (их, конечно, может быть несколько).
+    def sorting(self):
+        return sorted(self.stat.items())
+
+
+class RevAlphabeticSort(SortingAbstract):
+
     def sorting(self):
         return sorted(self.stat.items(), reverse=True)
 
 
-class QuantitySort(TextStat):
-
-    def __init__(self, file_name):
-        super().__init__(file_name=file_name)
+class QuantitySort(SortingAbstract):
 
     def sorting(self):
         return sorted(self.stat.items(), key=itemgetter(1))
 
 
-text = TextStat(file_name='python_snippets\\voyna-i-mir.txt.zip')
+text = AlphabeticSort(file_name='python_snippets\\voyna-i-mir.txt.zip')
 text.get_file_stat()
 text.print_stat()
 
@@ -107,75 +99,7 @@ text = QuantitySort(file_name='python_snippets\\voyna-i-mir.txt.zip')
 text.get_file_stat()
 text.print_stat()
 
-
-
-
-# TODO: Абстрактные базовые классы.
-#  Давайте сделаем так, чтобы у наш Родительский класс TextStat внутри метода sorting ничего не делал.
-def sorting(self):
-    pass
-# TODO:
-#  Определим еще одного наследника, который будет исполнять его поведение "sorted(self.stat.items())".
-#  .
-#  Тогда сам класс TextStat становится не жизнеспособен: т.е. если мы создадим объект этого класса, то он нам ничего
-#  отсортировать не сможет, т.к. его метод sort() - заглушка. В этом случае класс является хранителем общего алгоритма.
-#  Т.е. относительно остальных классов наследников он нейтрален (сейчас он больше про сортировку самих букв, а не их
-#  количества).
-#  .
-#  Следующим шагом будет сделать абстрактным родительский класс, у которого sort зашлушка. Что такое абстрактный класс?
-#  Абстракный класс - это класс, который имеет хотя бы 1 абстрактный метод. Что такое абстрактным метод?
-#  Это метод, который имеет название, но не имеет реализации.
-#  .
-#  Если класс абстрактный, то создать объект этого класса не представляется возможным. Будет ошибка.
-#  .
-#  Зачем тогда нужны абстрактные классы?
-#  Именно для таких случаев как наш: у нас есть класс-родитель, у которого объявлен метод, но реализации этого метода
-#  нет. Классы наследники наследуя этот класс родитель перегружают его метод и по факту дают ему реализацию.
-#  .
-#  Пример:
-from abc import ABC, abstractmethod
-
-# это абстрактный класс, он наследует от ABC (AbstractBaseClass)
-class MyAbstractBaseClass(ABC):
-    # принимает 2 аргумента
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    # этот декоратор показывает, что данные метод абстрактный. И при наследовании его обязательно нужно перегрузить.
-    @abstractmethod
-    def action(self):
-        pass
-
-    # метод который использует action() и возвращает результат
-    def get_result(self):
-        return self.action()
-
-# Класс-наследник, реализующий Сумму
-class SumClass(MyAbstractBaseClass):
-    # действие - сумма
-    def action(self):
-        return self.x + self.y
-
-# Класс-наследник, реализующий Произведение
-class MulClass(MyAbstractBaseClass):
-    # действие - произведение
-    def action(self):
-        return self.x * self.y
-
-# Попытка создать объект Абстрактного Класса приведет к ошибке:
-# "TypeError: Can't instantiate abstract class MyAbstractBaseClass with abstract methods action"
-# MyAbstractBaseClass(x=100, y=500)   # ошибка
-
-# Создаем объекты наследников
-object_sum = SumClass(x=100, y=500)
-print(object_sum.get_result())          # 600
-
-object_mul = MulClass(x=100, y=500)
-print(object_mul.get_result())          # 50000
-
-# TODO: задача: применить АБС внутри своего шаблона.
-
+# TODO: ОТВЕТ: немного не понял про декораторы. наверное они дальше будут? Но в принципе сейчас работает.
 
 
 
@@ -254,3 +178,68 @@ print(object_mul.get_result())          # 50000
 
 #  текущий подход сортировки интересный) У него есть 1 изъян: если в словаре будет 2 буквы: А и я, то у нас вместо
 #  2х строк в таблице будет 60+ строк и большинство с нулями.
+
+
+# #
+# #  Определим еще одного наследника, который будет исполнять его поведение "sorted(self.stat.items())".
+# #  .
+# #  Тогда сам класс TextStat становится не жизнеспособен: т.е. если мы создадим объект этого класса, то он нам ничего
+# #  отсортировать не сможет, т.к. его метод sort() - заглушка. В этом случае класс является хранителем общего алгоритма.
+# #  Т.е. относительно остальных классов наследников он нейтрален (сейчас он больше про сортировку самих букв, а не их
+# #  количества).
+# #  .
+# #  Следующим шагом будет сделать абстрактным родительский класс, у которого sort зашлушка. Что такое абстрактный класс?
+# #  Абстракный класс - это класс, который имеет хотя бы 1 абстрактный метод. Что такое абстрактным метод?
+# #  Это метод, который имеет название, но не имеет реализации.
+# #  .
+# #  Если класс абстрактный, то создать объект этого класса не представляется возможным. Будет ошибка.
+# #  .
+# #  Зачем тогда нужны абстрактные классы?
+# #  Именно для таких случаев как наш: у нас есть класс-родитель, у которого объявлен метод, но реализации этого метода
+# #  нет. Классы наследники наследуя этот класс родитель перегружают его метод и по факту дают ему реализацию.
+# #  .
+# #  Пример:
+# from abc import ABC, abstractmethod
+#
+#
+# # это абстрактный класс, он наследует от ABC (AbstractBaseClass)
+# class MyAbstractBaseClass(ABC):
+#     # принимает 2 аргумента
+#     def __init__(self, x, y):
+#         self.x = x
+#         self.y = y
+#
+#     # этот декоратор показывает, что данные метод абстрактный. И при наследовании его обязательно нужно перегрузить.
+#     @abstractmethod
+#     def action(self):
+#         pass
+#
+#     # метод который использует action() и возвращает результат
+#     def get_result(self):
+#         return self.action()
+#
+#
+# # Класс-наследник, реализующий Сумму
+# class SumClass(MyAbstractBaseClass):
+#     # действие - сумма
+#     def action(self):
+#         return self.x + self.y
+#
+#
+# # Класс-наследник, реализующий Произведение
+# class MulClass(MyAbstractBaseClass):
+#     # действие - произведение
+#     def action(self):
+#         return self.x * self.y
+#
+#
+# # Попытка создать объект Абстрактного Класса приведет к ошибке:
+# # "TypeError: Can't instantiate abstract class MyAbstractBaseClass with abstract methods action"
+# # MyAbstractBaseClass(x=100, y=500)   # ошибка
+#
+# # Создаем объекты наследников
+# object_sum = SumClass(x=100, y=500)
+# print(object_sum.get_result())  # 600
+#
+# object_mul = MulClass(x=100, y=500)
+# print(object_mul.get_result())  # 50000
