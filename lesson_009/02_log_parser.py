@@ -19,9 +19,10 @@
 # Входные параметры: файл для анализа, файл результата
 # Требования к коду: он должен быть готовым к расширению функциональности. Делать сразу на классах.
 from collections import defaultdict
+from abc import ABC, abstractmethod
 
-
-class ParseLogAbstract:
+# TODO: Надеюсь, что вы смогли сами реализовать это в 01_char_stat.py задаче) В этом файле приведу пример.
+class ParseLogAbstract(ABC):        # TODO: наследовались от ABC
 
     def __init__(self, source, target_prefix):
         self.file_name = source
@@ -35,7 +36,8 @@ class ParseLogAbstract:
                     date_time = self.parse_line(line=line)
                     self.nok_count[date_time] += 1
 
-    def parse_line(self, line):
+    @abstractmethod
+    def parse_line(self, line):     # TODO: установили этот метод абстрактным
         pass
 
     def write_target_file(self):
