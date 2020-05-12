@@ -23,9 +23,10 @@
 import zipfile
 from operator import itemgetter
 from collections import defaultdict
+from abc import ABC, abstractmethod
 
-# TODO: пусть этот класс наследуется от ABC
-class SortingAbstract:
+
+class SortingAbstract(ABC):
 
     def __init__(self, file_name):
         self.stat = defaultdict(int)
@@ -52,9 +53,10 @@ class SortingAbstract:
                 self.stat[char] += 1
         return self.stat
 
-    # TODO: сюда добавить декоратор "абстрактный метод" (см.пример).
+    #  сюда добавить декоратор "абстрактный метод" (см.пример).
     #  Что такое декоратор? Можно объяснить так: это "хеш-тег", который дает намшему методу какое-то свойство.
     #  Декоратор наделяет метод каким-то свойством, помимо его собственных свойст.
+    @abstractmethod
     def sorting(self):
         pass
 
@@ -68,7 +70,7 @@ class SortingAbstract:
             print(f'|{pair[0]:^9}|{pair[1]:^10}|')
             total_letters += pair[1]
 
-        # TODO: добавил f. Даже если в строке нет переменных, f нам никто не запрещает добавить) особенно, если это
+        #  добавил f. Даже если в строке нет переменных, f нам никто не запрещает добавить) особенно, если это
         #  сделано в целях читабельности футтера.
         print(f'+---------+----------+ \n'
               f'|  итого  |{total_letters:^10}|\n'
@@ -93,7 +95,7 @@ class QuantitySort(SortingAbstract):
         return sorted(self.stat.items(), key=itemgetter(1))
 
 
-text = AlphabeticSort(file_name='python_snippets\\voyna-i-mir.txt.zip')
+text = SortingAbstract(file_name='python_snippets\\voyna-i-mir.txt.zip')
 text.get_file_stat()
 text.print_stat()
 
@@ -104,9 +106,6 @@ text.print_stat()
 text = QuantitySort(file_name='python_snippets\\voyna-i-mir.txt.zip')
 text.get_file_stat()
 text.print_stat()
-
-# TODO: ОТВЕТ: немного не понял про декораторы. наверное они дальше будут? Но в принципе сейчас работает.
-# TODO: по коду выше. Сейчас изъян в том, что можно создать объекты SortingAbstract(), который не должен создаваться.
 
 
 # После выполнения первого этапа нужно сделать упорядочивание статистики
