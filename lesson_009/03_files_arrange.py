@@ -38,8 +38,9 @@ import zipfile
 # Чтение документации/гугла по функциям - приветствуется. Как и поиск альтернативных вариантов :)
 # Требования к коду: он должен быть готовым к расширению функциональности. Делать сразу на классах.
 
+from abc import ABC, abstractmethod
 
-class SortingAbstract:
+class SortingAbstract(ABC):
 
     def __init__(self, basic_folder, direct_folder):
         self.basic_folder = basic_folder
@@ -48,6 +49,7 @@ class SortingAbstract:
         self.files_list = {}
         self.zfile = None
 
+    @abstractmethod
     def get_files_stat(self):
         pass
 
@@ -62,6 +64,7 @@ class SortingAbstract:
             if not os.path.exists(checking_path):
                 os.makedirs(os.path.join(checking_path))
 
+    @abstractmethod
     def copy_files(self):
         pass
 
