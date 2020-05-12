@@ -21,8 +21,9 @@
 from collections import defaultdict
 from abc import ABC, abstractmethod
 
-# TODO: Надеюсь, что вы смогли сами реализовать это в 01_char_stat.py задаче) В этом файле приведу пример.
-class ParseLogAbstract(ABC):        # TODO: наследовались от ABC
+
+#  Надеюсь, что вы смогли сами реализовать это в 01_char_stat.py задаче) В этом файле приведу пример.
+class ParseLogAbstract(ABC):  # наследовались от ABC
 
     def __init__(self, source, target_prefix):
         self.file_name = source
@@ -37,7 +38,7 @@ class ParseLogAbstract(ABC):        # TODO: наследовались от ABC
                     self.nok_count[date_time] += 1
 
     @abstractmethod
-    def parse_line(self, line):     # TODO: установили этот метод абстрактным
+    def parse_line(self, line):  # установили этот метод абстрактным
         pass
 
     def write_target_file(self):
