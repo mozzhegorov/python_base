@@ -94,7 +94,7 @@ class QuantitySort(SortingAbstract):
     def sorting(self):
         return sorted(self.stat.items(), key=itemgetter(1))
 
-
+# TODO: Этот попытка убедиться, что абстрактный класс не создается? или вы не запускали код?)
 text = SortingAbstract(file_name='python_snippets\\voyna-i-mir.txt.zip')
 text.get_file_stat()
 text.print_stat()
@@ -248,3 +248,5 @@ text.print_stat()
 #
 # object_mul = MulClass(x=100, y=500)
 # print(object_mul.get_result())  # 50000
+
+# зачет!
