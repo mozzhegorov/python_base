@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from termcolor import cprint
+# from termcolor import cprint
 from math import exp
 from random import randint, choice
 
@@ -292,66 +292,65 @@ class Experiment:
         self.freq_money_collapse = freq_money_collapse
         self.freq_food_collapse = freq_food_collapse
         self.exp_quantity = exp_quantity
-        self.quan_food_collapse = 0         # TODO: часто используют "counter" или сокращенно "cnt" (счетчик)
-        self.quan_money_collapse = 0        #  в данном случае событий.
+        self.cnt_food_collapse = 0
+        self.cnt_money_collapse = 0
         self.total_days = 0
+        self.sub_factor = (self.num_childs * 100 + self.num_cats * 100) / self.sallory + \
+                          (self.freq_food_collapse + self.freq_money_collapse) / 10
+        self.factor = 0
 
     def do_experiment(self):
-        # TODO: PyCharm подчеркивает желтой линией - значит что-то не так.
+        #  PyCharm подчеркивает желтой линией - значит что-то не так.
         #  Если навести мышку, то мы увидим warning: переменные определены вне конструктора.
         #  Т.е. все-все-все поля объекта обязательно должны быть перечислены в конструкторе.
         #  .
         #  Здесь же мы можем не перености эти поля в конструктор, а сделать их локальными. Т.е. они перестанут быть
         #  полями класса, а будут доступны только в этой функцие.
-        self.home = House()
-        self.serge = Husband(name='Сережа', house=self.home, sallory=sallory)
-        self.masha = Wife(name='Маша', house=self.home)
-        self.cats = []
-        self.childs = []
+        home = House()
+        serge = Husband(name='Сережа', house=home, sallory=sallory)
+        masha = Wife(name='Маша', house=home)
+        cats = []
+        childs = []
 
         child_names = ['Коля', 'Вася', 'Дима', 'Женя', 'Саша', 'Андрей']
         cat_names = ['Муся', 'Пушок', 'Мурзик', 'Васька', 'Вискас']
         for i in range(self.num_childs):
-            self.childs.append(Child(name=choice(child_names), house=self.home))
-            child_names.remove(self.childs[i].name)
+            childs.append(Child(name=choice(child_names), house=home))
+            child_names.remove(childs[i].name)
 
         for i in range(self.num_cats):
-            self.cats.append(Cat(name=choice(cat_names), house=self.home))
-            cat_names.remove(self.cats[i].name)
+            cats.append(Cat(name=choice(cat_names), house=home))
+            cat_names.remove(cats[i].name)
 
         for day in range(365):
             # cprint('================== День {} =================='.format(day), color='red')
-            self.home.act()
+            home.act()
             self.total_days += 1
 
             # Подкидываем монетку с вероятностью 1/365*(частота коллапсов)
             if self.freq_money_collapse != 0 and randint(1, 365 // self.freq_money_collapse) == 1:
-                self.home.money %= 2
-                self.quan_money_collapse += 1
+                home.money %= 2
+                self.cnt_money_collapse += 1
                 # cprint('Пропала половина денег', color='red')
 
             if self.freq_food_collapse != 0 and randint(1, 365 // self.freq_food_collapse) == 1:
-                self.home.icebox[FOOD] %= 2
-                self.quan_food_collapse += 1
+                home.icebox[FOOD] %= 2
+                self.cnt_food_collapse += 1
                 # cprint('Пропала половина еды', color='red')
 
-            cats_alive = True           # TODO: когда речь идет про флаг, можно добавить "f_"
-            for cat in self.cats:
-                cats_alive &= cat.act()
-                if not cats_alive:
+            f_cats_alive = True
+            for cat in cats:
+                f_cats_alive &= cat.act()
+                if not f_cats_alive:
                     break
 
-            children_alive = True       # f_children_alive
-            for child in self.childs:
-                children_alive &= child.act()
-                if not children_alive:
+            f_children_alive = True
+            for child in childs:
+                f_children_alive &= child.act()
+                if not f_children_alive:
                     break
 
-            # TODO: all - очень умная функция. Нам надо поместить флаги вперед.
-            #  Как только all находит первый элемент списка False - она прерывается, и не проверят все остальное, т.к.
-            #  уже нет смысла. Поэтому мы можем поместить флаги вперед, и тогда Сергей и Маша будут что-то делать только
-            #  в том случае, если все живы.
-            if not all([self.serge.act(), self.masha.act(), cats_alive, children_alive]):
+            if not all([f_cats_alive, f_children_alive, serge.act(), masha.act()]):
                 return 0
 
         #     cprint(self.home, color='cyan')
@@ -371,48 +370,36 @@ class Experiment:
     def counting_good(self):
         for _ in range(self.exp_quantity):
             self.good_experiments += self.do_experiment()
-        # TODO: еще одно поле, объявленное вне конструктора
-        self.sub_factor = (self.num_childs * 100 + self.num_cats * 100) / self.sallory + \
-                          (self.freq_food_collapse + self.freq_money_collapse) / 10
         print(f'{self.good_experiments} / {self.exp_quantity}')
         if self.good_experiments > 0:
-            self.factor = (exp((self.good_experiments / self.exp_quantity)*10 - 10) +
+            self.factor = (exp((self.good_experiments / self.exp_quantity) * 10 - 10) +
                            self.total_days / (365 * self.exp_quantity)) * \
                           self.sub_factor / 2
         else:
-            # TODO: и тут
             self.factor = -1 * self.total_days / self.sub_factor / 100
 
     def __lt__(self, other):
         return self.factor < other.factor
 
     def __str__(self):
-        # TODO: использовали многострочные строки, а можно так
-        s = f'dsdadsdsa\n' \
-            f'sdfsdf sdasd\n' \
-            f'dasdasgh'
-        # TODO: или так) Профит: нам не приходится "прилеплять" текст сообщения к левому краю.
-        s_2 = (f'dasdasd\n'
-               f'sdasdasd\n'
-               f'asdasd')
+        exp_result = (f'\nДанные эксперимента:'
+                      f'\nколичество детей {self.num_childs},'
+                      f'\nколичество котов {self.num_cats},'
+                      f'\nсумма зарплаты {self.sallory},'
+                      f'\nчастота пропажи еды (раз в год) {self.freq_food_collapse},'
+                      f'\nчастота пропажи денег (раз в год) {self.freq_money_collapse},'
+                      f'\nколичество хороших экспериментов {self.good_experiments} / {self.exp_quantity},'
+                      f'\nсоотношение хороших экспериментов {self.good_experiments / self.exp_quantity},'
+                      f'\nколичество пропаданий еды в среднем {self.cnt_food_collapse / self.exp_quantity:.2f},'
+                      f'\nколичество пропаданий денег в среднем {self.cnt_money_collapse / self.exp_quantity:.2f},'
+                      f'\nвес параметров {self.sub_factor:.2f},'
+                      f'\nвес эксперимента {self.factor:.2f}')
 
-        return f'''
-Данные эксперимента: 
-количество детей {self.num_childs}, 
-количество котов {self.num_cats},
-сумма зарплаты {self.sallory},
-частота пропажи еды (раз в год) {self.freq_food_collapse},
-частота пропажи денег (раз в год) {self.freq_money_collapse}, 
-количество хороших экспериментов {self.good_experiments} / {self.exp_quantity},
-соотношение хороших экспериментов {self.good_experiments / self.exp_quantity}, 
-количество пропаданий еды в среднем {self.quan_food_collapse/self.exp_quantity:.2f},
-количество пропаданий денег в среднем {self.quan_money_collapse/self.exp_quantity:.2f},
-вес параметров {self.sub_factor:.2f},
-вес эксперимента {self.factor:.2f}
-'''
+        return exp_result
+
+    # Усложненное задание (делать по желанию)
 
 
-# Усложненное задание (делать по желанию)
 #
 # Сделать из семьи любителей котов - пусть котов будет 3, или даже 5-10.
 # Коты должны выжить вместе с семьей!
@@ -502,9 +489,7 @@ class Experiment:
 #  счастья.
 #  Т.е. сейчас наша главная задача при проектировании классов: сделать так, чтобы все общие часть попали в родителей.
 
-exp_list = []       # TODO: а вот это переменная. ее вниз, после констант.
-
-exp_options = {
+EXP_OPTIONS = {
     'CATS_MAX': 5,
     'CHILDS_MAX': 5,
     'SALLORY_MIN': 150,
@@ -513,55 +498,44 @@ exp_options = {
     'MONEY_COLLAPSE': 5,
     'FOOD_COLLAPSE': 5,
     'QUANTITY': 5
-}       # TODO:  это к слову константа!
+}
 
 # Считаем количество вариантов
-quantity_of_experiments = (exp_options['CATS_MAX'] - 1) * \
-                          (exp_options['CHILDS_MAX'] - 1) * \
-                          ((exp_options['SALLORY_MAX'] - exp_options['SALLORY_MIN']) //
-                           exp_options['SALLORY_STEP'] + 1) * \
-                          (exp_options['MONEY_COLLAPSE'] - 1) * \
-                          (exp_options['FOOD_COLLAPSE'] - 1)        # TODO: как и это! тоже константа)
-# TODO: примечание, тащите константы на самый верх не стоит. Но переменные 4ой части пусть определяются после констант.
+QUANTITY_OF_EXPERIMENTS = (EXP_OPTIONS['CATS_MAX'] - 1) * \
+                          (EXP_OPTIONS['CHILDS_MAX'] - 1) * \
+                          ((EXP_OPTIONS['SALLORY_MAX'] - EXP_OPTIONS['SALLORY_MIN']) //
+                           EXP_OPTIONS['SALLORY_STEP'] + 1) * \
+                          (EXP_OPTIONS['MONEY_COLLAPSE'] - 1) * \
+                          (EXP_OPTIONS['FOOD_COLLAPSE'] - 1)
 
-
+exp_list = []
 num_of_experiment = 0
 
-for cats_num in range(1, exp_options['CATS_MAX']):
-    for childs_num in range(1, exp_options['CHILDS_MAX']):
-        for sallory in range(exp_options['SALLORY_MIN'], exp_options['SALLORY_MAX'] + 1, exp_options['SALLORY_STEP']):
-            for money_collapse_per_year in range(1, exp_options['MONEY_COLLAPSE']):
-                for food_collapse_per_year in range(1, exp_options['FOOD_COLLAPSE']):
+for cats_num in range(1, EXP_OPTIONS['CATS_MAX']):
+    for childs_num in range(1, EXP_OPTIONS['CHILDS_MAX']):
+        for sallory in range(EXP_OPTIONS['SALLORY_MIN'], EXP_OPTIONS['SALLORY_MAX'] + 1, EXP_OPTIONS['SALLORY_STEP']):
+            for money_collapse_per_year in range(1, EXP_OPTIONS['MONEY_COLLAPSE']):
+                for food_collapse_per_year in range(1, EXP_OPTIONS['FOOD_COLLAPSE']):
                     experiment_1 = Experiment(childs=childs_num,
                                               cats=cats_num,
                                               sallory=sallory,
                                               freq_money_collapse=money_collapse_per_year,
                                               freq_food_collapse=food_collapse_per_year,
-                                              exp_quantity=exp_options['QUANTITY'])
+                                              exp_quantity=EXP_OPTIONS['QUANTITY'])
                     experiment_1.counting_good()
                     exp_list.append(experiment_1)
                     num_of_experiment += 1
-                    print(f'Прогресс: {num_of_experiment} / {quantity_of_experiments}')
+                    print(f'Прогресс: {num_of_experiment} / {QUANTITY_OF_EXPERIMENTS}')
 
 exp_list.sort(reverse=True)
 
-# TODO: можем запустить цикл по срезу?
-print(f'''
-Топ 5 лучших экспериментов: 
-1 - {exp_list[0]} 
-2 - {exp_list[1]} 
-3 - {exp_list[2]}
-4 - {exp_list[3]}
-5 - {exp_list[4]}''')
+print(f'\nТоп 5 лучших экспериментов:')
+for num, list_item in enumerate(exp_list[0:5]):
+    print(f'\n{num + 1} - {list_item}')
 
-# TODO: цикл по срезу. Можно добавить enumerate(), чтобы выводить точно в таком формате как сейчас.
-print(f'''
-Топ 5 худших экспериментов: 
-1 - {exp_list[-1]} 
-2 - {exp_list[-2]} 
-3 - {exp_list[-3]}
-4 - {exp_list[-4]}
-5 - {exp_list[-5]}''')
+print(f'\nТоп 5 худших экспериментов:')
+for num, list_item in enumerate(exp_list[-1:-6:-1]):
+    print(f'\n{num + 1} - {list_item}')
 
 #  Класс Эксперимент.
 #  Сделайте небольшой класс Experiment.
