@@ -292,17 +292,23 @@ class Experiment:
         self.freq_money_collapse = freq_money_collapse
         self.freq_food_collapse = freq_food_collapse
         self.exp_quantity = exp_quantity
-        self.quan_food_collapse = 0
-        self.quan_money_collapse = 0
+        self.quan_food_collapse = 0         # TODO: часто используют "counter" или сокращенно "cnt" (счетчик)
+        self.quan_money_collapse = 0        #  в данном случае событий.
         self.total_days = 0
 
     def do_experiment(self):
-
+        # TODO: PyCharm подчеркивает желтой линией - значит что-то не так.
+        #  Если навести мышку, то мы увидим warning: переменные определены вне конструктора.
+        #  Т.е. все-все-все поля объекта обязательно должны быть перечислены в конструкторе.
+        #  .
+        #  Здесь же мы можем не перености эти поля в конструктор, а сделать их локальными. Т.е. они перестанут быть
+        #  полями класса, а будут доступны только в этой функцие.
         self.home = House()
         self.serge = Husband(name='Сережа', house=self.home, sallory=sallory)
         self.masha = Wife(name='Маша', house=self.home)
         self.cats = []
         self.childs = []
+
         child_names = ['Коля', 'Вася', 'Дима', 'Женя', 'Саша', 'Андрей']
         cat_names = ['Муся', 'Пушок', 'Мурзик', 'Васька', 'Вискас']
         for i in range(self.num_childs):
@@ -329,19 +335,23 @@ class Experiment:
                 self.quan_food_collapse += 1
                 # cprint('Пропала половина еды', color='red')
 
-            cats_alive = True
+            cats_alive = True           # TODO: когда речь идет про флаг, можно добавить "f_"
             for cat in self.cats:
                 cats_alive &= cat.act()
                 if not cats_alive:
                     break
 
-            childs_alive = True
+            children_alive = True       # f_children_alive
             for child in self.childs:
-                childs_alive &= child.act()
-                if not childs_alive:
+                children_alive &= child.act()
+                if not children_alive:
                     break
 
-            if not all([self.serge.act(), self.masha.act(), cats_alive, childs_alive]):
+            # TODO: all - очень умная функция. Нам надо поместить флаги вперед.
+            #  Как только all находит первый элемент списка False - она прерывается, и не проверят все остальное, т.к.
+            #  уже нет смысла. Поэтому мы можем поместить флаги вперед, и тогда Сергей и Маша будут что-то делать только
+            #  в том случае, если все живы.
+            if not all([self.serge.act(), self.masha.act(), cats_alive, children_alive]):
                 return 0
 
         #     cprint(self.home, color='cyan')
@@ -361,6 +371,7 @@ class Experiment:
     def counting_good(self):
         for _ in range(self.exp_quantity):
             self.good_experiments += self.do_experiment()
+        # TODO: еще одно поле, объявленное вне конструктора
         self.sub_factor = (self.num_childs * 100 + self.num_cats * 100) / self.sallory + \
                           (self.freq_food_collapse + self.freq_money_collapse) / 10
         print(f'{self.good_experiments} / {self.exp_quantity}')
@@ -369,12 +380,22 @@ class Experiment:
                            self.total_days / (365 * self.exp_quantity)) * \
                           self.sub_factor / 2
         else:
+            # TODO: и тут
             self.factor = -1 * self.total_days / self.sub_factor / 100
 
     def __lt__(self, other):
         return self.factor < other.factor
 
     def __str__(self):
+        # TODO: использовали многострочные строки, а можно так
+        s = f'dsdadsdsa\n' \
+            f'sdfsdf sdasd\n' \
+            f'dasdasgh'
+        # TODO: или так) Профит: нам не приходится "прилеплять" текст сообщения к левому краю.
+        s_2 = (f'dasdasd\n'
+               f'sdasdasd\n'
+               f'asdasd')
+
         return f'''
 Данные эксперимента: 
 количество детей {self.num_childs}, 
@@ -481,7 +502,7 @@ class Experiment:
 #  счастья.
 #  Т.е. сейчас наша главная задача при проектировании классов: сделать так, чтобы все общие часть попали в родителей.
 
-exp_list = []
+exp_list = []       # TODO: а вот это переменная. ее вниз, после констант.
 
 exp_options = {
     'CATS_MAX': 5,
@@ -492,7 +513,7 @@ exp_options = {
     'MONEY_COLLAPSE': 5,
     'FOOD_COLLAPSE': 5,
     'QUANTITY': 5
-}
+}       # TODO:  это к слову константа!
 
 # Считаем количество вариантов
 quantity_of_experiments = (exp_options['CATS_MAX'] - 1) * \
@@ -500,7 +521,9 @@ quantity_of_experiments = (exp_options['CATS_MAX'] - 1) * \
                           ((exp_options['SALLORY_MAX'] - exp_options['SALLORY_MIN']) //
                            exp_options['SALLORY_STEP'] + 1) * \
                           (exp_options['MONEY_COLLAPSE'] - 1) * \
-                          (exp_options['FOOD_COLLAPSE'] - 1)
+                          (exp_options['FOOD_COLLAPSE'] - 1)        # TODO: как и это! тоже константа)
+# TODO: примечание, тащите константы на самый верх не стоит. Но переменные 4ой части пусть определяются после констант.
+
 
 num_of_experiment = 0
 
@@ -521,6 +544,8 @@ for cats_num in range(1, exp_options['CATS_MAX']):
                     print(f'Прогресс: {num_of_experiment} / {quantity_of_experiments}')
 
 exp_list.sort(reverse=True)
+
+# TODO: можем запустить цикл по срезу?
 print(f'''
 Топ 5 лучших экспериментов: 
 1 - {exp_list[0]} 
@@ -529,7 +554,7 @@ print(f'''
 4 - {exp_list[3]}
 5 - {exp_list[4]}''')
 
-
+# TODO: цикл по срезу. Можно добавить enumerate(), чтобы выводить точно в таком формате как сейчас.
 print(f'''
 Топ 5 худших экспериментов: 
 1 - {exp_list[-1]} 
