@@ -25,15 +25,15 @@ carma = 0
 def one_day():
     if choice(range(1, 13)) == 1:
         raise BaseException('IamGodError')
-    if choice(range(1, 13)) == 1:
+    if choice(range(1, 13)) == 2:
         raise BaseException('DrunkError')
-    if choice(range(1, 13)) == 1:
+    if choice(range(1, 13)) == 3:
         raise BaseException('GluttonyError')
-    if choice(range(1, 13)) == 1:
+    if choice(range(1, 13)) == 4:
         raise BaseException('DepressionError')
-    if choice(range(1, 13)) == 1:
+    if choice(range(1, 13)) == 5:
         raise BaseException('SuicideError')
-    if choice(range(1, 13)) == 1:
+    if choice(range(1, 13)) == 6:
         raise BaseException('CarCrashError')
     return choice(range(1, 8))
 
