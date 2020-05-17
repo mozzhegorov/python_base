@@ -21,8 +21,12 @@ from random import choice
 ENLIGHTENMENT_CARMA_LEVEL = 777
 carma = 0
 
+# TODO: реализуйте все 7 исключений. Их классы.
+
+# TODO: сделайте список классов Исключений. Потом рандомно, 1 к 13, выбираем 1 случайное исключени и возуждаем его.
 
 def one_day():
+    # TODO: в итоге у неас будет 1 if вместо 6
     if choice(range(1, 13)) == 1:
         raise BaseException('IamGodError')
     if choice(range(1, 13)) == 2:
