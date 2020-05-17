@@ -16,9 +16,38 @@
 # кармы до уровня ENLIGHTENMENT_CARMA_LEVEL. Исключения обработать и записать в лог.
 # При создании собственных исключений максимально использовать функциональность
 # базовых встроенных исключений.
+from random import choice
 
 ENLIGHTENMENT_CARMA_LEVEL = 777
+carma = 0
 
-# TODO здесь ваш код
+
+def one_day():
+    if choice(range(1, 13)) == 1:
+        raise BaseException('IamGodError')
+    if choice(range(1, 13)) == 1:
+        raise BaseException('DrunkError')
+    if choice(range(1, 13)) == 1:
+        raise BaseException('GluttonyError')
+    if choice(range(1, 13)) == 1:
+        raise BaseException('DepressionError')
+    if choice(range(1, 13)) == 1:
+        raise BaseException('SuicideError')
+    if choice(range(1, 13)) == 1:
+        raise BaseException('CarCrashError')
+    return choice(range(1, 8))
+
+
+now_day = 0
+while carma < ENLIGHTENMENT_CARMA_LEVEL:
+    try:
+        now_day = one_day()
+    except BaseException as exc:
+        now_day = 0
+        print(f'Поймано исключеие {exc}')
+    finally:
+        carma += now_day
+        print(carma)
+
 
 # https://goo.gl/JnsDqu
