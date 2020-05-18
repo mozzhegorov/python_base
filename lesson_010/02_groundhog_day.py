@@ -16,42 +16,83 @@
 # кармы до уровня ENLIGHTENMENT_CARMA_LEVEL. Исключения обработать и записать в лог.
 # При создании собственных исключений максимально использовать функциональность
 # базовых встроенных исключений.
-from random import choice
+from random import randint
+from abc import ABC, abstractmethod
 
 ENLIGHTENMENT_CARMA_LEVEL = 777
 carma = 0
 
-# TODO: реализуйте все 7 исключений. Их классы.
 
-# TODO: сделайте список классов Исключений. Потом рандомно, 1 к 13, выбираем 1 случайное исключени и возуждаем его.
+class CustomException(Exception, ABC):
+    def __init__(self):
+        self.message = None
+
+    def __str__(self):
+        return self.message
+
+
+class IamGodError(CustomException):
+    @abstractmethod
+    def __init__(self):
+        self.message = 'IamGodError'
+
+
+class DrunkError(CustomException):
+    @abstractmethod
+    def __init__(self):
+        self.message = 'DrunkError'
+
+
+class GluttonyError(CustomException):
+    @abstractmethod
+    def __init__(self):
+        self.message = 'GluttonyError'
+
+
+class DepressionError(CustomException):
+    @abstractmethod
+    def __init__(self):
+        self.message = 'DepressionError'
+
+
+class SuicideError(CustomException):
+    @abstractmethod
+    def __init__(self):
+        self.message = 'SuicideError'
+
+
+class CarCrashError(CustomException):
+    @abstractmethod
+    def __init__(self):
+        self.message = 'CarCrashError'
+
+
+exceptions = [
+    IamGodError,
+    DrunkError,
+    GluttonyError,
+    DepressionError,
+    SuicideError,
+    CarCrashError
+]
+
 
 def one_day():
-    # TODO: в итоге у неас будет 1 if вместо 6
-    if choice(range(1, 13)) == 1:
-        raise BaseException('IamGodError')
-    if choice(range(1, 13)) == 2:
-        raise BaseException('DrunkError')
-    if choice(range(1, 13)) == 3:
-        raise BaseException('GluttonyError')
-    if choice(range(1, 13)) == 4:
-        raise BaseException('DepressionError')
-    if choice(range(1, 13)) == 5:
-        raise BaseException('SuicideError')
-    if choice(range(1, 13)) == 6:
-        raise BaseException('CarCrashError')
-    return choice(range(1, 8))
+    exc_num = randint(0, 12)
+    if exc_num < len(exceptions):
+        raise exceptions[exc_num]
+    return randint(1, 8)
 
 
 now_day = 0
 while carma < ENLIGHTENMENT_CARMA_LEVEL:
     try:
         now_day = one_day()
-    except BaseException as exc:
+    except Exception as exc:
         now_day = 0
         print(f'Поймано исключеие {exc}')
     finally:
         carma += now_day
         print(carma)
-
 
 # https://goo.gl/JnsDqu
