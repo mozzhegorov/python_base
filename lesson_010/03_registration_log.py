@@ -32,25 +32,29 @@ class NotEmailError(Exception):
 
 
 def check_line(line):
-    # TODO: если мы хотим разбить строку по пробелам, лучше всегда использовать .split() без параметра.
+    #  если мы хотим разбить строку по пробелам, лучше всегда использовать .split() без параметра.
     #  Да, в таком случае символы перевода строки "\n" будут откинуты. Т.е. сначала будет выполнен .strip(),
     #  а только потом split(' ').
-    line = line.split(' ')
-    if len(line) < 3:   # TODO: а если больше?  здесь лучше подойдет ==
-        raise ValueError("Недостаточно параметров")
+    line = line.split()
+    person_name = line[0]
+    person_email = line[1]
+    person_age = line[2]
 
-    # TODO: Здесь лучше распаковать кортеж в 3 переменных, с понятным именами. И дальше проверять их, а не line[0] или line[2]
-
-    if not line[0].isalpha():
+    if len(line) != 3:
+        raise ValueError("Неверное количество параметров")
+    if not person_name.isalpha():
         raise NotNameError("Указано не верно имя")
-    if not ('@' in line[1] and '.' in line[1]):
+    if not ('@' in person_email and '.' in person_email):
         raise NotEmailError("Указан не верно Email")
-
-    # TODO: Info. попытка привести строку к целому само по себе вызове ValueError
-    if not (9 < int(line[2]) < 100):
+    if person_age.isalpha():
+        raise ValueError("Возраст указан не верно")
+    # Info. попытка привести строку к целому само по себе вызове ValueError
+    if not (9 < int(person_age) < 100):
         raise ValueError("Возраст не соответствует требованиям")
     return line
-# TODO: Нужен ли ValueError при split()?
+
+
+#  Нужен ли ValueError при split()?
 #   x, y, z, d = 'a a a'.split()
 #   Traceback (most recent call last):
 #       File "<stdin>", line 1, in <module>
@@ -62,9 +66,7 @@ def check_line(line):
 #  list_line[0] и list_line[1] и list_line[2] и понять что из них за что отвечает будет не просто)
 
 
-
-
-# TODO: если лог файл будет весить 1 ГБ, то мы будем держать в памяти это 1 ГБ.
+#  если лог файл будет весить 1 ГБ, то мы будем держать в памяти это 1 ГБ.
 #  Нам лучше открыть все 3 файла и делать чтение/запись в один момент.
 good_list = ""
 bad_list = ""
@@ -73,14 +75,10 @@ with open('registrations.txt', encoding='utf8') as ff:
         try:
             # print(checking_line(line=line))
             check_line(line=line)
-            good_list += line
+            with open('registrations_good.log', mode='a') as file:
+                file.write(line)
         except Exception as exc:
-            # TODO: тут сразу будет запись в файл
-            bad_list += line
+            # тут сразу будет запись в файл
+            with open('registrations_bad.log', mode='a') as file:
+                file.write(line)
             print(f'Ошибка в линии "{line[:-1]}" - {exc}')
-
-with open('registrations_bad.log', mode='w') as file:
-    file.write(bad_list)
-
-with open('registrations_good.log', mode='w') as file:
-    file.write(good_list)
