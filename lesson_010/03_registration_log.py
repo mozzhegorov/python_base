@@ -31,24 +31,24 @@ class NotEmailError(Exception):
     pass
 
 
-def check_line(line):
+def check_line(data_line):
     #  если мы хотим разбить строку по пробелам, лучше всегда использовать .split() без параметра.
     #  Да, в таком случае символы перевода строки "\n" будут откинуты. Т.е. сначала будет выполнен .strip(),
     #  а только потом split(' ').
-    line = line.split()
-    person_name = line[0]
-    person_email = line[1]
-    person_age = line[2]
+    data_line = data_line.split()
 
-    # TODO: предположим, что в строке оказалось только 2 слова. Как вы думаете, мы дойдем до этой проверки?
+    #  предположим, что в строке оказалось только 2 слова. Как вы думаете, мы дойдем до этой проверки?
     if len(line) != 3:
         raise ValueError("Неверное количество параметров")
 
-    # TODO: распаковку кортежа лучше делать здесь
+    person_name, person_email, person_age = data_line
+
+    #  распаковку кортежа лучше делать здесь
     #       Пример:
     #       x, y, z = (1, 2, 3)
     #  .
-    #  Либо распаковывать наверху, но тогда нет смысла пытаться поймать "if len(line) != 3:", т.к. эксперш сработает раньше.
+    #  Либо распаковывать наверху, но тогда нет смысла пытаться поймать "if len(line) != 3:",
+    #  т.к. эксперш сработает раньше.
 
     if not person_name.isalpha():
         raise NotNameError("Указано не верно имя")
@@ -78,21 +78,27 @@ def check_line(line):
 #  Нам лучше открыть все 3 файла и делать чтение/запись в один момент.
 good_list = ""
 bad_list = ""
-with open('registrations.txt', encoding='utf8') as ff:
-    for line in ff:
+with open('registrations.txt', encoding='utf8') as origin_file, \
+        open('registrations_good.log', mode='a') as good_file, \
+        open('registrations_bad.log', mode='a') as bad_file:
+    for line in origin_file:
         try:
             # print(checking_line(line=line))
-            check_line(line=line)
-            # TODO: нам лучше открыть этот файл ...
-            with open('registrations_good.log', mode='a') as file:
-                file.write(line)
+            check_line(data_line=line)
+            good_file.write(line)
         except Exception as exc:
-            # TODO: ... и этот файл тоже...
-            with open('registrations_bad.log', mode='a') as file:
-                file.write(line)
+            bad_file.write(line)
             print(f'Ошибка в линии "{line[:-1]}" - {exc}')
 
-# TODO: на самом верху, вместе с "with open('registrations.txt', encoding='utf8') as ff", через запятую:
+# TODO: ОТВЕТ: надеюсь я верно понял комментарий
+#              Единственное хотел бы спросить: Мы сдвигаем открытие файлов .log в самый верх, то есть мы закроем их
+#              только после выполнения цикла, то есть после обработки всех строк файла с данными. Я ведь правильно
+#              понимаю, что оператор with сохранит данные в созданных файлах, даже если мы не дошли до конца цикла,
+#              а поймали какую-то ошибку, например ошибку компилятора. В моем варианте было так, что каждая строка
+#              будет записана в файл, даже если по каким-то причинам файл с данными мы не обработаем до конца. Здесь
+#              я сомневаюсь в этом.
+
+#  на самом верху, вместе с "with open('registrations.txt', encoding='utf8') as ff", через запятую:
 #  Можно как джун вкладывать друг в друга:
 #           with open(...) as f_1:
 #               with open(...) as f_2:
