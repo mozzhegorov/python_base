@@ -9,8 +9,17 @@
 
 
 def log_errors(func):
-    pass
-    # TODO здесь ваш код
+    def surrogate(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except Exception as _exc:
+            func_name = func.__name__
+            exc_type = type(_exc).__name__
+            exception_text = _exc.args[0]
+            with open("function_errors.log", "a", encoding="utf8") as log_file:
+                log_file.write(f'{func_name} // {args} {kwargs} // {exc_type} // {exception_text}\n')
+
+    return surrogate
 
 
 # Проверить работу на следующих функциях
@@ -45,7 +54,6 @@ for line in lines:
         print(f'Invalid format: {exc}')
 perky(param=42)
 
-
 # Усложненное задание (делать по желанию).
 # Написать декоратор с параметром - именем файла
 #
@@ -53,3 +61,6 @@ perky(param=42)
 # def func():
 #     pass
 
+
+# test = [1, 1, 2, 3, 4]
+# print(*test)
