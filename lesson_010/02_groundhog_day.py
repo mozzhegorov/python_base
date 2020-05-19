@@ -22,9 +22,9 @@ from abc import ABC, abstractmethod
 ENLIGHTENMENT_CARMA_LEVEL = 777
 carma = 0
 
-
+# TODO: понимаю, почему наследуем от Exception, но не понимаю, зачем наследовались еще и от ABC?
 class CustomException(Exception, ABC):
-    def __init__(self):
+    def __init__(self):     # TODO: почему бы родительскому конструктору сразу не принимать параметр "месседж"?
         self.message = None
 
     def __str__(self):
@@ -32,10 +32,9 @@ class CustomException(Exception, ABC):
 
 
 class IamGodError(CustomException):
-    @abstractmethod
-    def __init__(self):
-        self.message = 'IamGodError'
-
+    @abstractmethod         # TODO: почему конструктор у нас абстрактный?
+    def __init__(self):     # TODO: PyCharm подсвечивает грязно-желтым "__init__". Это warning. Если навести мышку, то
+        self.message = 'IamGodError'        # то узнаем, что внутри своего конструктора забыли вызвать родительский конструктор.
 
 class DrunkError(CustomException):
     @abstractmethod
@@ -66,7 +65,7 @@ class CarCrashError(CustomException):
     def __init__(self):
         self.message = 'CarCrashError'
 
-
+# TODO: список сделан логично.
 exceptions = [
     IamGodError,
     DrunkError,
@@ -79,8 +78,8 @@ exceptions = [
 
 def one_day():
     exc_num = randint(0, 12)
-    if exc_num < len(exceptions):
-        raise exceptions[exc_num]
+    if exc_num < len(exceptions):   # TODO: значит исключения будут вызван в случаях от 0 до 5. Т.е. 6 из 12 вариантов. Т.е. вероятность 50%.
+        raise exceptions[exc_num]   #  какую вероятность от нас требует задание? вероятность возникновения исключения
     return randint(1, 8)
 
 

@@ -40,8 +40,16 @@ def check_line(line):
     person_email = line[1]
     person_age = line[2]
 
+    # TODO: предположим, что в строке оказалось только 2 слова. Как вы думаете, мы дойдем до этой проверки?
     if len(line) != 3:
         raise ValueError("Неверное количество параметров")
+
+    # TODO: распаковку кортежа лучше делать здесь
+    #       Пример:
+    #       x, y, z = (1, 2, 3)
+    #  .
+    #  Либо распаковывать наверху, но тогда нет смысла пытаться поймать "if len(line) != 3:", т.к. эксперш сработает раньше.
+
     if not person_name.isalpha():
         raise NotNameError("Указано не верно имя")
     if not ('@' in person_email and '.' in person_email):
@@ -75,10 +83,23 @@ with open('registrations.txt', encoding='utf8') as ff:
         try:
             # print(checking_line(line=line))
             check_line(line=line)
+            # TODO: нам лучше открыть этот файл ...
             with open('registrations_good.log', mode='a') as file:
                 file.write(line)
         except Exception as exc:
-            # тут сразу будет запись в файл
+            # TODO: ... и этот файл тоже...
             with open('registrations_bad.log', mode='a') as file:
                 file.write(line)
             print(f'Ошибка в линии "{line[:-1]}" - {exc}')
+
+# TODO: на самом верху, вместе с "with open('registrations.txt', encoding='utf8') as ff", через запятую:
+#  Можно как джун вкладывать друг в друга:
+#           with open(...) as f_1:
+#               with open(...) as f_2:
+#                   line_file_1 = f_1.readline()
+#                   line_file_2 = f_2.readline()
+#     .
+#     А можно использовать более продвинутый синтаксис:
+#           with open("1.txt") as f1, open("2.txt") as f2:
+#               line_file_1 = f_1.readline()
+#               line_file_2 = f_2.readline()
