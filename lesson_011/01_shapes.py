@@ -34,4 +34,9 @@ def get_polygon(n):
 draw_triangle = get_polygon(n=3)
 draw_triangle(point=sd.get_point(200, 200), angle=13, length=100)
 
+
+# TODO: есть баг. Почему вместо квадрата снова треугольника
+draw_square = get_polygon(n=4)
+draw_square(point=sd.get_point(400, 400), angle=0, length=100)
+
 sd.pause()

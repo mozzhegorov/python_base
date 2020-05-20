@@ -9,10 +9,13 @@
 
 
 def log_errors(func):
+    # TODO: пока сурогатная функция не учитывает, что func может что-то возвращать.
+    #  Дополните функцию так, чтобы она возвращала результат работы функции или None если произошел exception.
     def surrogate(*args, **kwargs):
         try:
             func(*args, **kwargs)
         except Exception as _exc:
+            # TODO: Хороший ход.
             func_name = func.__name__
             exc_type = type(_exc).__name__
             exception_text = _exc.args[0]
