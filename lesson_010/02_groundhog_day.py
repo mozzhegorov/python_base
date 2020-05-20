@@ -33,6 +33,9 @@ carma = 0
 #         не нужны много классов. В итоге остановился на одном классе. Очень хочу надеяться что этот метод верный,
 #         а не создавать кучу классов для ошибок.
 
+# TODO: согласно заданию должно быть минимум 6 видов исключений.
+#  Реализуется просто: наследуется от CustomException, а тело - конструктор, который жестко задает сообщение исключения.
+
 class CustomException(Exception):
 
     def __init__(self, message):
@@ -41,7 +44,7 @@ class CustomException(Exception):
     def __str__(self):
         return self.message
 
-
+# TODO: это будет кортеж Классов, а не объектов
 exceptions = [
     CustomException("IamGodError"),
     CustomException("DrunkError"),
@@ -58,7 +61,7 @@ def one_day():
     #  вероятностью 1/6 выбор ошибки.
     if exc_chance == 0:
         exc_num = randint(0, 5)
-        raise exceptions[exc_num]
+        raise exceptions[exc_num]       # TODO: используйте choice(), чтобы выбрать 1 элемент из списка.
     return randint(1, 8)
 
 
@@ -66,11 +69,12 @@ now_day = 0
 while carma < ENLIGHTENMENT_CARMA_LEVEL:
     try:
         now_day = one_day()
+    # TODO: здесь перечислить обрабатываемые исключения.
     except Exception as exc:
         now_day = 0
-        print(f'Поймано исключеие {exc}')
-    finally:
-        carma += now_day
+        print(f'Поймано исключеие {exc}')       # TODO: пишет "Поймано исключение SuicideError", но это не исключение SuicideError
+    finally:                                    #  это исключение CustomException с сообщением об ошибке "SuicideError"
+        carma += now_day                        #  а должно быть правда исключение класса SuicideError
         print(carma)
 
 # https://goo.gl/JnsDqu
