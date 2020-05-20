@@ -79,10 +79,10 @@ def check_line(data_line):
 good_list = ""
 bad_list = ""
 with open('registrations.txt', encoding='utf8') as origin_file, \
-        open('registrations_good.log', mode='a') as good_file, \
-        open('registrations_bad.log', mode='a') as bad_file:        # TODO: лучше во всех файлах явно указать кодировку utf-8
-    for line in origin_file:                                        #  под Windows при попытке записи во 2 и 3 файл может
-        try:                                                        #  происходить ошибка
+        open('registrations_good.log', mode='a', encoding='utf8', buffering=1) as good_file, \
+        open('registrations_bad.log', mode='a', encoding='utf8', buffering=1) as bad_file:
+    for line in origin_file:
+        try:
             # print(checking_line(line=line))
             check_line(data_line=line)
             good_file.write(line)
@@ -90,16 +90,9 @@ with open('registrations.txt', encoding='utf8') as origin_file, \
             bad_file.write(line)
             print(f'Ошибка в линии "{line[:-1]}" - {exc}')
 
-# TODO: ОТВЕТ: надеюсь я верно понял комментарий
-#              Единственное хотел бы спросить: Мы сдвигаем открытие файлов .log в самый верх, то есть мы закроем их
-#              только после выполнения цикла, то есть после обработки всех строк файла с данными. Я ведь правильно
-#              понимаю, что оператор with сохранит данные в созданных файлах, даже если мы не дошли до конца цикла,
-#              а поймали какую-то ошибку, например ошибку интерпретатора. В моем варианте было так, что каждая строка
-#              будет записана в файл, даже если по каким-то причинам файл с данными мы не обработаем до конца.
-#              Например файл с данным бесконенчо большой и мы останавливаем обработку через СТОП,
-#              либо останавливаемся ошибкой интерпретатора.
 
-# TODO: чтобы запись производилась на каждой строке гарантированно, следует добавить "buffering=1" в open().
+
+#  чтобы запись производилась на каждой строке гарантированно, следует добавить "buffering=1" в open().
 #  0 - не буферизировать;
 #  1 - только 1 строку;
 #  N - задать размер буфера в N байт.
