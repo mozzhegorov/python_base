@@ -15,24 +15,27 @@
 # [2018-05-17 01:57] 1234
 
 from collections import defaultdict
+from itertools import islice
 
 
-# TODO: сильная сторона Итераторов/Генераторов в том, что мы не храним огромное число данные сразу; и не генерируем
+#  сильная сторона Итераторов/Генераторов в том, что мы не храним огромное число данные сразу; и не генерируем
 #  огромное число данных, чтобы потом выдать 1 строку.
 #  .
 #  Типичный пример итератора: range()
-test = range(10**8)     # Это генератор невероятно огромного списка. Но он не создан, хотя готов к этому.
-test_iter = iter(test)
-print(next(test_iter))
-print(next(test_iter))
-print(next(test_iter))
-print(next(test_iter))
 
-# TODO: он не выдает все числа сразу, а отдает по одному, когда надо.
+# test = range(10**8)     # Это генератор невероятно огромного списка. Но он не создан, хотя готов к этому.
+# test_iter = iter(test)
+# print(test_iter)
+# print(next(test_iter))
+# print(next(test_iter))
+# print(next(test_iter))
+# print(next(test_iter))
+
+#  он не выдает все числа сразу, а отдает по одному, когда надо.
 #  Если же мы попытается создать словарь таких размеров:
 #lst = list(test)        # Эта операция займет несколько секунд
 
-# TODO: сейчас наш код действует по 2ому пути. Мы берем файл логов, весь парсим его и выдаем результат по кусочкам.
+#  сейчас наш код действует по 2ому пути. Мы берем файл логов, весь парсим его и выдаем результат по кусочкам.
 #  Если в файле будет 100500 строк, то сначала все должны будет распарсить.
 #  .
 #  Наша же задача: написать такой итератор, чтобы при следующем запуске он открывал файл на нужной строке, парсил
@@ -43,7 +46,7 @@ print(next(test_iter))
 #   2. islice.
 
 
-# TODO: Простой срез и "умный срез".
+#  Простой срез и "умный срез".
 #  from itertools import islice
 #  lst = [0,1,2,3,4,5,6,7,8,9,10]
 #  slice_1 = lst[2:9:3]                 # [2, 5, 8]
@@ -67,25 +70,36 @@ class ParseNok:
     def __init__(self, source):
         self.file_name = source
         self.nok_count = defaultdict(int)
-        self.parsing()
         self.iter_date_time = iter(self.nok_count.keys())  # говорим что ключи self.nok_count - итерируемый объект
         self.iter_nok_quantity = iter(self.nok_count.values())  # для второго варианта решения задачи
+        self.line_num = 0
 
     def __iter__(self):
+        self.line_num = 0
         return self
 
-    def __next__(self):
-        date_time = next(self.iter_date_time)  # перехожим по ключу как по итерируемому объекту словаря
-        nok_quantity = self.nok_count[date_time]  # TODO: Основной, т.к. точно указываем на элемент словаря
-        # nok_quantity = next(self.iter_nok_quantity)    # TODO: Один из вариантов решения задачи.
-        return date_time, nok_quantity
-
-    def parsing(self):
+    def parsing(self, line_num):
         with open(self.file_name, 'r', encoding='utf8') as file:
-            for line in file:
-                if 'NOK' in line:
-                    date_time = line[1:17]
-                    self.nok_count[date_time] += 1
+            return list(islice(file, line_num, line_num + 1))
+
+    def __next__(self):
+        f_date_time = None
+        nok_cnt = 0
+        while True or not nok_cnt:
+            line = self.parsing(self.line_num)
+            if not line:
+                raise StopIteration
+            line = line[0]
+            date_time = line[1:17]
+            if f_date_time is not None \
+                    and f_date_time != date_time\
+                    and nok_cnt:
+                break
+            self.line_num += 1
+            if 'NOK' in line:
+                nok_cnt += 1
+            f_date_time = date_time
+        return f_date_time, nok_cnt
 
     def print_result(self):
         for date_time, quantity in self.nok_count.items():
