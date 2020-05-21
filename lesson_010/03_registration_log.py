@@ -116,3 +116,5 @@ with open('registrations.txt', encoding='utf8') as origin_file, \
 #           with open("1.txt") as f1, open("2.txt") as f2:
 #               line_file_1 = f_1.readline()
 #               line_file_2 = f_2.readline()
+
+# зачет!

@@ -73,7 +73,7 @@ exceptions = [
 
 
 def one_day():
-    if not randint(0, 12):
+    if not randint(0, 12):          # TODO: хорошо)
         raise choice(exceptions)
     return randint(1, 8)
 
@@ -83,7 +83,6 @@ while carma < ENLIGHTENMENT_CARMA_LEVEL:
     now_day = 0
     try:
         now_day = one_day()
-    # TODO: здесь перечислить обрабатываемые исключения.
     except IamGodError as exc:
         print(f'Поймано исключеие {exc}')
     except DrunkError as exc:
@@ -101,3 +100,5 @@ while carma < ENLIGHTENMENT_CARMA_LEVEL:
         print(carma)
 
 # https://goo.gl/JnsDqu
+
+# зачет!
