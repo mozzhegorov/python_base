@@ -33,7 +33,7 @@ from itertools import islice
 
 #  он не выдает все числа сразу, а отдает по одному, когда надо.
 #  Если же мы попытается создать словарь таких размеров:
-#lst = list(test)        # Эта операция займет несколько секунд
+# lst = list(test)        # Эта операция займет несколько секунд
 
 #  сейчас наш код действует по 2ому пути. Мы берем файл логов, весь парсим его и выдаем результат по кусочкам.
 #  Если в файле будет 100500 строк, то сначала все должны будет распарсить.
@@ -70,45 +70,42 @@ class ParseNok:
     def __init__(self, source):
         self.file_name = source
         self.nok_count = defaultdict(int)
-        self.iter_date_time = iter(self.nok_count.keys())  # говорим что ключи self.nok_count - итерируемый объект
-        self.iter_nok_quantity = iter(self.nok_count.values())  # для второго варианта решения задачи
-        self.line_num = 0
+        self.file = None
+        self.file = open(self.file_name, 'r', encoding='utf8')
+        self.next_before_dt = [None, None]
 
     def __iter__(self):
-        self.line_num = 0
         return self
 
-    def parsing(self, line_num):
-        with open(self.file_name, 'r', encoding='utf8') as file:
-            return list(islice(file, line_num, line_num + 1))
-
     def __next__(self):
-        f_date_time = None
-        nok_cnt = 0
-        while True or not nok_cnt:
-            line = self.parsing(self.line_num)
-            if not line:
-                raise StopIteration
-            line = line[0]
-            date_time = line[1:17]
-            if f_date_time is not None \
-                    and f_date_time != date_time\
-                    and nok_cnt:
-                break
-            self.line_num += 1
-            if 'NOK' in line:
-                nok_cnt += 1
-            f_date_time = date_time
-        return f_date_time, nok_cnt
+        while True:
+            self.next_before_dt[0] = self.next_before_dt[1]
+            line = islice(self.file, 0, 1)
+            data_string = list(line)
 
-    def print_result(self):
-        for date_time, quantity in self.nok_count.items():
-            print(f'{date_time}: {quantity}')
+            if not data_string:
+                self.file.close()
+                raise StopIteration
+
+            data_string = data_string[0]
+            date_time = data_string[1:17]
+            if self.next_before_dt[0] is not None \
+                    and date_time != self.next_before_dt[0] \
+                    and self.nok_count[self.next_before_dt[0]] != 0:
+                if "NOK" in data_string:
+                    self.nok_count[date_time] += 1
+                self.next_before_dt[1] = date_time
+                break
+            if "NOK" in data_string:
+                self.nok_count[date_time] += 1
+            self.next_before_dt = [date_time, date_time]
+        return self.next_before_dt[0], self.nok_count[self.next_before_dt[0]]
 
 
 grouped_events = ParseNok(source='events.txt')
 for group_time, event_count in grouped_events:
     print(f'[{group_time}] {event_count}')
+
 
 # test = [1, 2, 3, 4, 5, 6]
 # test_iter = iter(test)
@@ -116,3 +113,32 @@ for group_time, event_count in grouped_events:
 # print(next(test_iter))
 # print(next(test_iter))
 # print(next(test_iter))
+
+# class Test:
+#
+#     def __init__(self):
+#         self.listing_iter = range(10)
+#         print(self.listing_iter)
+#         self.iter_obj = iter(self.listing_iter)
+#         self.i = 0
+#
+#     def __iter__(self):
+#         return self
+#
+#     def __next__(self):
+#         self.i += 1
+#         # a = 0
+#         # while True:
+#         #     line = list(islice(self.iter_obj, 0, 1))
+#         #     print(line)
+#         #     a += 1
+#         #     if a > 10:
+#         #         break
+#         if self.i > 10:
+#             raise StopIteration
+#         return islice(self.iter_obj, 0, 3)
+#
+#
+# # Test_1 = Test()
+# # for i in Test_1:
+# #     print(list(i))
