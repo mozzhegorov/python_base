@@ -26,34 +26,40 @@ class PrimeNumbers:
     def __init__(self, n):
         self.prime_numbers = []
         self.n_max = n
+        self.num = None
 
     def __iter__(self):
-        self.num = 1                    # TODO: создание полей вне конструктора - крайне плохая идея.
-        return self                     #  это поле должно быть и в конструкторе в первую очередь!
+        self.num = 1
+        return self
 
     def __next__(self):
         if self.num > self.n_max:
-            raise StopIteration()       # TODO: Достаточно "raise StopIteration" (объект создавать не обязательно)
-        self.num += 1
-        for prime in self.prime_numbers:
-            if self.num % prime == 0:
-                break
-        else:
-            self.prime_numbers.append(self.num)
-            return self.num
+            raise StopIteration
+        # print(self.prime_numbers)
+        while True:
+            self.num += 1
+            for prime in self.prime_numbers:
+                if self.num % prime == 0:
+                    break
+            else:
+                self.prime_numbers.append(self.num)
+                return self.num
 
-prime_number_iterator = PrimeNumbers(n=100)
+
+prime_number_iterator = iter(PrimeNumbers(n=100))
 # TODO: prime_number_iterator - это объект класс PrimeNumbers.
 #  Это пока не итератор, т.к. мы не настроили его поля.
 #  Итератор будет получен тогда, когда мы подставим его в цикл, или явно вызовем iter(prime_number_iterator).
-vot_eto_iterator = iter(prime_number_iterator)  # здесь произойдет вызов __iter__, настройка полей и вернется тот же объект, но уже готовый к итерированию
+#  ОТВЕТ: Я вроде это понял, но ведь класс был итерируемый, поэтому не стал его еще загонять в iter(),
+#  к тому же работало. В общем вопрос таки, необходимо даже итерируемый класс приводить к итерируемому объекту?
+vot_eto_iterator = iter(
+    prime_number_iterator)  # здесь произойдет вызов __iter__, настройка полей и вернется тот же объект, но уже готовый к итерированию
 for number in prime_number_iterator:
-    if number:          # TODO: это хак. Класс PrimeNumbers возвращает None`ы и Простые числа?)
-        print(number)
-
-# TODO: надо поменять __next__ Так, чтобы он возвращал следующее простое число.
+    print(number)
 
 exit(123)
+
+
 # TODO после подтверждения части 1 преподователем, можно делать
 # Часть 2
 # Теперь нужно создать генератор, который выдает последовательность простых чисел до n
