@@ -39,3 +39,5 @@ draw_square = get_polygon(angles=4)
 draw_square(point=sd.get_point(400, 400), angle=0, length=100)
 
 sd.pause()
+
+# зачет!
