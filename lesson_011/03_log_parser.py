@@ -68,16 +68,13 @@ from itertools import islice
 class ParseNok:
 
     def __init__(self, source):
-        self.file_name = source             # TODO: зачем на это поле, если мы сразу открываем файл?
-        self.nok_count = defaultdict(int)   #  (поле пока не удалять, лучше обрать из конструктора открытие файла)
-
-        # TODO: что-то пошло не так)
+        self.file_name = source
         self.file = None
-        self.file = open(self.file_name, 'r', encoding='utf8')
-
+        self.nok_count = defaultdict(int)
         self.next_before_dt = [None, None]
 
     def __iter__(self):
+        self.file = open(self.file_name, 'r', encoding='utf8')
         return self
 
     def __next__(self):
@@ -109,8 +106,7 @@ grouped_events = ParseNok(source='events.txt')
 for group_time, event_count in grouped_events:
     print(f'[{group_time}] {event_count}')
 
-# TODO: при повторной попытке - получим ошибку. Лучше сделать так, чтобы можно было получить итератор несколько раз,
-#  а не только 1 раз за все время существования объекта.
+
 for group_time, event_count in grouped_events:
     print(f'[{group_time}] {event_count}')
 
