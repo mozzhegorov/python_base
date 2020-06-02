@@ -8,28 +8,29 @@
 # Лог файл открывать каждый раз при ошибке в режиме 'a'
 
 
-def log_errors(func):
-    def surrogate(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except Exception as _exc:
-            func_name = func.__name__
-            exc_type = type(_exc).__name__
-            exception_text = _exc.args[0]
-            with open("function_errors.log", "a", encoding="utf8") as log_file:
-                log_file.write(f'{func_name} // {args} {kwargs} // {exc_type} // {exception_text}\n')
-            return None
-
-    return surrogate
+def log_errors(file_name):
+    def sub_surrogate(func):
+        def surrogate(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except Exception as _exc:
+                func_name = func.__name__
+                exc_type = type(_exc).__name__
+                exception_text = _exc.args[0]
+                with open(file_name, "a", encoding="utf8") as log_file:
+                    log_file.write(f'{func_name} // {args} {kwargs} // {exc_type} // {exception_text}\n')
+                return None
+        return surrogate
+    return sub_surrogate
 
 
 # Проверить работу на следующих функциях
-@log_errors
+@log_errors('function_errors_param.log')
 def perky(param):
     return param / 0
 
 
-@log_errors
+@log_errors('function_errors_lines.log')
 def check_line(line):
     name, email, age = line.split(' ')
     if not name.isalpha():
@@ -55,14 +56,15 @@ for line in lines:
         print(f'Invalid format: {exc}')
 perky(param=42)
 
-# TODO: как насчет усложненного декоратора?)
+
+#  как насчет усложненного декоратора?)
 # Усложненное задание (делать по желанию).
 # Написать декоратор с параметром - именем файла
 #
+
 # @log_errors('function_errors.log')
 # def func():
 #     pass
-
 
 # test = [1, 1, 2, 3, 4]
 # print(*test)
