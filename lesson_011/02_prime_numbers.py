@@ -61,12 +61,9 @@ class PrimeNumbers:
 
 
 def prime_numbers_generator(n):
-    num = 1     # TODO: почему вы решили ввести переменную "num"?
     prime_numbers = []
 
-    # TODO:  При этом мы избавились от переменной "number" внутри цикла. Может стоит оставить number, пусть цикл ее генерирует?
-    for _ in range(n):      # так же изменился range(), теперь он начинается с 0. НО простые числа начинаются с 2. 0 и 1 - не простые числа.
-        num += 1
+    for num in range(2, n):
         for prime in prime_numbers:
             if num % prime == 0:
                 break
@@ -75,10 +72,57 @@ def prime_numbers_generator(n):
             yield num
 
 
-for number in prime_numbers_generator(n=10000):
-    print(number)
+def is_polyndrom(num):
+    str_num = str(num)
+    num_len = len(str_num)
+    if num < 10:
+        return False
+    for i in range(num_len):
+        if str_num[i] != str_num[-i - 1]:
+            return False
+    return True
 
-# TODO: можно делать часть 3.
+
+def is_happy_num(num):
+    str_num = str(num)
+    num_len = len(str_num)
+    left = 0
+    right = 0
+    if num < 10:
+        return False
+    for i in range(num_len // 2):
+        left += int(str_num[i])
+        right += int(str_num[-i - 1])
+    return left == right
+
+
+def is_sabita(num):
+    _num = (num + 1) / 3
+    while _num > 2:
+        if _num % 2 != 0:
+            return False
+        _num //= 2
+    if _num in (1, 2):
+        return True
+    return False
+
+
+test_number = 123321
+print(is_happy_num(test_number))
+print(is_polyndrom(test_number))
+print(is_sabita(12))
+
+# TODO: 1 вариант. всё как и было, фильтруем с помощью if
+for number in prime_numbers_generator(n=10000):
+    if is_polyndrom(number):
+        print(number)
+
+# TODO: 2 вариант. используем цикл через lambda, потом фильтруем и выводим.
+prime_number = map(lambda x: x, prime_numbers_generator(n=10000))
+sabita_prime_nums = filter(is_sabita, prime_number)
+sabita_prime_nums_list = list(sabita_prime_nums)
+print(sabita_prime_nums_list)
+
 
 # Часть 3
 # Написать несколько функций-фильтров, которые выдает True, если число:
