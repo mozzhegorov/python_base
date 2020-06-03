@@ -68,3 +68,5 @@ perky(param=42)
 
 # test = [1, 1, 2, 3, 4]
 # print(*test)
+
+# зачет!

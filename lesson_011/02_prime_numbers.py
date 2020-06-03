@@ -61,9 +61,11 @@ class PrimeNumbers:
 
 
 def prime_numbers_generator(n):
-    num = 1
+    num = 1     # TODO: почему вы решили ввести переменную "num"?
     prime_numbers = []
-    for _ in range(n):
+
+    # TODO:  При этом мы избавились от переменной "number" внутри цикла. Может стоит оставить number, пусть цикл ее генерирует?
+    for _ in range(n):      # так же изменился range(), теперь он начинается с 0. НО простые числа начинаются с 2. 0 и 1 - не простые числа.
         num += 1
         for prime in prime_numbers:
             if num % prime == 0:
@@ -75,6 +77,8 @@ def prime_numbers_generator(n):
 
 for number in prime_numbers_generator(n=10000):
     print(number)
+
+# TODO: можно делать часть 3.
 
 # Часть 3
 # Написать несколько функций-фильтров, которые выдает True, если число:

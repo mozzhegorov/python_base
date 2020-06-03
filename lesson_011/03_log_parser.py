@@ -107,10 +107,6 @@ for group_time, event_count in grouped_events:
     print(f'[{group_time}] {event_count}')
 
 
-for group_time, event_count in grouped_events:
-    print(f'[{group_time}] {event_count}')
-
-
 # test = [1, 2, 3, 4, 5, 6]
 # test_iter = iter(test)
 # print(next(test_iter))
@@ -146,3 +142,5 @@ for group_time, event_count in grouped_events:
 # # Test_1 = Test()
 # # for i in Test_1:
 # #     print(list(i))
+
+# зачет!
