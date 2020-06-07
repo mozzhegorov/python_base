@@ -73,4 +73,87 @@
 #     def run(self):
 #         <обработка данных>
 
-# TODO написать код в однопоточном/однопроцессорном стиле
+import os
+from operator import itemgetter
+from utils import time_track
+
+zero_tickers = []
+nonzero_tickers_list = []
+
+
+def get_file_list(folder):
+    file_list = []
+    for _, _, filenames in os.walk(folder):
+        for file in filenames:
+            filename = os.path.normpath(os.path.join(folder, file))
+            file_list.append((filename, file))
+    return file_list
+
+
+def counting_volatily(ticker_prices):
+    max_price = max(ticker_prices)
+    min_price = min(ticker_prices)
+    ave_price = (max_price + min_price) / 2
+    volatility = (max_price - min_price) / ave_price * 100
+    return round(volatility, 2)
+
+
+def get_prices_list(file):
+    ticker_prices = []
+    for string in file:
+        price = string.split(sep=",")[2]
+        try:
+            price = float(price)
+        except ValueError:
+            continue
+        except Exception as exc:
+            print(exc)
+            continue
+        ticker_prices.append(price)
+    return ticker_prices
+
+
+class ParsingTicker:
+
+    def __init__(self, filename, tickers_name):
+        self.file = filename
+        self.volatily = 0
+        self.tickers_name = tickers_name
+
+    def run(self):
+        file = open(self.file, mode='r', encoding='utf8', buffering=1)
+        ticker_prices = get_prices_list(file)
+        self.volatily = counting_volatily(ticker_prices)
+        file.close()
+
+
+@time_track
+def main():
+    files_list = get_file_list(folder='trades')
+    tickers = [ParsingTicker(filename=file[0], tickers_name=file[1]) for file in files_list]
+
+    for ticker in tickers:
+        ticker.run()
+        if ticker.volatily == 0:
+            zero_tickers.append(ticker.tickers_name)
+        else:
+            nonzero_tickers_list.append((ticker.tickers_name, ticker.volatily))
+
+    nonzero_tickers_list.sort(key=itemgetter(1), reverse=True)
+    print('Топ 3 лучших тикеров по волатильности')
+    for ticker, vol in nonzero_tickers_list[0:3]:
+        print(ticker, vol)
+
+    print('')
+    print('Топ 3 худших тикеров по волатильности')
+    for ticker, vol in nonzero_tickers_list[-1:-4:-1]:
+        print(ticker, vol)
+
+    print('')
+    print('Тикеры с нулевой волатильностью')
+    for ticker in zero_tickers:
+        print(ticker)
+
+
+if __name__ == '__main__':
+    main()
