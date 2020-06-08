@@ -72,34 +72,51 @@
 #
 #     def run(self):
 #         <обработка данных>
-
+import glob
 import os
 from operator import itemgetter
-#from utils import time_track       # TODO: pip install utils - поставил какую-то другую либу, в которой нет time_track. Какой модуль вы устанавливали?
+import time
+
+# from utils import time_track
+# TODO: pip install utils - поставил какую-то другую либу, в которой нет
+#  time_track. Какой модуль вы устанавливали?
+# TODO: Ответ: поставил то что лежит в папке со сниппетами)) как Вадим прописал) поставил Source Root для папки
+#  python_snippets.
+#  В итоге сейчас перенес функцию к себе дабы никого не смущать подключенными модулями.
 
 zero_tickers = []
 nonzero_tickers_list = []
 
 
+def time_track(func):
+    def surrogate(*args, **kwargs):
+        started_at = time.time()
+
+        result = func(*args, **kwargs)
+
+        ended_at = time.time()
+        elapsed = round(ended_at - started_at, 4)
+        print(f'Функция работала {elapsed} секунд(ы)')
+        return result
+
+    return surrogate
+
+
 def get_file_list(folder):
     file_list = []
-    _, _, filenames = next(os.walk(folder))     # TODO: компактный вариант. Цикл мы используем лишь, чтобы он вызвал за нас next(). Итерация все равно 1.
-    #for _, _, filenames in os.walk(folder):
+    _, _, filenames = next(os.walk(folder))
     for file in filenames:
         filename = os.path.normpath(os.path.join(folder, file))
         file_list.append((filename, file))
     return file_list
 
-# TODO: а еще вот это посмотрите:
-#  https://stackoverflow.com/questions/3207219/how-do-i-list-all-files-of-a-directory#comment25692343_3207973
-#  Возможно решите избавиться от get_file_list в пользу словарного включения.
 
-def counting_volatily(ticker_prices):
+def counting_volatility(ticker_prices):
     max_price = max(ticker_prices)
     min_price = min(ticker_prices)
     ave_price = (max_price + min_price) / 2
     volatility = (max_price - min_price) / ave_price * 100
-    return round(volatility, 2)     # TODO: лучше конечно округлять только при выводе
+    return volatility
 
 
 def get_prices_list(file):
@@ -119,41 +136,40 @@ def get_prices_list(file):
 
 class ParsingTicker:
 
-    def __init__(self, filename, tickers_name):
+    def __init__(self, filename):
         self.file = filename
-        self.volatily = 0
-        self.tickers_name = tickers_name
+        self.volatility = 0
+        self.tickers_name = 0
 
     def run(self):
-        # TODO: Более "трушный" способ открытия файла: с использование with. В таком случае, если произойдет исключение
-        #  оно будет выбрашено навер, как обычно, НО файл будет закрыт. Сейчас, при исключении, файл останется открытым
-        file = open(self.file, mode='r', encoding='utf8', buffering=1)
-        ticker_prices = get_prices_list(file)
-        self.volatily = counting_volatily(ticker_prices)
-        file.close()
+        with open(self.file, mode='r', encoding='utf8', buffering=1) as file:
+            ticker_prices = get_prices_list(file)
+            self.volatility = counting_volatility(ticker_prices)
+            self.tickers_name = os.path.basename(self.file)
+            self.tickers_name = self.tickers_name.split(sep='.')[0]
 
 
-#@time_track
+@time_track
 def main():
-    files_list = get_file_list(folder='trades')
-    tickers = [ParsingTicker(filename=file[0], tickers_name=file[1]) for file in files_list]
+    files_list = glob.glob("trades/*.csv")
+    tickers = [ParsingTicker(filename=file) for file in files_list]
 
     for ticker in tickers:
         ticker.run()
-        if ticker.volatily == 0:
+        if ticker.volatility == 0:
             zero_tickers.append(ticker.tickers_name)
         else:
-            nonzero_tickers_list.append((ticker.tickers_name, ticker.volatily))
+            nonzero_tickers_list.append((ticker.tickers_name, ticker.volatility))
 
     nonzero_tickers_list.sort(key=itemgetter(1), reverse=True)
     print('Топ 3 лучших тикеров по волатильности')
     for ticker, vol in nonzero_tickers_list[0:3]:
-        print(ticker, vol)
+        print(ticker, round(vol, 2))
 
     print('')
     print('Топ 3 худших тикеров по волатильности')
     for ticker, vol in nonzero_tickers_list[-1:-4:-1]:
-        print(ticker, vol)
+        print(ticker, round(vol, 2))
 
     print('')
     print('Тикеры с нулевой волатильностью')
