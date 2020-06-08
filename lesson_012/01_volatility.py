@@ -75,7 +75,7 @@
 
 import os
 from operator import itemgetter
-from utils import time_track
+#from utils import time_track       # TODO: pip install utils - поставил какую-то другую либу, в которой нет time_track. Какой модуль вы устанавливали?
 
 zero_tickers = []
 nonzero_tickers_list = []
@@ -83,19 +83,23 @@ nonzero_tickers_list = []
 
 def get_file_list(folder):
     file_list = []
-    for _, _, filenames in os.walk(folder):
-        for file in filenames:
-            filename = os.path.normpath(os.path.join(folder, file))
-            file_list.append((filename, file))
+    _, _, filenames = next(os.walk(folder))     # TODO: компактный вариант. Цикл мы используем лишь, чтобы он вызвал за нас next(). Итерация все равно 1.
+    #for _, _, filenames in os.walk(folder):
+    for file in filenames:
+        filename = os.path.normpath(os.path.join(folder, file))
+        file_list.append((filename, file))
     return file_list
 
+# TODO: а еще вот это посмотрите:
+#  https://stackoverflow.com/questions/3207219/how-do-i-list-all-files-of-a-directory#comment25692343_3207973
+#  Возможно решите избавиться от get_file_list в пользу словарного включения.
 
 def counting_volatily(ticker_prices):
     max_price = max(ticker_prices)
     min_price = min(ticker_prices)
     ave_price = (max_price + min_price) / 2
     volatility = (max_price - min_price) / ave_price * 100
-    return round(volatility, 2)
+    return round(volatility, 2)     # TODO: лучше конечно округлять только при выводе
 
 
 def get_prices_list(file):
@@ -121,13 +125,15 @@ class ParsingTicker:
         self.tickers_name = tickers_name
 
     def run(self):
+        # TODO: Более "трушный" способ открытия файла: с использование with. В таком случае, если произойдет исключение
+        #  оно будет выбрашено навер, как обычно, НО файл будет закрыт. Сейчас, при исключении, файл останется открытым
         file = open(self.file, mode='r', encoding='utf8', buffering=1)
         ticker_prices = get_prices_list(file)
         self.volatily = counting_volatily(ticker_prices)
         file.close()
 
 
-@time_track
+#@time_track
 def main():
     files_list = get_file_list(folder='trades')
     tickers = [ParsingTicker(filename=file[0], tickers_name=file[1]) for file in files_list]
