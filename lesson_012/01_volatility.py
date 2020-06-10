@@ -81,6 +81,16 @@ from python_snippets.utils import time_track
 zero_tickers = []
 nonzero_tickers_list = []
 
+# TODO: проверял функцию (чуть-чуть ее подфиксил)
+# def get_files_list(folder):
+#     folder = folder.split('/')[0]
+#     file_list = []
+#     for _, _, filenames in os.walk(folder):
+#         for file in filenames:
+#             filename = os.path.normpath(os.path.join(folder, file))
+#             file_list.append(filename)
+#     return file_list
+
 
 def counting_volatility(ticker_prices):
     max_price = max(ticker_prices)
@@ -195,3 +205,5 @@ if __name__ == '__main__':
 #           .
 #           print(math.pi)              # выведет "3.141592653589793"
 #           print(my_egypt_math.pi)     # выведет "3.1604"
+
+# зачет!
