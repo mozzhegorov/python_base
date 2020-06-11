@@ -23,7 +23,7 @@ def make_ticket(fio, from_, to, date):
             len(fio.split()) > 1:
         pass
     else:
-        raise ValueError
+        raise ValueError('Проверьте введенные данные')
 
     im = Image.open(os.path.join('images', 'ticket_template.png'), mode='r')
     font = ImageFont.truetype(font=os.path.join('images', 'Lucida Grande.ttf'), size=16)
