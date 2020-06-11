@@ -19,14 +19,18 @@
 #
 
 import os
+from collections import defaultdict
 from glob import glob as get_files_list
 from operator import itemgetter
 from threading import Thread
+
+from funcy import chunks
 
 from python_snippets.utils import time_track
 
 zero_tickers = []
 nonzero_tickers_list = []
+
 
 # def get_files_list(folder):
 #     folder = folder.split('/')[0]
@@ -37,7 +41,7 @@ nonzero_tickers_list = []
 #             file_list.append(filename)
 #     return file_list
 
-# TODO: имейте ввиду, что создавать сразу 100500 потоков (даже 100) на 4 ядерном процессор особого смысла
+#  имейте ввиду, что создавать сразу 100500 потоков (даже 100) на 4 ядерном процессор особого смысла
 #  иметь не будет. Это непростая и большая тема, но кратко так:
 #  1. Если задача требует много вычисление - важно количество физических ядер. И создание 100 потоков
 #     не решит вопрос, т.к. у нас только 4 ядра. Это не наш случай, у нас простые вычисления;
@@ -55,52 +59,95 @@ nonzero_tickers_list = []
 #  Важная мысль (продолжение пункт №2): Мы делали 1 вечный цикл и там все мультиплексировали. То же самое делает GIL.
 #  .
 #  Вот такие дела) Но это довольно грубое объяснение, хотя близкое к истине.
-
-def counting_volatility(ticker_prices):
-    max_price = max(ticker_prices)
-    min_price = min(ticker_prices)
-    ave_price = (max_price + min_price) / 2
-    volatility = (max_price - min_price) / ave_price * 100
-    return volatility
-
-
-def get_prices_list(file):
-    ticker_prices = []
-    for string in file:
-        price = string.split(sep=",")[2]
-        try:
-            price = float(price)
-        except ValueError:
-            continue
-        except Exception as exc:
-            print(exc)
-            continue
-        ticker_prices.append(price)
-    return ticker_prices
-
-
-# TODO: функции get_prices_list и counting_volatility должны стать статическими методами в классе ParsingTicker.
-#  Это мы как-то упустили в первой задаче.
 class ParsingTicker(Thread):
 
-    def __init__(self, filename, *args, **kwargs):
+    def __init__(self, tickers_list, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # TODO: лучше сделать, чтобы был не 1 файл, а список файлов.
-        self.file = filename
-        self.volatility = 0
-        self.tickers_name = 0
+        self.tickers = tickers_list
+        self.volatility = defaultdict(float)
 
     def run(self):
-        # TODO: здесь тогда будет считаться информация по нескольких тикерам сразу
-        with open(self.file, mode='r', encoding='utf8', buffering=1) as file:
-            ticker_prices = get_prices_list(file)
-            self.volatility = counting_volatility(ticker_prices)
-            self.tickers_name = os.path.basename(self.file)
-            self.tickers_name = self.tickers_name.split(sep='.')[0]
-            # print(f'Читаем файл {self.tickers_name}')
+        for ticker in self.tickers:
+            with open(ticker, mode='r', encoding='utf8', buffering=1) as file:
+                ticker_prices = self.get_prices_list(file)
+                tickers_name = os.path.basename(ticker)
+                tickers_name = tickers_name.split(sep='.')[0]
+                self.volatility[tickers_name] = self.counting_volatility(ticker_prices)
+                # print(f'Читаем файл {self.tickers_name}')
+
+    @staticmethod
+    def counting_volatility(ticker_prices):
+        max_price = max(ticker_prices)
+        min_price = min(ticker_prices)
+        ave_price = (max_price + min_price) / 2
+        volatility = (max_price - min_price) / ave_price * 100
+        return volatility
+
+    @staticmethod
+    def get_prices_list(file):
+        ticker_prices = []
+        for string in file:
+            price = string.split(sep=",")[2]
+            try:
+                price = float(price)
+            except ValueError:
+                continue
+            except Exception as exc:
+                print(exc)
+                continue
+            ticker_prices.append(price)
+        return ticker_prices
 
 
-# TODO: этот метод можно сделать статическим. Что это означает?
+@time_track
+def main():
+    all_files = get_files_list("trades/*.csv")
+    #  сейчас мы создаем на 1 тикер 1 поток. Создание потока - штука затратная. Лучше создать 4-8 потоков, и каждому
+    #  дать одинаковое количество файлов.
+    files_in_thread = len(all_files) // 4
+    tickers_stacks = [ParsingTicker(tickers_list=files_list) for files_list in chunks(files_in_thread, all_files)]
+
+    for stack in tickers_stacks:
+        stack.start()
+
+    print(f'Количество потоков - {len(tickers_stacks)}')
+
+    for stack in tickers_stacks:
+        stack.join()
+
+    for stack in tickers_stacks:
+        for ticker, volatility in stack.volatility.items():
+            if volatility == 0:
+                zero_tickers.append(ticker)
+            else:
+                nonzero_tickers_list.append((ticker, volatility))
+
+    nonzero_tickers_list.sort(key=itemgetter(1), reverse=True)
+    print('Топ 3 лучших тикеров по волатильности')
+    for ticker, vol in nonzero_tickers_list[0:3]:
+        print(ticker, round(vol, 2))
+
+    print('')
+    print('Топ 3 худших тикеров по волатильности')
+    for ticker, vol in nonzero_tickers_list[-1:-4:-1]:
+        print(ticker, round(vol, 2))
+
+    print('')
+    print('Тикеры с нулевой волатильностью')
+    for ticker in zero_tickers:
+        print(ticker)
+
+
+if __name__ == '__main__':
+    main()
+    # list1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
+    # print(list(chunks(4, list1))[0])
+
+
+
+
+
+#  этот метод можно сделать статическим. Что это означает?
 #  Что метод можно вызывать даже тогда, когда объект класса не инициализирован, т.к. метод не использует поля
 #  объекта. Пример:
 #  .
@@ -122,43 +169,3 @@ class ParsingTicker(Thread):
 #  А вот для 1го метода, создание объект обязательно:
 #     obj = MySum(100, 500)
 #     obj.sum()
-
-
-
-@time_track
-def main():
-    files_list = get_files_list("trades/*.csv")
-    # TODO: сейчас мы создаем на 1 тикер 1 поток. Создание потока - штука затратная. Лучше создать 4-8 потоков, и каждому
-    #  дать одинаковое количество файлов.
-    tickers = [ParsingTicker(filename=file) for file in files_list]
-
-    for ticker in tickers:
-        ticker.start()
-
-    for ticker in tickers:
-        ticker.join()
-
-    for ticker in tickers:
-        if ticker.volatility == 0:
-            zero_tickers.append(ticker.tickers_name)
-        else:
-            nonzero_tickers_list.append((ticker.tickers_name, ticker.volatility))
-
-    nonzero_tickers_list.sort(key=itemgetter(1), reverse=True)
-    print('Топ 3 лучших тикеров по волатильности')
-    for ticker, vol in nonzero_tickers_list[0:3]:
-        print(ticker, round(vol, 2))
-
-    print('')
-    print('Топ 3 худших тикеров по волатильности')
-    for ticker, vol in nonzero_tickers_list[-1:-4:-1]:
-        print(ticker, round(vol, 2))
-
-    print('')
-    print('Тикеры с нулевой волатильностью')
-    for ticker in zero_tickers:
-        print(ticker)
-
-
-if __name__ == '__main__':
-    main()
